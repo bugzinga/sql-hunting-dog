@@ -445,6 +445,54 @@ namespace HuntingDog.DogFace
                 totalWidth  = 100;
             gv.Columns[1].Width = totalWidth;
         }
+
+        Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x6A,0xa4,0xb6));
+        Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x50,0x6A, 0xa4, 0xb6));
+
+       
+        private void cbDatabase_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //borderDatabase.BorderBrush = _borderBrush;
+            cbDatabase.BorderBrush = _borderBrush;
+        }
+
+        private void cbDatabase_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //borderDatabase.BorderBrush = Brushes.Transparent;
+            cbDatabase.BorderBrush = _blurBrush;
+        }
+
+        private void cbServer_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //borderServer.BorderBrush = _borderBrush;
+            cbServer.BorderBrush = _borderBrush;
+        }
+
+        private void cbServer_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //borderServer.BorderBrush = Brushes.Transparent;
+            cbServer.BorderBrush = _blurBrush;
+        }
+
+        private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
+        {
+            borderText.BorderBrush = _borderBrush;
+        }
+
+        private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
+        {
+            borderText.BorderBrush = _blurBrush;
+        }
+
+        private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
+        {
+            borderItems.BorderBrush = _borderBrush;
+        }
+
+        private void itemsControl_LostFocus(object sender, RoutedEventArgs e)
+        {
+            borderItems.BorderBrush = Brushes.Transparent;
+        }
     }
 
     class SearchAsyncParam
