@@ -80,7 +80,8 @@ namespace HuntingDog.DogFace
             else
                 txtSearch.Text = lastSearch;
 
-            cbServer.SelectedValue = lastSrvName;
+            //cbServer.SelectedValue = lastSrvName;
+            //cbServer.SelectedItem = 
 
             // select first server
             if (cbServer.SelectedIndex==-1 && cbServer.Items.Count>0)
@@ -105,7 +106,7 @@ namespace HuntingDog.DogFace
         public void ReloadServers()
         {   
             var servers = StudioController.ListServers();
-            cbServer.ItemsSource = servers;
+            cbServer.ItemsSource = ItemFactory.BuildServer(servers);
 
             _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
         }
@@ -131,14 +132,14 @@ namespace HuntingDog.DogFace
         
         private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var sel = cbServer.SelectedItem;
+            var sel = cbServer.SelectedItem as Item;
             if (sel != null)
             {
-                cbDatabase.ItemsSource = StudioController.ListDatabase(sel.ToString());
+                cbDatabase.ItemsSource = StudioController.ListDatabase(sel.Name);
 
                 _databaseChangedByUser = false;
                 // changed server - try to restore database user worked with last time
-                var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.ToString());
+                var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
                 cbDatabase.SelectedValue= databaseName;
 
                 _databaseChangedByUser = true;
@@ -158,16 +159,28 @@ namespace HuntingDog.DogFace
 
         bool _databaseChangedByUser = true;
 
+        string SelectedServer
+        {
+            get{
+                if(cbServer.SelectedItem==null)
+                    return null;
+
+                return (cbServer.SelectedItem as Item).Name;
+            }
+        }
+
         private void cbDatabase_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
             if (_databaseChangedByUser)
             {
-                if (cbServer.SelectedValue != null && cbDatabase.SelectedValue != null)
-                    _userPref.StoreByName(UserPref_ServerDatabase + cbServer.SelectedValue.ToString(),
+                if (SelectedServer != null && cbDatabase.SelectedValue != null)
+                {
+                    _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
                         cbDatabase.SelectedValue.ToString());
 
-                DoSearch();
+                    DoSearch();
+                }
             }
 
 
@@ -181,10 +194,10 @@ namespace HuntingDog.DogFace
 
         void DoSearch()
         {
-            if (!string.IsNullOrEmpty(txtSearch.Text) && cbServer.SelectedItem!=null && cbDatabase.SelectedValue!=null)
+            if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && cbDatabase.SelectedValue!=null)
             {
                 var sp = new SearchAsyncParam();
-                sp.Srv = cbServer.SelectedItem.ToString();
+                sp.Srv = SelectedServer;
                 sp.Text = txtSearch.Text;
                 sp.Database = cbDatabase.SelectedValue.ToString();
                 _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
@@ -214,7 +227,7 @@ namespace HuntingDog.DogFace
                 
                 itemsControl.ItemsSource = ItemFactory.BuildFromEntries(result);
             
-                itemsControl.SelectedIndex = 0;
+                itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
             });
 
@@ -446,8 +459,8 @@ namespace HuntingDog.DogFace
             gv.Columns[1].Width = totalWidth;
         }
 
-        Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x6A,0xa4,0xb6));
-        Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x50,0x6A, 0xa4, 0xb6));
+        Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x64,0x95,0xed));
+        Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x60, 0x64, 0x95, 0xed));
 
        
         private void cbDatabase_GotFocus(object sender, RoutedEventArgs e)
@@ -459,19 +472,19 @@ namespace HuntingDog.DogFace
         private void cbDatabase_LostFocus(object sender, RoutedEventArgs e)
         {
             //borderDatabase.BorderBrush = Brushes.Transparent;
-            cbDatabase.BorderBrush = _blurBrush;
+            //cbDatabase.BorderBrush = _blurBrush;
         }
 
         private void cbServer_GotFocus(object sender, RoutedEventArgs e)
         {
             //borderServer.BorderBrush = _borderBrush;
-            cbServer.BorderBrush = _borderBrush;
+            //cbServer.BorderBrush = _borderBrush;
         }
 
         private void cbServer_LostFocus(object sender, RoutedEventArgs e)
         {
             //borderServer.BorderBrush = Brushes.Transparent;
-            cbServer.BorderBrush = _blurBrush;
+            //cbServer.BorderBrush = _blurBrush;
         }
 
         private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
@@ -484,15 +497,15 @@ namespace HuntingDog.DogFace
             borderText.BorderBrush = _blurBrush;
         }
 
-        private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
-        {
-            borderItems.BorderBrush = _borderBrush;
-        }
+        //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    borderItems.BorderBrush = _borderBrush;
+        //}
 
-        private void itemsControl_LostFocus(object sender, RoutedEventArgs e)
-        {
-            borderItems.BorderBrush = Brushes.Transparent;
-        }
+        //private void itemsControl_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    borderItems.BorderBrush = Brushes.Transparent;
+        //}
     }
 
     class SearchAsyncParam

@@ -88,6 +88,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Royale" />
     <Reference Include="SQLEditors">
       <HintPath>..\..\..\..\Program Files\Microsoft SQL Server\100\Tools\Binn\VSShell\Common7\IDE\SQLEditors.dll</HintPath>
     </Reference>
@@ -512,6 +513,10 @@
     <Resource Include="DogFace\Images\refresh.png" />
     <Resource Include="DogFace\Images\text_align_center.png" />
     <Resource Include="DogFace\Images\wrench.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DogFace\Images\harddisk.png" />
+    <Content Include="DogFace\Images\server.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
