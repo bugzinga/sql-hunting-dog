@@ -13,6 +13,8 @@ namespace HuntingDog.DogEngine
         public bool IsTable { get; set; }
         public bool IsFunction { get; set; }
         public bool IsView { get; set; }
+
+        public object InternalObject { get; set; }
     }
 
     public class ProcedureParameter
@@ -36,7 +38,6 @@ namespace HuntingDog.DogEngine
     {
 
         // Search
-
         List<Entity> Find(string serverName, string databaseName, string searchText);
 
         // fire when new server is connected/disconected
@@ -59,27 +60,27 @@ namespace HuntingDog.DogEngine
         List<Entity> GetInvokes(string name);
 
         // change script
-        void ModifyFunction(string name);
-        void ModifyView(string name);
-        void ModifyProcedure(string name);
+        void ModifyFunction(string server, Entity entityObject);
+        void ModifyView(string server, Entity entityObject);
+        void ModifyProcedure(string server, Entity entityObject);
       
         // select * from script
-        void SelectFromTable(string name);
-        void SelectFromView(string name);
+        void SelectFromTable(string server, Entity entityObject);
+        void SelectFromView(string server, Entity entityObject);
 
         // execute sp script
-        void ExecuteProcedure(string name);
-        void ExecuteFunction(string name);
+        void ExecuteProcedure(string server, Entity entityObject);
+        void ExecuteFunction(string server, Entity entityObject);
 
         // open Edit table window/ design table window
-        void EditTableData(string name);
-        void DesignTable(string name);
+        void EditTableData(string server, Entity entityObject);
+        void DesignTable(string server, Entity entityObject);
 
         // generate new table/view - script
         void GenerateCreateScript(string name);
 
         // navigate object in object explorer
-        void NavigateObject(string name);
+        void NavigateObject(string server, Entity entityObject);
     }
 
 

@@ -135,12 +135,12 @@ namespace HuntingDog.DogFace
             var sel = cbServer.SelectedItem as Item;
             if (sel != null)
             {
-                cbDatabase.ItemsSource = StudioController.ListDatabase(sel.Name);
+                cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
 
                 _databaseChangedByUser = false;
                 // changed server - try to restore database user worked with last time
                 var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
-                cbDatabase.SelectedValue= databaseName;
+                //cbDatabase.SelectedValue= databaseName;
 
                 _databaseChangedByUser = true;
 
@@ -150,7 +150,7 @@ namespace HuntingDog.DogFace
                     cbDatabase.SelectedIndex = 0;
                 }
 
-                _userPref.StoreByName(UserPref_LastSelectedServer, sel.ToString());
+                _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
             }
 
             // keep track of last selected database on this server - need to restore it back!
@@ -169,15 +169,27 @@ namespace HuntingDog.DogFace
             }
         }
 
+
+        string SelectedDatabase
+        {
+            get
+            {
+                if (cbDatabase.SelectedItem == null)
+                    return null;
+
+                return (cbDatabase.SelectedItem as Item).Name;
+            }
+        }
+
         private void cbDatabase_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
             if (_databaseChangedByUser)
             {
-                if (SelectedServer != null && cbDatabase.SelectedValue != null)
+                if (SelectedServer != null && SelectedDatabase != null)
                 {
                     _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
-                        cbDatabase.SelectedValue.ToString());
+                        SelectedDatabase);
 
                     DoSearch();
                 }
@@ -194,12 +206,12 @@ namespace HuntingDog.DogFace
 
         void DoSearch()
         {
-            if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && cbDatabase.SelectedValue!=null)
+            if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && SelectedDatabase!=null)
             {
                 var sp = new SearchAsyncParam();
                 sp.Srv = SelectedServer;
                 sp.Text = txtSearch.Text;
-                sp.Database = cbDatabase.SelectedValue.ToString();
+                sp.Database = SelectedDatabase;
                 _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
 
                 _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
@@ -280,19 +292,19 @@ namespace HuntingDog.DogFace
         {
             if (item.Entity.IsTable)
             {
-                StudioController.SelectFromTable(item.Entity.FullName);
+                StudioController.SelectFromTable(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsProcedure)
             {
-                StudioController.ModifyProcedure(item.Entity.FullName);
+                StudioController.ModifyProcedure(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsFunction)
             {
-                StudioController.ModifyFunction(item.Entity.FullName);
+                StudioController.ModifyFunction(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsView)
             {
-                StudioController.SelectFromView(item.Entity.FullName);
+                StudioController.SelectFromView(SelectedServer, item.Entity);
             }
         }
 
@@ -300,15 +312,15 @@ namespace HuntingDog.DogFace
         {
             if (item.Entity.IsTable)
             {
-                StudioController.DesignTable(item.Entity.FullName);
+                StudioController.DesignTable(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsProcedure)
             {
-                StudioController.ExecuteProcedure(item.Entity.FullName);
+                StudioController.ExecuteProcedure(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsFunction)
             {
-                StudioController.ExecuteFunction(item.Entity.FullName);
+                StudioController.ExecuteFunction(SelectedServer, item.Entity);
             }
 
 
@@ -316,7 +328,7 @@ namespace HuntingDog.DogFace
 
         void InvokeNavigationOnItem(Item item)
         {
-            StudioController.NavigateObject(item.Entity.FullName);
+            StudioController.NavigateObject(SelectedServer, item.Entity);
         }
 
 
@@ -393,6 +405,11 @@ namespace HuntingDog.DogFace
                 // last item - do nothing
                 e.Handled = true;
             }
+            else if (e.Key == Key.Enter && itemsControl.SelectedIndex != -1)
+            {
+                InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
+                e.Handled = true;
+            }
         }
 
         private void cbDatabase_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -436,9 +453,17 @@ namespace HuntingDog.DogFace
             }
         }
 
+        public long LastTicks = 0;
+
         private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
+            if ((DateTime.Now.Ticks - LastTicks) < 3000000)
+            {
+                if (itemsControl.SelectedItem != null)
+                    InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
 
+            }
+            LastTicks = DateTime.Now.Ticks;
         }
 
         private void itemsControl_SizeChanged(object sender, SizeChangedEventArgs e)

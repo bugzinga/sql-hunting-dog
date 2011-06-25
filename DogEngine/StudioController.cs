@@ -53,10 +53,17 @@ namespace HuntingDog.DogEngine
                 e.IsTable = found.IsTable;
                 e.IsView = found.IsView;
                 e.FullName = found.SchemaAndName;
+                e.InternalObject = found.Result; 
                 result.Add(e);
             }
 
             return result;
+        }
+
+        void IStudioController.NavigateObject(string server, Entity entityObject)
+        {
+            var srv = this.Servers[server];
+            manager.SelectSMOObjectInObjectExplorer(entityObject.InternalObject as ScriptSchemaObjectBase, srv.ConnInfo);
         }
 
         void IStudioController.Initialise()
@@ -157,60 +164,14 @@ namespace HuntingDog.DogEngine
             throw new NotImplementedException();
         }
 
-        void IStudioController.ModifyFunction(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.ModifyView(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.ModifyProcedure(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.SelectFromTable(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.SelectFromView(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.ExecuteProcedure(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.ExecuteFunction(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.EditTableData(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.DesignTable(string name)
-        {
-            throw new NotImplementedException();
-        }
+ 
 
         void IStudioController.GenerateCreateScript(string name)
         {
             throw new NotImplementedException();
         }
 
-        void IStudioController.NavigateObject(string name)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public EnvDTE.Window SearchWindow
         {
@@ -264,6 +225,63 @@ namespace HuntingDog.DogEngine
                 return toolWindow;
             }
             return null;
+        }
+
+
+        public void ModifyFunction(string server, Entity entityObject)
+        {
+            var serverInfo = Servers[server];
+            ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction,serverInfo.ConnInfo);
+        }
+
+        public void ModifyView(string server, Entity entityObject)
+        {
+            //var serverInfo = Servers[server];
+            //ManagementStudioController.OpenView(entityObject.InternalObject as View, serverInfo.ConnInfo);
+        }
+
+        public void ModifyProcedure(string server, Entity entityObject)
+        {
+               var serverInfo = Servers[server];
+               ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.ConnInfo);
+        }
+
+      
+
+        public void SelectFromView(string server, Entity entityObject)
+        {
+            var serverInfo = Servers[server];
+            ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.ConnInfo); 
+        }
+
+        public void ExecuteProcedure(string server, Entity entityObject)
+        {
+            var serverInfo = Servers[server];
+            ManagementStudioController.ExecuteStoredProc(entityObject.InternalObject as StoredProcedure, serverInfo.ConnInfo);
+        }
+
+        public void ExecuteFunction(string server, Entity entityObject)
+        {
+            //var serverInfo = Servers[server];
+            //ManagementStudioController.e(entityObject.InternalObject as StoredProcedure, serverInfo.ConnInfo);
+        }
+
+        public void SelectFromTable(string server, Entity entityObject)
+        {
+            var serverInfo = Servers[server];
+            ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.ConnInfo);
+        }
+
+        public void EditTableData(string server, Entity entityObject)
+        {
+            var serverInfo = Servers[server];
+            manager.OpenTable(entityObject.InternalObject as Table, serverInfo.ConnInfo);
+        }
+
+        public void DesignTable(string server, Entity entityObject)
+        {
+               var serverInfo = Servers[server];
+               ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.ConnInfo);
         }
     }
 }

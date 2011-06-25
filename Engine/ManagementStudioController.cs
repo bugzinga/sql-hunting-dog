@@ -37,7 +37,7 @@ namespace DatabaseObjectSearcher
                 + Environment.NewLine;
         }
 
-        public static void OpenView(View view, Database db, SqlConnectionInfo connInfo)
+        public static void SelectFromView(View view, SqlConnectionInfo connInfo)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace DatabaseObjectSearcher
                 lock (view)
                 {
                     view.Refresh();
-                    select = string.Format("{0} SELECT * FROM [{1}].[{2}]",UseDataBaseGo(db),
+                    select = string.Format("{0} SELECT * FROM [{1}].[{2}]", UseDataBaseGo(view.Parent),
                       view.Schema,view.Name);
                 }
 
@@ -60,7 +60,7 @@ namespace DatabaseObjectSearcher
             }
         }
 
-        public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, Database db, SqlConnectionInfo connInfo)
+        public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, SqlConnectionInfo connInfo)
         {
             try
             {                             
@@ -70,7 +70,7 @@ namespace DatabaseObjectSearcher
                 {
                     userDefinedFunction.Refresh();
 
-                    builder.AppendLine(UseDataBaseGo(db));
+                    builder.AppendLine(UseDataBaseGo(userDefinedFunction.Parent));
 
 
                     var indexOfCreate = userDefinedFunction.TextHeader.IndexOf(CREATE_FUNC, 0, StringComparison.OrdinalIgnoreCase);
@@ -125,7 +125,7 @@ namespace DatabaseObjectSearcher
             w.WalkDependencies(dpTree);
         }
 
-        public static void OpenStoredProcedureForModification(SqlConnectionInfo connInfo, StoredProcedure sp, Database db)
+        public static void OpenStoredProcedureForModification(StoredProcedure sp, SqlConnectionInfo connInfo)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace DatabaseObjectSearcher
 
                   
 
-                    builder.AppendLine(UseDataBaseGo(db));
+                    builder.AppendLine(UseDataBaseGo(sp.Parent));
 
                     builder.Append(sp.ScriptHeader(true));
                     // trye to use ScriptHeader(true) to change header. !!!
@@ -233,13 +233,13 @@ namespace DatabaseObjectSearcher
             return MakeParameterWithValue(par.Name, par.DataType);
         }
 
-        public static void ExecuteStoredProc(StoredProcedure sp, Database db, SqlConnectionInfo connInfo)
+        public static void ExecuteStoredProc(StoredProcedure sp,  SqlConnectionInfo connInfo)
         {
             try
             {
 
                 string execScript = string.Format("{0}\r\n EXECUTE [{2}].[{3}] {1}",
-                UseDataBaseGo(db), Environment.NewLine, sp.Schema, sp.Name);
+                UseDataBaseGo(sp.Parent), Environment.NewLine, sp.Schema, sp.Name);
 
              
                 lock (sp)
@@ -346,7 +346,7 @@ namespace DatabaseObjectSearcher
                 //}
         }
 
-        public static void DesignTable(Table tbl, Database db, SqlConnectionInfo connInfo)
+        public static void DesignTable(Table tbl, SqlConnectionInfo connInfo)
         {
             var mc = new ManagedConn();
             mc.Connection = connInfo;
@@ -362,7 +362,7 @@ namespace DatabaseObjectSearcher
             _manager.OpenTable(objectToSelect, connection);
         }
 
-        public static void OpenTable(Table tbl, Database db, SqlConnectionInfo connInfo)
+        public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo)
         {
            
             try
@@ -374,7 +374,7 @@ namespace DatabaseObjectSearcher
                 {
                     tbl.Refresh();
                     select = string.Format("{0}\r\n SELECT TOP 200 * FROM [{1}].[{2}]",
-                       UseDataBaseGo(db), tbl.Schema, tbl.Name);
+                       UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name);
 
                     string where = Environment.NewLine + "\t\t\t-- WHERE ";
                     foreach (Column p in tbl.Columns)

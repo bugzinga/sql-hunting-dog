@@ -67,8 +67,8 @@
             <DataTemplate x:Key="DisplayImageWithText">
                 <Border Name="Border" Padding="2" SnapsToDevicePixels="true" MaxHeight="65">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding Image}" Stretch="Fill" />
-                        <TextBlock Text="{Binding Name}" TextAlignment="Left" TextWrapping="NoWrap"/>
+                        <Image Source="{Binding Image}" />
+                        <TextBlock Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap"/>
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -135,7 +135,7 @@
 
 
                                 <Trigger Property="IsHighlighted" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource blueBlurBrush}"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
@@ -165,10 +165,20 @@
                                     <ToggleButton Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
 
                                     <!--Commented: ContentTemplate = "{StaticResource DisplayImageWithText}"-->
-                                    <ContentPresenter Name="ContentSite" IsHitTestVisible="False"
+                                    <!--ContentPresenter Name="ContentSite" IsHitTestVisible="False"
                                           Content="{TemplateBinding SelectionBoxItem}"
                                           ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
-                                          Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                          Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/-->
+
+                                    <ContentPresenter  Name="ContentSite" Content="{TemplateBinding ComboBox.SelectionBoxItem}"
+                                                      ContentTemplate = "{StaticResource DisplayImageWithText}"
+                                                      ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
+                                                      Margin="{TemplateBinding Control.Padding}"
+                                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" 
+                                                      IsHitTestVisible="False" />
+
                                     <TextBox x:Name="PART_EditableTextBox" 
                                  Style="{x:Null}"
                                  Template="{StaticResource ComboBoxTextBox}"
@@ -225,7 +235,8 @@
                                 <Trigger Property="IsEditable" Value="true">
                                     <Setter Property="IsTabStop" Value="false"/>
                                     <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
-                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                                    <!--Setter TargetName="ContentSit
+                                    e" Property="Visibility" Value="Hidden"/-->
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -301,8 +312,8 @@
             </DataTemplate>
         
             <DataTemplate x:Key="cellText">
-                <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"    Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
-                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
+                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"/>
             </DataTemplate>
             
             <DataTemplate x:Key="cellAction">
@@ -332,18 +343,41 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-        
-                <ComboBox FontSize="14" BorderThickness="2" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
-                          Margin="2,5" x:Name="cbServer"  SelectionChanged="cbServer_SelectionChanged" DisplayMemberPath="Name"
-                           Style="{StaticResource ImageComboBox}" />
+
+            <ComboBox FontSize="14" BorderThickness="2" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
+                          Margin="2,5" x:Name="cbServer"  SelectionChanged="cbServer_SelectionChanged"
+                           Style="{StaticResource ImageComboBox}" >
 
 
-                <ComboBox FontSize="14" BorderThickness="2" Style="{StaticResource ImageComboBox}"
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel  Orientation="Horizontal">
+                            <!--<Image Width="16" Height="16" Source="{Binding Path=Image}"/>-->
+                            <TextBlock Text="{Binding Path=Name}" Padding="10,0,0,0"/>
+                        </StackPanel>
+                     </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+            </ComboBox>
+
+
+            <ComboBox FontSize="14" BorderThickness="2" Style="{StaticResource ImageComboBox}"
                           GotFocus="cbDatabase_GotFocus" LostFocus="cbDatabase_LostFocus"
                           PreviewKeyDown="cbDatabase_PreviewKeyDown"  Margin="2,5" Grid.Column="1"
-                          x:Name="cbDatabase" SelectionChanged="cbDatabase_SelectionChanged"/>
+                          x:Name="cbDatabase" SelectionChanged="cbDatabase_SelectionChanged" >
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel  Orientation="Horizontal">
+                            <!--<Image Width="16" Height="16" Source="{Binding Path=Image}"/>-->
+                            <TextBlock Text="{Binding Path=Name}" Padding="10,0,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
 
-   
+            </ComboBox>
+
+
+
             <Border  x:Name="borderText"  Margin="3,0,3,0" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
                   <TextBox GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" Margin="5"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
             </Border>
