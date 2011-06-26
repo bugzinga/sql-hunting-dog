@@ -49,7 +49,7 @@ namespace DatabaseObjectSearcher
 
             try
             {
-                System.Threading.Thread.Sleep(80 * 1000);
+              //  System.Threading.Thread.Sleep(80 * 1000);
                 var cmdEvents = (EnvDTE.CommandEvents)ServiceCache.ExtensibilityModel.Events.get_CommandEvents("{00000000-0000-0000-0000-000000000000}", 0);
                 cmdEvents.AfterExecute += this.AfterExecute;
             }

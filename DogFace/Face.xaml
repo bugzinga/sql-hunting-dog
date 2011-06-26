@@ -290,8 +290,8 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter  TargetName="Border" Property="Cursor" Value="Hand"></Setter>
                                 </Trigger>
-                                
-                                <Trigger Property="IsFocused" Value="True">
+
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                     <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource blueBrush}"/>
                                 </Trigger>
 

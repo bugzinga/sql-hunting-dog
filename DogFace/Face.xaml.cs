@@ -64,7 +64,9 @@ namespace HuntingDog.DogFace
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           
+
+            var scroll = FindChild<ScrollContentPresenter>(itemsControl);
+            scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
             _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
             StudioController.Initialise();
@@ -87,14 +89,18 @@ namespace HuntingDog.DogFace
             if (cbServer.SelectedIndex==-1 && cbServer.Items.Count>0)
             {
                 cbServer.SelectedIndex = 0;
-            }
-
+            }    
           
         }
+
+     
 
         void StudioController_OnServersChanged()
         {
             ReloadServers();
+
+            if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 0)
+                cbServer.SelectedIndex = 0;
         }
 
         void _processor_RequestFailed(BackgroundProcessor.Request arg1, Exception arg2)
@@ -366,10 +372,15 @@ namespace HuntingDog.DogFace
         {
             if (e.Key == Key.Tab || e.Key == Key.Enter || e.Key == Key.Down)
             {
-                if(itemsControl.Items.Count > 0)
-                // move focus to result list view
-                txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
-                itemsControl.SelectedIndex = 0;
+                if (itemsControl.Items.Count > 0)
+                {
+
+                    // move focus to result list view
+                    //txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
+                    MoveFocusItemsControl(false);
+                    
+                }
+
                 e.Handled = true;
             }
             else if (e.Key == Key.Up)
@@ -384,20 +395,54 @@ namespace HuntingDog.DogFace
         { 
         }
 
+
+
+        private bool MoveFocusItemsControl(bool isLast)
+        {
+            if (itemsControl.Items.Count > 0)
+            {
+                var index = isLast ? itemsControl.Items.Count - 1 : 0;
+                itemsControl.SelectedIndex = index;
+                var it = itemsControl.ItemContainerGenerator.ContainerFromIndex(index) as Control;
+                if (it != null)
+                {
+                    return it.Focus();
+                }
+                else
+                {
+                    
+                    itemsControl.ScrollIntoView(itemsControl.Items[index]);
+                    var it1 = itemsControl.ItemContainerGenerator.ContainerFromIndex(index) as Control;
+                    if (it1 != null)
+                    {
+                        return it1.Focus();
+
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
         private void itemsControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab)
             {
+                itemsControl.SelectedIndex = -1;
+                            
                 // move focus to result text
                 itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
-                itemsControl.SelectedIndex = -1;
+              
                 e.Handled = true;
             }
             else if (e.Key == Key.Up && itemsControl.SelectedIndex == 0)
             {
+                itemsControl.SelectedIndex = -1;
+
                 // jump to text search box from Result View - 
                 itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
-                itemsControl.SelectedIndex = -1;
+              
                 e.Handled = true;
             }
             else if (e.Key == Key.Down && itemsControl.SelectedIndex == itemsControl.Items.Count-1)
@@ -409,6 +454,18 @@ namespace HuntingDog.DogFace
             {
                 InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
                 e.Handled = true;
+            }
+            else if (e.Key == Key.Right)
+            {
+                MoveFocusItemsControl(true);
+                e.Handled = true;
+
+            }
+            else if (e.Key == Key.Left)
+            {
+                MoveFocusItemsControl(false);
+                e.Handled = true;
+                    
             }
         }
 
@@ -466,22 +523,69 @@ namespace HuntingDog.DogFace
             LastTicks = DateTime.Now.Ticks;
         }
 
-        private void itemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var gv = itemsControl.View as GridView;
 
-            var totalWidth = itemsControl.ActualWidth;
+            var scroll = sender as ScrollContentPresenter;
+
+            var totalWidth = scroll.ActualWidth;
             
             totalWidth -= gv.Columns[0].ActualWidth;
             totalWidth -= gv.Columns[2].ActualWidth;
 
             // Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
             // we Width is too high scrool bar will appear. 
-            totalWidth -= 6;
+            totalWidth -= 8;
 
             if(totalWidth < 100)
                 totalWidth  = 100;
             gv.Columns[1].Width = totalWidth;
+        }
+
+        private void itemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+        }
+
+
+        public static T FindChild<T>(DependencyObject from) where T : class
+        {
+            if (from == null)
+            {
+                return null;
+            }
+
+            T candidate = from as T;
+            if (candidate != null)
+            {
+                return candidate;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(from); i++)
+            {
+                var isOur = FindChild<T> ( VisualTreeHelper.GetChild(from, i));
+                if (isOur != null)
+                    return isOur;
+            }
+
+            return null;
+        }
+
+        public static T FindAncestor<T>(DependencyObject from) where T : class
+        {
+            if (from == null)
+            {
+                return null;
+            }
+
+            T candidate = from as T;
+            if (candidate != null)
+            {
+                return candidate;
+            }
+
+            return FindAncestor<T>(VisualTreeHelper.GetParent(from));
         }
 
         Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x64,0x95,0xed));

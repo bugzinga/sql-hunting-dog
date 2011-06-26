@@ -53,11 +53,14 @@ namespace DatabaseObjectSearcher
 
                 CreateSQLDocumentWithHeader(select, connInfo);
 
+                System.Windows.Forms.SendKeys.Send("{F5}");
             }
             catch (Exception)
             {
 
             }
+
+
         }
 
         public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, SqlConnectionInfo connInfo)
@@ -160,6 +163,8 @@ namespace DatabaseObjectSearcher
             {
 
             }
+
+
 
         }
 
@@ -386,11 +391,14 @@ namespace DatabaseObjectSearcher
 
                 CreateSQLDocumentWithHeader(select, connInfo);
 
+                System.Windows.Forms.SendKeys.Send("{F5}");
             }
             catch (Exception)
             {
 
             }
+
+           
 
         }
 
