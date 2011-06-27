@@ -65,10 +65,10 @@
             </LinearGradientBrush>
 
             <DataTemplate x:Key="DisplayImageWithText">
-                <Border Name="Border" Padding="2" SnapsToDevicePixels="true" MaxHeight="65">
+                <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding Image}" />
-                        <TextBlock Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap"/>
+                        <Image VerticalAlignment="Center" Source="{Binding Image}" />
+                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap"/>
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -273,26 +273,32 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ListViewItem">
 
-                            <Border Name="Border" Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="Transparent" BorderThickness="3" CornerRadius="6" >
+                            <Border Name="SpecialBorder"  Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="3" CornerRadius="6" >
                                 <Border.RenderTransform>
                                     <ScaleTransform ScaleX="1" ScaleY="1" />
                                 </Border.RenderTransform>
 
-                                <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                <!--<GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />-->
+                                <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="Stretch" />
 
                             </Border>
 
+                            
+                            
                             <ControlTemplate.Triggers>
+                                
+                                
+                                
                                 <Trigger Property="IsSelected" Value="true">
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource blueBlurBrush}"/>
+                                    <Setter TargetName="SpecialBorder" Property="BorderBrush" Value="{StaticResource blueBlurBrush}"/>
                                 </Trigger>
                                 
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter  TargetName="Border" Property="Cursor" Value="Hand"></Setter>
+                                    <Setter  TargetName="SpecialBorder" Property="Cursor" Value="Hand"></Setter>
                                 </Trigger>
 
                                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource blueBrush}"/>
+                                    <Setter TargetName="SpecialBorder" Property="BorderBrush" Value="{StaticResource blueBrush}"/>
                                 </Trigger>
 
 
@@ -378,14 +384,19 @@
 
 
 
-            <Border  x:Name="borderText"  Margin="3,0,3,0" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
-                  <TextBox GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" Margin="5"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
+            <Border  x:Name="borderText"  Margin="3,0,3,3" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
+                <StackPanel Orientation="Horizontal">
+                    <Image VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
+                  <TextBox VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
+                           Margin="5,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
+
+                </StackPanel>
             </Border>
           
         </Grid>
 
         <!--Border Margin="4" x:Name="borderItems"  CornerRadius="6" BorderThickness="3" BorderBrush="Transparent"  Grid.Row="1"-->
-            <ListView Margin="2" 
+            <ListView Margin="3,2,2,2" 
            
             PreviewKeyDown="itemsControl_PreviewKeyDown" 
                   KeyDown="itemsControl_KeyDown" Grid.Row="1"

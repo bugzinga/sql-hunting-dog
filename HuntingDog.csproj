@@ -515,6 +515,21 @@
     <Resource Include="DogFace\Images\wrench.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DogFace\Art\accept.png" />
+    <Content Include="DogFace\Art\calendar_blank.png" />
+    <Content Include="DogFace\Art\chart.png" />
+    <Content Include="DogFace\Art\clock.png" />
+    <Resource Include="DogFace\Art\computer.png" />
+    <Resource Include="DogFace\Art\database.png" />
+    <Content Include="DogFace\Art\edit.png" />
+    <Content Include="DogFace\Art\home.png" />
+    <Content Include="DogFace\Art\mail.png" />
+    <Content Include="DogFace\Art\next.png" />
+    <Content Include="DogFace\Art\page.png" />
+    <Content Include="DogFace\Art\page_edit.png" />
+    <Content Include="DogFace\Art\process.png" />
+    <Resource Include="DogFace\Art\search.png" />
+    <Content Include="DogFace\Art\user.png" />
     <Content Include="DogFace\Images\harddisk.png" />
     <Resource Include="DogFace\Images\server.png" />
   </ItemGroup>

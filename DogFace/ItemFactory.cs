@@ -20,8 +20,11 @@ namespace HuntingDog.DogFace
         static BitmapImage imageRow = new BitmapImage(new Uri(@"Images/row.png", UriKind.Relative));
         static BitmapImage imageWrench = new BitmapImage(new Uri(@"Images/wrench.png", UriKind.Relative));
 
-        static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Images/server.png", UriKind.Relative));
-        static BitmapImage imageSer = new BitmapImage(new Uri(@"Images/cpu.png", UriKind.Relative));
+        //static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Images/server.png", UriKind.Relative));
+        //static BitmapImage imageSer = new BitmapImage(new Uri(@"Images/cpu.png", UriKind.Relative));
+
+        static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Art/database.png", UriKind.Relative));
+        static BitmapImage imageSer = new BitmapImage(new Uri(@"Art/computer.png", UriKind.Relative));
 
 
         public static List<Item> BuildDatabase(IEnumerable<string> sources)

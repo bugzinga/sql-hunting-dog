@@ -157,10 +157,13 @@ namespace HuntingDog.DogFace
                 }
 
                 _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
+
+                cbDatabase.Focus();
+                cbDatabase.IsDropDownOpen = true;
             }
 
             // keep track of last selected database on this server - need to restore it back!
-            DoSearch();
+            //DoSearch();
         }
 
         bool _databaseChangedByUser = true;
@@ -196,6 +199,8 @@ namespace HuntingDog.DogFace
                 {
                     _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
                         SelectedDatabase);
+
+                    txtSearch.Focus();  
 
                     DoSearch();
                 }
@@ -498,7 +503,13 @@ namespace HuntingDog.DogFace
                 e.Handled = true;
             }
 
-            if ((e.Key == Key.Down || e.Key == Key.Right) && cbServer.IsDropDownOpen == false)
+            if ((e.Key == Key.Down ) && cbServer.IsDropDownOpen == false)
+            {
+                cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Down));
+                e.Handled = true;
+            }
+
+            if ( e.Key == Key.Right && cbServer.IsDropDownOpen == false)
             {
                 cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                 e.Handled = true;
@@ -541,12 +552,20 @@ namespace HuntingDog.DogFace
             if(totalWidth < 100)
                 totalWidth  = 100;
             gv.Columns[1].Width = totalWidth;
+
+            //var sp = FindChild<VirtualizingStackPanel>(itemsControl);
+            //sp.Arrange();
+            //var parent = VisualTreeHelper.GetParent(sp) as ItemsPresenter;
+
+            //sp.Width = parent.ActualWidth;
         }
 
         private void itemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 
         }
+
+      
 
 
         public static T FindChild<T>(DependencyObject from) where T : class
@@ -625,6 +644,9 @@ namespace HuntingDog.DogFace
         {
             borderText.BorderBrush = _blurBrush;
         }
+
+
+     
 
         //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
         //{
