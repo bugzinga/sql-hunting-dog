@@ -36,6 +36,9 @@ namespace HuntingDog.DogEngine
 
     public interface IStudioController
     {
+        void ConnectNewServer();
+
+        event Action ShowYourself;
 
         // Search
         List<Entity> Find(string serverName, string databaseName, string searchText);

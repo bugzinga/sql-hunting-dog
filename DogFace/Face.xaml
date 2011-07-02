@@ -271,6 +271,7 @@
 
                 <Setter Property="IsSelected" Value="{Binding IsChecked, Mode=TwoWay}"/>
 
+             
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -414,8 +415,8 @@
 
 
             <ListView Margin="3,2,2,2" 
-           
-            PreviewKeyDown="itemsControl_PreviewKeyDown" 
+        PreviewKeyDown="itemsControl_PreviewKeyDown" 
+
                   KeyDown="itemsControl_KeyDown"
             x:Name="itemsControl" BorderThickness="0" 
              ItemContainerStyle="{StaticResource SimpleListViewItem}"
@@ -451,25 +452,20 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
+                               
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
+                               
                             </Grid.RowDefinitions>
                             
                             <Button Tag="{Binding}"   ToolTip="Locate in Object Explorer" 
                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Click="btnNavigationClick" >
-                                <Image  Tag="{Binding}"  Name="navImage"  Source="{Binding Image}" HorizontalAlignment="Center" Height="16" Width="16"  />
+                                <Image  Tag="{Binding}"  Name="navImage"  Source="{Binding Image}" HorizontalAlignment="Center" Height="18" Width="18"  />
                             </Button>
 
-                            <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
-                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
-                           
-                                 Width="{Binding RelativeSource={RelativeSource FindAncestor,
-                                        AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}}"/>
-
+                        
                             <!--<Button Grid.Column="2" 
                                 HorizontalAlignment="Right" Tag="{Binding}" ToolTip="Do Action" 
                                  Focusable="False" BorderThickness="0"
@@ -478,27 +474,12 @@
                                 <Image   Source="{Binding Action2}"  Height="16" Width="16"  ></Image>
                             </Button-->
 
-                            <StackPanel Grid.Column="2"  Name="myAction" Grid.Row="0" Orientation="Horizontal">
+                            <DockPanel Grid.Column="1"  Name="myAction" Grid.Row="0" LastChildFill="True" 
+                                          Width="{Binding RelativeSource={RelativeSource FindAncestor,
+                                        AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}}"
+                                       >
 
-                                <Button  Tag="{Binding}"   Margin="0,0,2,0"  Click="DefaultAction_Click" 
-                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                         >
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>
-                                        <!--<TextBlock  Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action1Description}"></TextBlock>-->
-                                    </StackPanel>                                    
-                                </Button>
-
-                                <Button  Tag="{Binding}"  Margin="0,0,2,0"  Click="btnActionClick"
-                                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                         >
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>
-                                        <!--<TextBlock Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}"></TextBlock>-->
-                                    </StackPanel>
-                                </Button>
-
-                                <Button  Tag="{Binding}"   Visibility="{Binding Action3Visibility}" 
+                                <Button   Name="btnAction3" DockPanel.Dock="Right"  Tag="{Binding}"   Visibility="{Binding Action3Visibility}" 
                                            Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                          >
                                     <StackPanel Orientation="Horizontal">
@@ -507,14 +488,48 @@
                                     </StackPanel>
                                 </Button>
 
+                                <Button   Name="btnAction2"  DockPanel.Dock="Right"   Tag="{Binding}"  Margin="0,0,2,0"  Click="btnActionClick"
+                                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                         >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>
+                                        <!--<TextBlock Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}"></TextBlock>-->
+                                    </StackPanel>
+                                </Button>
 
-                            </StackPanel>
+                                <Button   Name="btnAction1" DockPanel.Dock="Right"  Tag="{Binding}"   Margin="0,0,2,0"  Click="DefaultAction_Click" 
+                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                         >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>
+                                        <!--<TextBlock  Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action1Description}"></TextBlock>-->
+                                    </StackPanel>                                    
+                                </Button>
+                                
+                           <TextBlock 
+                               MouseUp="TextBlock_MouseUp"
+                                MouseDown="TextBlock_MouseDown_1" 
+                               MouseMove="TextBlock_MouseMove"
+                               DockPanel.Dock="Left"  TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1"
+                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+                           
+                              />
+
+                                
+                            </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
-                                <Setter  TargetName="myAction" Property="Visibility" Value="Visible"/>
+                            <DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
+                                <Setter  TargetName="btnAction1" Property="Visibility" Value="Collapsed"/>
+                                <Setter  TargetName="btnAction2" Property="Visibility" Value="Collapsed"/>
+                                <Setter  TargetName="btnAction3" Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
 
+                            <!--<Trigger Property="IsMouseOver" Value="True">
+                                <Setter  TargetName="btnAction1" Property="Visibility" Value="Visible"/>
+                                <Setter  TargetName="btnAction2" Property="Visibility" Value="Visible"/>
+                            </Trigger>-->
+                         
                         </DataTemplate.Triggers>
 
                     </DataTemplate>

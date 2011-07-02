@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 
 namespace HuntingDog.DogFace
 {
+
     public class Item:DependencyObject
     {
         public HuntingDog.DogEngine.Entity Entity { get; set; }
@@ -36,5 +37,10 @@ namespace HuntingDog.DogFace
         public bool IsChecked { get { return (bool)GetValue(IsCheckedProperty); } set { SetValue(IsCheckedProperty, value); } }
         public static readonly DependencyProperty IsCheckedProperty =
             DependencyProperty.Register("IsChecked", typeof(bool), typeof(Item));
+
+
+        public bool IsMouseOver { get { return (bool)GetValue(IsMouseOverProperty); } set { SetValue(IsMouseOverProperty, value); } }
+        public static readonly DependencyProperty IsMouseOverProperty =
+            DependencyProperty.Register("IsMouseOver", typeof(bool), typeof(Item));
     }
 }

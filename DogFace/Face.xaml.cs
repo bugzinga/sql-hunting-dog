@@ -71,6 +71,7 @@ namespace HuntingDog.DogFace
             _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
             StudioController.Initialise();
             StudioController.OnServersChanged += new Action(StudioController_OnServersChanged);
+            StudioController.ShowYourself += new Action(StudioController_ShowYourself);
             ReloadServers();
 
             _userPref = UserPreferencesStorage.Load();
@@ -86,10 +87,16 @@ namespace HuntingDog.DogFace
             //cbServer.SelectedItem = 
 
             // select first server
-            if (cbServer.SelectedIndex==-1 && cbServer.Items.Count>0)
+            if (cbServer.SelectedIndex==-1 && cbServer.Items.Count>1)
             {
                 cbServer.SelectedIndex = 0;
             }    
+          
+        }
+
+        void StudioController_ShowYourself()
+        {
+            txtSearch.Focus();
           
         }
 
@@ -99,7 +106,7 @@ namespace HuntingDog.DogFace
         {
             ReloadServers();
 
-            if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 0)
+            if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
                 cbServer.SelectedIndex = 0;
         }
 
@@ -112,7 +119,9 @@ namespace HuntingDog.DogFace
         public void ReloadServers()
         {   
             var servers = StudioController.ListServers();
-            cbServer.ItemsSource = ItemFactory.BuildServer(servers);
+            var srv = ItemFactory.BuildServer(servers);
+            srv.Add(new Item() { Name = "Connect New..." });
+            cbServer.ItemsSource = srv;
 
             _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
         }
@@ -138,9 +147,16 @@ namespace HuntingDog.DogFace
         
         private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (IsConnectNewServerSellected)
+            {
+                StudioController.ConnectNewServer();
+                return;
+            }
+
             var sel = cbServer.SelectedItem as Item;
             if (sel != null)
             {
+
                 cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
 
                 _databaseChangedByUser = false;
@@ -167,6 +183,17 @@ namespace HuntingDog.DogFace
         }
 
         bool _databaseChangedByUser = true;
+
+        bool IsConnectNewServerSellected
+        {
+            get
+            {
+                if (cbServer.SelectedItem == null)
+                    return false;
+
+                return (cbServer.SelectedItem as Item).Name == "Connect New...";
+            }
+        }
 
         string SelectedServer
         {
@@ -208,6 +235,10 @@ namespace HuntingDog.DogFace
 
 
         }
+
+        Point _startPoint;
+        bool _isStarted = false;
+      
 
 
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -546,8 +577,47 @@ namespace HuntingDog.DogFace
 
         public long LastTicks = 0;
 
+        private void TextBlock_MouseUp(object sender, MouseEventArgs e)
+        {
+            _isStarted = false;
+        }
+
+        private void TextBlock_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && _isStarted == true)
+            {
+                _isStarted = false;
+
+                // Get the current mouse position
+                  Point mousePos = e.GetPosition(null);
+                Vector diff = _startPoint - mousePos;
+
+          
+                {
+                    // Get the dragged ListViewItem
+                    FrameworkElement item = sender as FrameworkElement;
+                    if (item != null)
+                    {
+                        ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
+
+                        // Find the data behind the ListViewItem
+                        Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                        if (contact != null && contact.Entity != null)
+                        {
+                            // Initialize the drag & drop operation
+
+                            DragDrop.DoDragDrop(listViewItem, contact.Entity.FullName, DragDropEffects.Copy);
+                        }
+                    }
+                }
+            }
+        }
+
         private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
+            _startPoint = e.GetPosition(null);
+            _isStarted = true;
+
             if ((DateTime.Now.Ticks - LastTicks) < 3000000)
             {
                 if (itemsControl.SelectedItem != null)
@@ -563,22 +633,22 @@ namespace HuntingDog.DogFace
             
             return;
 
-            var gv = itemsControl.View as GridView;
+            //var gv = itemsControl.View as GridView;
 
-            var scroll = sender as ScrollContentPresenter;
+            //var scroll = sender as ScrollContentPresenter;
 
-            var totalWidth = scroll.ActualWidth;
+            //var totalWidth = scroll.ActualWidth;
             
-            totalWidth -= gv.Columns[0].ActualWidth;
-            totalWidth -= gv.Columns[2].ActualWidth;
+            //totalWidth -= gv.Columns[0].ActualWidth;
+            //totalWidth -= gv.Columns[2].ActualWidth;
 
-            // Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
-            // we Width is too high scrool bar will appear. 
-            totalWidth -= 8;
+            //// Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
+            //// we Width is too high scrool bar will appear. 
+            //totalWidth -= 8;
 
-            if(totalWidth < 100)
-                totalWidth  = 100;
-            gv.Columns[1].Width = totalWidth;
+            //if(totalWidth < 100)
+            //    totalWidth  = 100;
+            //gv.Columns[1].Width = totalWidth;
 
             //var sp = FindChild<VirtualizingStackPanel>(itemsControl);
             //sp.Arrange();
@@ -679,6 +749,9 @@ namespace HuntingDog.DogFace
         }
 
 
+
+
+
      
 
         //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
@@ -707,7 +780,7 @@ namespace HuntingDog.DogFace
         {
             var desiredWidth =  ((double)value - 8);
             desiredWidth -= 30;
-            desiredWidth -= 80;
+            //desiredWidth -= 80;
 
             if (desiredWidth < 100)
                 desiredWidth = 100;

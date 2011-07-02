@@ -203,7 +203,7 @@ namespace HuntingDog.DogEngine
             get { return toolWindow; }
         }
 
-        public void CreateAddinWindow(AddIn addinInstance)
+        public EnvDTE.Window CreateAddinWindow(AddIn addinInstance)
         {
             Assembly asm = Assembly.Load("HuntingDog");
             // Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b9"); // this guid doesn't seem to matter?
@@ -211,7 +211,15 @@ namespace HuntingDog.DogEngine
 
             Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b8"); // this guid doesn't seem to matter?
             toolWindow = CreateToolWindow("HuntingDog.ucHost", asm.Location, id, addinInstance);
+            return toolWindow;
+        }
 
+     
+
+        public void ForceShowYourself()
+        {
+            if (ShowYourself != null)
+                ShowYourself();
         }
 
         AddIn _inst; 
@@ -311,6 +319,14 @@ namespace HuntingDog.DogEngine
         {
                var serverInfo = Servers[server];
                ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.ConnInfo);
+        }
+
+        public event Action ShowYourself;
+
+        public void ConnectNewServer()
+        {
+            ManagementStudioController.ConnectNew();
+            
         }
     }
 }

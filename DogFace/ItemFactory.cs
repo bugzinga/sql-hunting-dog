@@ -52,6 +52,9 @@ namespace HuntingDog.DogFace
             {
                 res.Add(new Item() { Name = srvName, Image = imageSer });
             }
+
+            res.Sort((x,y) => string.Compare(x.Name,y.Name));
+
             return res;
         }
 
@@ -64,7 +67,7 @@ namespace HuntingDog.DogFace
             foreach (var source in sourceList)
             {
                 var uiEntry = new Item() { Name = source.Name, Entity = source };
-                uiEntry.Action3Visibility = System.Windows.Visibility.Hidden;
+                uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
                 //uiEntry.Action3 = imageProcess;
                // uiEntry.Action3Description = "  ";
 
@@ -94,7 +97,7 @@ namespace HuntingDog.DogFace
                 else if (source.IsView)
                 {
                     uiEntry.Image = imageV;
-                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1 = imageRightArrow;  
                     uiEntry.Action1Description = "Select Data from View";
 
                     uiEntry.Action2 = imageWrench;
