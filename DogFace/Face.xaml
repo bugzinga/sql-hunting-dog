@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:HuntingDog.DogFace"
              mc:Ignorable="d" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
             xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Royale"
@@ -10,7 +11,9 @@
 
  <UserControl.Resources>
         <ResourceDictionary>
-
+            
+            <my:WidthConverter x:Key="widthConv"/>
+            
             <SolidColorBrush x:Key="blueBrush" Color="#FF6495ED"/>
             <SolidColorBrush x:Key="blueBlurBrush" Color="#606495ED"/>
             <SolidColorBrush x:Key="blueVeryBlurBrush" Color="#306495ED"/>
@@ -67,7 +70,7 @@
             <DataTemplate x:Key="DisplayImageWithText">
                 <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
-                        <Image VerticalAlignment="Center" Source="{Binding Image}" />
+                        <Image VerticalAlignment="Center" Margin="2,1,0,1"  Source="{Binding Image}" />
                         <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap"/>
                     </StackPanel>
                 </Border>
@@ -273,14 +276,14 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ListViewItem">
 
-                            <Border Name="SpecialBorder"  Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="3" CornerRadius="6" >
+                            <Border Name="SpecialBorder"  Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="2" CornerRadius="6" >
                                 <Border.RenderTransform>
                                     <ScaleTransform ScaleX="1" ScaleY="1" />
                                 </Border.RenderTransform>
 
                                 <!--<GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />-->
-                                <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="Stretch" />
-
+                                <!--<GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="Stretch" />-->
+                                <ContentPresenter></ContentPresenter>
                             </Border>
 
                             
@@ -319,7 +322,12 @@
         
             <DataTemplate x:Key="cellText">
                 <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
-                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"/>
+                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+                           
+                          Width="{Binding RelativeSource={RelativeSource FindAncestor,
+                                AncestorType={x:Type VirtualizingStackPanel}}, Path=ActualWidth,Converter={StaticResource widthConv}}"
+                           
+                           />
             </DataTemplate>
             
             <DataTemplate x:Key="cellAction">
@@ -384,47 +392,146 @@
 
 
 
-            <Border  x:Name="borderText"  Margin="3,0,3,3" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
-                <StackPanel Orientation="Horizontal">
-                    <Image VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
-                  <TextBox VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
+            <Border MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
+                <DockPanel >
+                    <Image Margin="2,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
+                  <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
                            Margin="5,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
 
-                </StackPanel>
+                </DockPanel>
             </Border>
           
         </Grid>
 
         <!--Border Margin="4" x:Name="borderItems"  CornerRadius="6" BorderThickness="3" BorderBrush="Transparent"  Grid.Row="1"-->
+
+        <Grid  Grid.Row="1" x:Name="splitterGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="8"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+
             <ListView Margin="3,2,2,2" 
            
             PreviewKeyDown="itemsControl_PreviewKeyDown" 
-                  KeyDown="itemsControl_KeyDown" Grid.Row="1"
+                  KeyDown="itemsControl_KeyDown"
             x:Name="itemsControl" BorderThickness="0" 
              ItemContainerStyle="{StaticResource SimpleListViewItem}"
             SelectionChanged="itemsControl_SelectionChanged_1" SizeChanged="itemsControl_SizeChanged" >
-                <ListView.View >
+                <!--<ListView.View >
                     <GridView  >
                         <GridView.ColumnHeaderContainerStyle>
                             <Style>
                                 <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
                             </Style>
                         </GridView.ColumnHeaderContainerStyle>
-                        <GridViewColumn  Width="30" Header="Fiest" CellTemplate="{StaticResource cellLocation}" />
-                        <GridViewColumn  Header="Second" CellTemplate="{StaticResource cellText}" />
+                        <GridViewColumn  Width="30" Header="First" CellTemplate="{StaticResource cellLocation}" />
+                        <GridViewColumn  Header="Second" Width="Auto" CellTemplate="{StaticResource cellText}" />
                         <GridViewColumn Width="30"  Header="Name" CellTemplate="{StaticResource cellAction}" />
 
                     </GridView>
 
-                </ListView.View>
+                </ListView.View>-->
             
                 <ListView.Resources/>
 
-            
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                                            
+                        <Grid  RenderTransformOrigin="0.5,0.5">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            
+                            <Button Tag="{Binding}"   ToolTip="Locate in Object Explorer" 
+                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Click="btnNavigationClick" >
+                                <Image  Tag="{Binding}"  Name="navImage"  Source="{Binding Image}" HorizontalAlignment="Center" Height="16" Width="16"  />
+                            </Button>
+
+                            <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
+                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+                           
+                                 Width="{Binding RelativeSource={RelativeSource FindAncestor,
+                                        AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}}"/>
+
+                            <!--<Button Grid.Column="2" 
+                                HorizontalAlignment="Right" Tag="{Binding}" ToolTip="Do Action" 
+                                 Focusable="False" BorderThickness="0"
+                                    Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"   
+                                Click="btnActionClick" >
+                                <Image   Source="{Binding Action2}"  Height="16" Width="16"  ></Image>
+                            </Button-->
+
+                            <StackPanel Grid.Column="2"  Name="myAction" Grid.Row="0" Orientation="Horizontal">
+
+                                <Button  Tag="{Binding}"   Margin="0,0,2,0"  Click="DefaultAction_Click" 
+                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                         >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>
+                                        <!--<TextBlock  Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action1Description}"></TextBlock>-->
+                                    </StackPanel>                                    
+                                </Button>
+
+                                <Button  Tag="{Binding}"  Margin="0,0,2,0"  Click="btnActionClick"
+                                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                         >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>
+                                        <!--<TextBlock Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}"></TextBlock>-->
+                                    </StackPanel>
+                                </Button>
+
+                                <Button  Tag="{Binding}"   Visibility="{Binding Action3Visibility}" 
+                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                         >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image   VerticalAlignment="Center"  Source="{Binding Action3}"  ToolTip="{Binding Action3Description}" Height="18" Width="18"  ></Image>
+                                        <!--<TextBlock Margin="0,0,3,0" VerticalAlignment="Center" Text="{Binding Action3Description}"></TextBlock>-->
+                                    </StackPanel>
+                                </Button>
+
+
+                            </StackPanel>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
+                                <Setter  TargetName="myAction" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+
+                        </DataTemplate.Triggers>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
             </ListView>
+
+            <GridSplitter Grid.Row="1" Width="Auto" Height="8"   ResizeDirection="Rows"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+
+            <!--<ListView Grid.Row="2"  x:Name="listViewProperties"  Margin="3,2,2,2" Background="Red" >
+                
+            </ListView>-->
+          
+        </Grid>
         <!--/Border-->
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <TextBlock x:Name="txtStatusTest">status</TextBlock>
+            <TextBlock  x:Name="txtStatusTest">status</TextBlock>
             <!--<Button Height="40" Click="Button_Click">Select First</Button>-->
             
         </StackPanel>

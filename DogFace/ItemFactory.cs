@@ -26,7 +26,15 @@ namespace HuntingDog.DogFace
         static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Art/database.png", UriKind.Relative));
         static BitmapImage imageSer = new BitmapImage(new Uri(@"Art/computer.png", UriKind.Relative));
 
+        static BitmapImage imageSearch = new BitmapImage(new Uri(@"Art/search.png", UriKind.Relative));
 
+        static BitmapImage imageRightArrow = new BitmapImage(new Uri(@"Art/next.png", UriKind.Relative));
+        static BitmapImage imageEdit = new BitmapImage(new Uri(@"Art/edit.png", UriKind.Relative));
+        static BitmapImage imageProcess = new BitmapImage(new Uri(@"Art/process.png", UriKind.Relative));
+        static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"Art/page_edit.png", UriKind.Relative));
+
+        static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
+        
         public static List<Item> BuildDatabase(IEnumerable<string> sources)
         {
             var res = new List<Item>();
@@ -56,27 +64,55 @@ namespace HuntingDog.DogFace
             foreach (var source in sourceList)
             {
                 var uiEntry = new Item() { Name = source.Name, Entity = source };
+                uiEntry.Action3Visibility = System.Windows.Visibility.Hidden;
+                //uiEntry.Action3 = imageProcess;
+               // uiEntry.Action3Description = "  ";
+
                 if (source.IsTable)
                 {
                     uiEntry.Image = imageT;
-                    uiEntry.Action = imageRightBlue;
+
+                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1Description = "Select Data from Table";
+
+                    uiEntry.Action2 = imageProcess;
+                    uiEntry.Action2Description = "Edit Data";
+
+                    uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
+                    uiEntry.Action3 = imageWrench;
+                    uiEntry.Action3Description = "Design Table";
                 }
                 else if (source.IsProcedure)
                 {
                     uiEntry.Image = imageS;
-                    uiEntry.Action = imageRightGreen;
+                    uiEntry.Action1 = imageEdit;
+                    uiEntry.Action1Description = "Modify Stored Procedure";
+
+                    uiEntry.Action2 = imagePageEdit;
+                    uiEntry.Action2Description = "Execute Stored Proc";
                 }
                 else if (source.IsView)
                 {
                     uiEntry.Image = imageV;
-                    uiEntry.Action = imageRightGreen;
+                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1Description = "Select Data from View";
+
+                    uiEntry.Action2 = imageWrench;
+                    uiEntry.Action2Description = "Design View";
                 }
                 else
                 {
-                    uiEntry.Image = imageF;
-                   uiEntry.Action = imageRightGreen;
+                   uiEntry.Image = imageF;
+                   uiEntry.Action1 = imageEdit;
+                   uiEntry.Action1Description = "Modify Function";
+
+                   uiEntry.Action2 = imagePageEdit;
+                   uiEntry.Action2Description = "Execute Function";
                 }
 
+            
+
+                int i = 1;
                 res.Add(uiEntry);
             }
 

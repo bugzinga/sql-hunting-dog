@@ -22,7 +22,16 @@ namespace HuntingDog.DogFace
 
         public ImageSource Image { get; set; }
 
-        public ImageSource Action { get; set; }
+        public ImageSource Action1 { get; set; }
+        public string Action1Description { get; set; }
+
+        
+        public ImageSource Action2 { get; set; }
+        public string Action2Description { get; set; }
+
+        public Visibility Action3Visibility { get; set; }
+        public ImageSource Action3 { get; set; }
+        public string Action3Description { get; set; }
 
         public bool IsChecked { get { return (bool)GetValue(IsCheckedProperty); } set { SetValue(IsCheckedProperty, value); } }
         public static readonly DependencyProperty IsCheckedProperty =

@@ -37,7 +37,7 @@ namespace HuntingDog.DogFace
             {
                 if (_studio == null)
                 {
-                    _studio = new HuntingDog.DogEngine.StudioController();
+                    _studio = HuntingDog.DogEngine.StudioController.Current;
                 }
 
                 return _studio;
@@ -357,15 +357,12 @@ namespace HuntingDog.DogFace
   
         }
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void DefaultAction_Click(object sender, RoutedEventArgs e)
         {
-            // double click?
-            //if (e.ClickCount >= 2)
-            {
-                var item = (Item)((FrameworkElement)sender).Tag;
-                InvokeDefaultOnItem(item);
-            }
+            var item = (Item)((FrameworkElement)sender).Tag;
+            InvokeDefaultOnItem(item);
         }
+ 
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -455,7 +452,7 @@ namespace HuntingDog.DogFace
                 // last item - do nothing
                 e.Handled = true;
             }
-            else if (e.Key == Key.Enter && itemsControl.SelectedIndex != -1)
+            else if ((e.Key == Key.Enter || e.Key == Key.Space) && itemsControl.SelectedIndex != -1)
             {
                 InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
                 e.Handled = true;
@@ -476,7 +473,7 @@ namespace HuntingDog.DogFace
 
         private void cbDatabase_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && cbDatabase.IsDropDownOpen == false)
+            if ((e.Key == Key.Enter || e.Key == Key.Space) && cbDatabase.IsDropDownOpen == false)
             {
                 cbDatabase.IsDropDownOpen = true;
                 e.Handled = true;
@@ -493,31 +490,57 @@ namespace HuntingDog.DogFace
                 cbDatabase.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
                 e.Handled = true;
             }
+
+            if (e.Key == Key.Space && cbDatabase.IsDropDownOpen)
+            {
+                foreach (var item in cbDatabase.Items)
+                {
+                    var it = cbDatabase.ItemContainerGenerator.ContainerFromItem(item);
+                    if ((it as ComboBoxItem).IsHighlighted)
+                    {
+                        cbDatabase.SelectedItem = item;
+                        cbDatabase.IsDropDownOpen = false;
+                    }
+                }
+            }
         }
 
         private void cbServer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && cbServer.IsDropDownOpen == false)
+            if ((e.Key == Key.Enter || e.Key == Key.Space) && !cbServer.IsDropDownOpen)
             {
                 cbServer.IsDropDownOpen = true;
                 e.Handled = true;
             }
 
-            if ((e.Key == Key.Down ) && cbServer.IsDropDownOpen == false)
+            if ((e.Key == Key.Down ) && !cbServer.IsDropDownOpen)
             {
                 cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Down));
                 e.Handled = true;
             }
 
-            if ( e.Key == Key.Right && cbServer.IsDropDownOpen == false)
+            if ( e.Key == Key.Right && !cbServer.IsDropDownOpen)
             {
                 cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                 e.Handled = true;
             }
 
-            if ((e.Key == Key.Up || e.Key == Key.Left) && cbServer.IsDropDownOpen == false)
+            if ((e.Key == Key.Up || e.Key == Key.Left) && !cbServer.IsDropDownOpen )
             {         
                 e.Handled = true;
+            }
+
+            if (e.Key == Key.Space && cbServer.IsDropDownOpen)
+            {
+                foreach (var item in cbServer.Items)
+                {
+                    var it = cbServer.ItemContainerGenerator.ContainerFromItem(item);
+                    if ((it as ComboBoxItem).IsHighlighted)
+                    {
+                        cbServer.SelectedItem = item;
+                        cbServer.IsDropDownOpen = false;
+                    }
+                }              
             }
         }
 
@@ -536,6 +559,10 @@ namespace HuntingDog.DogFace
 
         void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            var sp = FindChild<VirtualizingStackPanel>(itemsControl);
+            
+            return;
+
             var gv = itemsControl.View as GridView;
 
             var scroll = sender as ScrollContentPresenter;
@@ -638,11 +665,17 @@ namespace HuntingDog.DogFace
         private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             borderText.BorderBrush = _borderBrush;
+            txtSearch.SelectAll();
         }
 
         private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
         {
             borderText.BorderBrush = _blurBrush;
+        }
+
+        private void borderText_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            txtSearch.Focus();
         }
 
 
@@ -665,5 +698,26 @@ namespace HuntingDog.DogFace
         public string Srv { get; set; }
         public string Text { get; set; }
         public string Database{get;set;}
+    }
+
+    public class WidthConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var desiredWidth =  ((double)value - 8);
+            desiredWidth -= 30;
+            desiredWidth -= 80;
+
+            if (desiredWidth < 100)
+                desiredWidth = 100;
+
+            return desiredWidth;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

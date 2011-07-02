@@ -28,6 +28,10 @@ namespace HuntingDog.DogEngine
 
         public int SearchLimit = 2000;
 
+        private StudioController()
+        {
+        }
+
         static StudioController currentInstance = new StudioController();
         public static StudioController Current
         {
@@ -62,6 +66,27 @@ namespace HuntingDog.DogEngine
 
         void IStudioController.NavigateObject(string server, Entity entityObject)
         {
+            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars)_inst.DTE.CommandBars;
+            foreach (var b in bars)
+            {
+                int i = 1;
+            }
+
+            try
+            {
+                //var oControl = 
+                //  bars["Query"].Controls.Add(MsoControl Type.msoControlButton,
+                //  System.Reflection.Missing.Value,
+                //  System.Reflection.Missing.Value,1,true);
+                // Set the caption of the submenuitem
+                //oControl.Caption = "Navigate In Object Explorer";
+            }
+            catch
+            {
+            }
+
+
+
             var srv = this.Servers[server];
             manager.SelectSMOObjectInObjectExplorer(entityObject.InternalObject as ScriptSchemaObjectBase, srv.ConnInfo);
         }
@@ -189,9 +214,12 @@ namespace HuntingDog.DogEngine
 
         }
 
+        AddIn _inst; 
         private EnvDTE.Window CreateToolWindow(string typeName, string assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
         {
             Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;
+
+            _inst = addinInstance;
             //Windows2 win2 = applicationObject.Windows as Windows2;
             if (win2 != null)
             {
@@ -209,6 +237,7 @@ namespace HuntingDog.DogEngine
                     }
                 }
 
+              
 
                 //toolWindow.Width = oe.Width;
                 // toolWindow.SetKind((vsWindowType)oe.Kind);
