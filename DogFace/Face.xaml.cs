@@ -66,7 +66,7 @@ namespace HuntingDog.DogFace
         {
 
             var scroll = FindChild<ScrollContentPresenter>(itemsControl);
-            scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
+            //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
             _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
             StudioController.Initialise();
@@ -299,20 +299,31 @@ namespace HuntingDog.DogFace
 
    
 
-        private void itemsControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
 
         private void itemsControl_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
+            if (itemsControl.SelectedIndex == -1)
+            {
+                // clear propertties
+                listViewProperties.ItemsSource = null;
+            }
+            else
+            {
+                var item = (itemsControl.SelectedItem as Item);
+                if(item!=null)
+                {  
+                    if(item.Entity.IsProcedure)
+                    {
+                        var procedureParameters = StudioController.ListProcParameters(item.Entity);
+                        listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);
+                    }
 
+                }
+             
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+ 
 
         public void Stop()
         {
@@ -627,41 +638,38 @@ namespace HuntingDog.DogFace
             LastTicks = DateTime.Now.Ticks;
         }
 
-        void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var sp = FindChild<VirtualizingStackPanel>(itemsControl);
+        //void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+
+        //    var sp = FindChild<VirtualizingStackPanel>(itemsControl);
             
-            return;
+        //    return;
 
-            //var gv = itemsControl.View as GridView;
+        //    //var gv = itemsControl.View as GridView;
 
-            //var scroll = sender as ScrollContentPresenter;
+        //    //var scroll = sender as ScrollContentPresenter;
 
-            //var totalWidth = scroll.ActualWidth;
+        //    //var totalWidth = scroll.ActualWidth;
             
-            //totalWidth -= gv.Columns[0].ActualWidth;
-            //totalWidth -= gv.Columns[2].ActualWidth;
+        //    //totalWidth -= gv.Columns[0].ActualWidth;
+        //    //totalWidth -= gv.Columns[2].ActualWidth;
 
-            //// Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
-            //// we Width is too high scrool bar will appear. 
-            //totalWidth -= 8;
+        //    //// Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
+        //    //// we Width is too high scrool bar will appear. 
+        //    //totalWidth -= 8;
 
-            //if(totalWidth < 100)
-            //    totalWidth  = 100;
-            //gv.Columns[1].Width = totalWidth;
+        //    //if(totalWidth < 100)
+        //    //    totalWidth  = 100;
+        //    //gv.Columns[1].Width = totalWidth;
 
-            //var sp = FindChild<VirtualizingStackPanel>(itemsControl);
-            //sp.Arrange();
-            //var parent = VisualTreeHelper.GetParent(sp) as ItemsPresenter;
+        //    //var sp = FindChild<VirtualizingStackPanel>(itemsControl);
+        //    //sp.Arrange();
+        //    //var parent = VisualTreeHelper.GetParent(sp) as ItemsPresenter;
 
-            //sp.Width = parent.ActualWidth;
-        }
+        //    //sp.Width = parent.ActualWidth;
+        //}
 
-        private void itemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-        }
-
+   
       
 
 
@@ -736,6 +744,7 @@ namespace HuntingDog.DogFace
         {
             borderText.BorderBrush = _borderBrush;
             txtSearch.SelectAll();
+           
         }
 
         private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
@@ -778,8 +787,9 @@ namespace HuntingDog.DogFace
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var desiredWidth =  ((double)value - 8);
-            desiredWidth -= 30;
+            double diff = double.Parse(parameter.ToString());
+           // var desiredWidth =  ((double)value - 8);
+            double desiredWidth = ((double)value - diff);
             //desiredWidth -= 80;
 
             if (desiredWidth < 100)

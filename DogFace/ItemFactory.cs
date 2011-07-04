@@ -58,6 +58,22 @@ namespace HuntingDog.DogFace
             return res;
         }
 
+        public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
+        {
+            var res = new List<ProcedureParamItem>();
+            foreach (var par in paramList)
+            {
+                var viewParam = new ProcedureParamItem();
+                viewParam.Name = par.Name;
+                viewParam.Type = par.Type;
+                if(par.IsOut)
+                    viewParam.Out = "OUT";
+                res.Add(viewParam);
+            }
+
+            return res;
+        }
+
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {

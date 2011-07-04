@@ -22,7 +22,7 @@ namespace HuntingDog.DogEngine
         public string Name { get; set; }
         public string Type { get; set; }
         public string DefaultValue { get; set; }
-        public string Direction { get; set; }
+        public bool IsOut { get; set; }
     }
 
     public class TableColumn
@@ -55,12 +55,12 @@ namespace HuntingDog.DogEngine
         void RefreshDatabase(string serverName,string databaseName);
 
         // columns, pro parameters
-        List<TableColumn> ListColumns(string name);
-        List<ProcedureParameter> ListProcParameters(string name);
+        List<TableColumn> ListColumns(Entity entityObject);
+        List<ProcedureParameter> ListProcParameters(Entity entityObject);
 
         // dependencies
-        List<Entity> GetInvokedBy(string name);
-        List<Entity> GetInvokes(string name);
+        List<Entity> GetInvokedBy(Entity entityObjecte);
+        List<Entity> GetInvokes(Entity entityObject);
 
         // change script
         void ModifyFunction(string server, Entity entityObject);

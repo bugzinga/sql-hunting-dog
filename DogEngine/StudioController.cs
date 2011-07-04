@@ -169,22 +169,51 @@ namespace HuntingDog.DogEngine
             server.DbSearcher.BuildDBObjectDictionary();
         }
 
-        List<TableColumn> IStudioController.ListColumns(string name)
+        List<TableColumn> IStudioController.ListColumns(Entity entityObjecte)
+        {
+            var result = new List<TableColumn>();
+
+            var table = entityObjecte.InternalObject as Table;
+            table.Columns.Refresh();
+            foreach (Column tc in table.Columns)
+            {
+                result.Add(new TableColumn(){ 
+                    Name = tc.Name,
+                    IsPrimaryKey = tc.InPrimaryKey, 
+                    IsForeignKey = tc.IsForeignKey,
+                    Nullable = tc.Nullable, 
+                    Type = tc.DataType.SqlDataType.ToString()} );
+            }
+
+            return result;
+        }
+
+        List<ProcedureParameter> IStudioController.ListProcParameters(Entity entityObject)
+        {
+            var result = new List<ProcedureParameter>();
+
+            var procedure = entityObject.InternalObject as StoredProcedure;
+            procedure.Parameters.Refresh();
+            foreach (StoredProcedureParameter tc in procedure.Parameters)
+            {
+                result.Add(new ProcedureParameter()
+                {
+                    Name = tc.Name,
+                    IsOut = tc.IsOutputParameter,
+                    DefaultValue  = tc.DefaultValue,
+                    Type = tc.DataType.SqlDataType.ToString(),
+                });
+            }
+
+            return result;
+        }
+
+        List<Entity> IStudioController.GetInvokedBy(Entity entityObject)
         {
             throw new NotImplementedException();
         }
 
-        List<ProcedureParameter> IStudioController.ListProcParameters(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<Entity> IStudioController.GetInvokedBy(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<Entity> IStudioController.GetInvokes(string name)
+        List<Entity> IStudioController.GetInvokes(Entity entityObject)
         {
             throw new NotImplementedException();
         }

@@ -14,6 +14,13 @@ using System.Windows.Shapes;
 
 namespace HuntingDog.DogFace
 {
+    public class ProcedureParamItem : DependencyObject
+    {
+        public HuntingDog.DogEngine.ProcedureParameter Entity { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Out { get; set; }
+    }
 
     public class Item:DependencyObject
     {
