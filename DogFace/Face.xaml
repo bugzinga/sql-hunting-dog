@@ -13,7 +13,8 @@
         <ResourceDictionary>
             
             <my:WidthConverter x:Key="widthConv"/>
-            
+
+            <SolidColorBrush x:Key="blueDarkBrush" Color="#FF0045BC"/>
             <SolidColorBrush x:Key="blueBrush" Color="#FF6495ED"/>
             <SolidColorBrush x:Key="blueBlurBrush" Color="#606495ED"/>
             <SolidColorBrush x:Key="blueVeryBlurBrush" Color="#306495ED"/>
@@ -96,7 +97,7 @@
                     Background="{StaticResource WindowBackgroundBrush}"
                     BorderBrush="{StaticResource blueBlurBrush  }"
                     BorderThickness="0,0,1,0"/-->
-                    <!--Path x:Name="DownArrow" Grid.Column="1" HorizontalAlignment="Center" Margin="3,1,0,0" VerticalAlignment="Center" Fill="{StaticResource DownArrowBrush}" Data="{StaticResource DownArrowGeometry}"/-->
+                    <Path x:Name="DownArrow" Grid.Column="1" HorizontalAlignment="Center" Margin="3,1,0,0" VerticalAlignment="Center" Fill="{StaticResource DownArrowBrush}" Data="{StaticResource DownArrowGeometry}"/>
                 </Grid>
 
                 <ControlTemplate.Triggers>
@@ -359,7 +360,17 @@
                 </Setter>
             </Style>
 
-            
+
+            <Style  x:Key="myHyperlink"  TargetType="Hyperlink"
+                   BasedOn="{StaticResource {x:Type Hyperlink}}">
+                <Setter Property="Foreground" Value="{StaticResource blueBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource blueDarkBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
         </Grid.Resources>
 
 
@@ -369,10 +380,11 @@
             <RowDefinition Height="80"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid >
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+              
+                <RowDefinition ></RowDefinition>
+                <RowDefinition ></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
@@ -412,16 +424,16 @@
             </ComboBox>
 
 
-
             <Border MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
                 <DockPanel >
                     <Image Margin="2,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
-                  <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
+                    <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
                            Margin="0,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
 
                 </DockPanel>
             </Border>
-          
+
+
         </Grid>
 
         <!--Border Margin="4" x:Name="borderItems"  CornerRadius="6" BorderThickness="3" BorderBrush="Transparent"  Grid.Row="1"-->
@@ -486,40 +498,36 @@
                                         AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=38}"
                                        >
 
-                                <Button   Name="btnAction3" DockPanel.Dock="Right"  Tag="{Binding}"   Visibility="{Binding Action3Visibility}" 
-                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                         >
-                                    <StackPanel Orientation="Horizontal">
-                                        <!--<Image   VerticalAlignment="Center"  Source="{Binding Action3}"  ToolTip="{Binding Action3Description}" Height="18" Width="18"  ></Image>-->
-                                        <TextBlock Foreground="Blue"  ToolTip="{Binding Action3Tooltip}" Margin="0,0,3,0" VerticalAlignment="Center" Text="{Binding Action3Description}">
-                                             <Hyperlink>asdasdsa</Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Button>
 
-                                <Button   Name="btnAction2"  DockPanel.Dock="Right"   Tag="{Binding}"  Margin="0,0,2,0"  Click="btnActionClick"
-                                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                         >
-                                    <StackPanel Orientation="Horizontal">
-                                        
-                                        <!--<Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>-->
-                                        <TextBlock 
+                                <DockPanel Visibility="Collapsed" DockPanel.Dock="Right"  Name="actionDock" LastChildFill="True" >
+                                <TextBlock  Margin="4,0,0,0"  VerticalAlignment="Center" Name="btnAction3"  DockPanel.Dock="Right"   Visibility="{Binding Action3Visibility}" >
+                                        <Hyperlink   Style="{StaticResource myHyperlink}" Tag="{Binding}" >
+                                        <TextBlock   FontSize="14"
+
+                                             ToolTip="{Binding Action3Tooltip}" 
+                                            VerticalAlignment="Center" Text="{Binding Action3Description}">
+       
+                                        </TextBlock>
+
+                                        </Hyperlink>
+                                 </TextBlock>
+
+
+                                <TextBlock   Margin="4,0,0,0" VerticalAlignment="Center" Name="btnAction2"  DockPanel.Dock="Right"  >
+                                        <Hyperlink  Style="{StaticResource myHyperlink}"  Click="btnActionClick"  Tag="{Binding}" >
+                                        <TextBlock   FontSize="14"
+
                                              ToolTip="{Binding Action2Tooltip}" 
-                                            Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}">
-                                            
-                                            <Hyperlink>asdasdsa</Hyperlink>
+                                            Margin="0,0,0,0"  VerticalAlignment="Center" Text="{Binding Action2Description}">
+       
                                         </TextBlock>
-                                    </StackPanel>
-                                </Button>
 
-                                <Button   Name="btnAction1" DockPanel.Dock="Right"  Tag="{Binding}"   Margin="0,0,2,0"  Click="DefaultAction_Click" 
-                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                         >
-                                    <StackPanel Orientation="Horizontal">
-                                        <!--<Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>-->
-                                        <TextBlock>
-                                        <Hyperlink>
-                                        <TextBlock  FontSize="14"
+                                        </Hyperlink>
+                                 </TextBlock>
+
+                                <TextBlock VerticalAlignment="Center" Name="btnAction1"  DockPanel.Dock="Right"  >
+                                        <Hyperlink   Style="{StaticResource myHyperlink}" Click="DefaultAction_Click"  Tag="{Binding}" >
+                                        <TextBlock   FontSize="14"
 
                                              ToolTip="{Binding Action1Tooltip}" 
                                             Margin="0,0,0,0"  VerticalAlignment="Center" Text="{Binding Action1Description}">
@@ -527,11 +535,11 @@
                                         </TextBlock>
 
                                         </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>                                    
-                                </Button>
-                                
-                           <TextBlock 
+                                 </TextBlock>
+
+                                </DockPanel>
+
+                                <TextBlock 
                                MouseUp="TextBlock_MouseUp"
                                 MouseDown="TextBlock_MouseDown_1" 
                                MouseMove="TextBlock_MouseMove"
@@ -544,11 +552,20 @@
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers>
-                                                      
-                            <DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
+
+                          <DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
+                                <Setter  TargetName="actionDock" Property="Visibility" Value="Visible"/>                          
+                            </DataTrigger>
+
+                            <!--<DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
                                 <Setter  TargetName="btnAction1" Property="Visibility" Value="Collapsed"/>
                                 <Setter  TargetName="btnAction2" Property="Visibility" Value="Collapsed"/>
                                 <Setter  TargetName="btnAction3" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>-->
+
+
+                          <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListViewItem}},Path=IsMouseOver}" Value="True">
+                                <Setter  TargetName="actionDock" Property="Visibility" Value="Visible"/>
                             </DataTrigger>
 
                             <!--<Trigger Property="IsMouseOver" Value="True">

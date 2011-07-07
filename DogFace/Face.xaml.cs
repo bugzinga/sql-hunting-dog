@@ -387,21 +387,24 @@ namespace HuntingDog.DogFace
 
         private void btnNavigationClick(object sender, RoutedEventArgs e)
         {
-            var item = (Item)((Control)sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeNavigationOnItem(item);
   
+  
+        
         }
+
 
         private void btnActionClick(object sender, RoutedEventArgs e)
         {
-             var item = (Item)((Control)sender).Tag;
+            var item = (Item)((FrameworkContentElement)sender).Tag;
             InvokeActionOnItem(item);
   
         }
 
         private void DefaultAction_Click(object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkElement)sender).Tag;
+            var item = (Item)((FrameworkContentElement)sender).Tag;
             InvokeDefaultOnItem(item);
         }
  
@@ -756,6 +759,8 @@ namespace HuntingDog.DogFace
         {
             txtSearch.Focus();
         }
+
+
 
 
 
