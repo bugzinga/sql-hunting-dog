@@ -359,31 +359,6 @@
                 </Setter>
             </Style>
 
-            <DataTemplate x:Key="cellLocation">
-                <Button Tag="{Binding}"   ToolTip="Locate in Object Explorer" 
-                          Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Click="btnNavigationClick" >
-                    <Image  Tag="{Binding}"  Name="navImage"  Source="{Binding Image}" HorizontalAlignment="Center" Height="16" Width="16"  />
-                </Button>
-            </DataTemplate>
-        
-            <DataTemplate x:Key="cellText">
-                <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1" MouseDown="TextBlock_MouseDown_1" 
-                                 Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
-                           
-                          Width="{Binding RelativeSource={RelativeSource FindAncestor,
-                                AncestorType={x:Type VirtualizingStackPanel}}, Path=ActualWidth,Converter={StaticResource widthConv}}"
-                           
-                           />
-            </DataTemplate>
-            
-            <DataTemplate x:Key="cellAction">
-                <Button HorizontalAlignment="Right" Tag="{Binding}" ToolTip="Do Action" 
-                                 Focusable="False" BorderThickness="0"
-                        Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"   
-                                Click="btnActionClick" >
-                    <Image   Source="{Binding Action}"  Height="16" Width="16"  ></Image>
-                </Button>
-            </DataTemplate>
             
         </Grid.Resources>
 
@@ -442,7 +417,7 @@
                 <DockPanel >
                     <Image Margin="2,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
                   <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
-                           Margin="5,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
+                           Margin="0,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
 
                 </DockPanel>
             </Border>
@@ -482,7 +457,7 @@
                         <Grid  RenderTransformOrigin="0.5,0.5">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="28"/>
                                 <ColumnDefinition Width="Auto" />
                                
                             </Grid.ColumnDefinitions>
@@ -515,8 +490,10 @@
                                            Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                          >
                                     <StackPanel Orientation="Horizontal">
-                                        <Image   VerticalAlignment="Center"  Source="{Binding Action3}"  ToolTip="{Binding Action3Description}" Height="18" Width="18"  ></Image>
-                                        <!--<TextBlock Margin="0,0,3,0" VerticalAlignment="Center" Text="{Binding Action3Description}"></TextBlock>-->
+                                        <!--<Image   VerticalAlignment="Center"  Source="{Binding Action3}"  ToolTip="{Binding Action3Description}" Height="18" Width="18"  ></Image>-->
+                                        <TextBlock Foreground="Blue"  ToolTip="{Binding Action3Tooltip}" Margin="0,0,3,0" VerticalAlignment="Center" Text="{Binding Action3Description}">
+                                             <Hyperlink>asdasdsa</Hyperlink>
+                                        </TextBlock>
                                     </StackPanel>
                                 </Button>
 
@@ -524,8 +501,14 @@
                                           Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                          >
                                     <StackPanel Orientation="Horizontal">
-                                        <Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>
-                                        <!--<TextBlock Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}"></TextBlock>-->
+                                        
+                                        <!--<Image    VerticalAlignment="Center"   Source="{Binding Action2}"  ToolTip="{Binding Action2Description}"  Height="18" Width="18"   ></Image>-->
+                                        <TextBlock 
+                                             ToolTip="{Binding Action2Tooltip}" 
+                                            Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action2Description}">
+                                            
+                                            <Hyperlink>asdasdsa</Hyperlink>
+                                        </TextBlock>
                                     </StackPanel>
                                 </Button>
 
@@ -533,8 +516,18 @@
                                            Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                          >
                                     <StackPanel Orientation="Horizontal">
-                                        <Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>
-                                        <!--<TextBlock  Margin="0,0,3,0"  VerticalAlignment="Center" Text="{Binding Action1Description}"></TextBlock>-->
+                                        <!--<Image  VerticalAlignment="Center"   Source="{Binding Action1}" ToolTip="{Binding Action1Description}"  Height="18" Width="18"    ></Image>-->
+                                        <TextBlock>
+                                        <Hyperlink>
+                                        <TextBlock  FontSize="14"
+
+                                             ToolTip="{Binding Action1Tooltip}" 
+                                            Margin="0,0,0,0"  VerticalAlignment="Center" Text="{Binding Action1Description}">
+       
+                                        </TextBlock>
+
+                                        </Hyperlink>
+                                        </TextBlock>
                                     </StackPanel>                                    
                                 </Button>
                                 
@@ -551,6 +544,7 @@
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers>
+                                                      
                             <DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
                                 <Setter  TargetName="btnAction1" Property="Visibility" Value="Collapsed"/>
                                 <Setter  TargetName="btnAction2" Property="Visibility" Value="Collapsed"/>

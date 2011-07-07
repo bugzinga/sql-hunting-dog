@@ -92,41 +92,50 @@ namespace HuntingDog.DogFace
                     uiEntry.Image = imageT;
 
                     uiEntry.Action1 = imageRightArrow;
-                    uiEntry.Action1Description = "Select Data from Table";
+                    uiEntry.Action1Description = "Select";
+                    uiEntry.Action1Tooltip = "Select Data from Table";
 
                     uiEntry.Action2 = imageProcess;
-                    uiEntry.Action2Description = "Edit Data";
+                    uiEntry.Action2Description = "Edit";
+                    uiEntry.Action2Tooltip= "Edit Data";
 
                     uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
                     uiEntry.Action3 = imageWrench;
-                    uiEntry.Action3Description = "Design Table";
+                    uiEntry.Action3Description = "Design";
+                    uiEntry.Action3Tooltip = "Design Table";
                 }
                 else if (source.IsProcedure)
                 {
                     uiEntry.Image = imageS;
                     uiEntry.Action1 = imageEdit;
-                    uiEntry.Action1Description = "Modify Stored Procedure";
+                    uiEntry.Action1Description = "Modify";
+                    uiEntry.Action1Tooltip = "Modify Stored Procedure";
 
                     uiEntry.Action2 = imagePageEdit;
-                    uiEntry.Action2Description = "Execute Stored Proc";
+                    uiEntry.Action2Description = "Execute";
+                    uiEntry.Action2Tooltip = "Execute Stored Proc";
                 }
                 else if (source.IsView)
                 {
                     uiEntry.Image = imageV;
-                    uiEntry.Action1 = imageRightArrow;  
-                    uiEntry.Action1Description = "Select Data from View";
+                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1Description = "Select";
+                    uiEntry.Action1Tooltip = "Select Data from View";
 
                     uiEntry.Action2 = imageWrench;
-                    uiEntry.Action2Description = "Design View";
+                    uiEntry.Action2Description = "Design";
+                    uiEntry.Action2Tooltip = "Design View";
                 }
                 else
                 {
                    uiEntry.Image = imageF;
                    uiEntry.Action1 = imageEdit;
-                   uiEntry.Action1Description = "Modify Function";
+                   uiEntry.Action1Description = "Modify";
+                   uiEntry.Action1Tooltip = "Modify Function";
 
                    uiEntry.Action2 = imagePageEdit;
-                   uiEntry.Action2Description = "Execute Function";
+                   uiEntry.Action2Description = "Executen";
+                   uiEntry.Action2Tooltip = "Execute Function";
                 }
 
             
