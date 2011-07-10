@@ -181,7 +181,7 @@ namespace HuntingDog.DogEngine
                     IsPrimaryKey = tc.InPrimaryKey,
                     IsForeignKey = tc.IsForeignKey,
                     Nullable = tc.Nullable,
-                    Type = tc.DataType.SqlDataType.ToString()
+                    Type = tc.DataType.Name
                 });
             }
 
@@ -201,7 +201,7 @@ namespace HuntingDog.DogEngine
                     IsPrimaryKey = tc.InPrimaryKey, 
                     IsForeignKey = tc.IsForeignKey,
                     Nullable = tc.Nullable, 
-                    Type = tc.DataType.SqlDataType.ToString()} );
+                    Type = tc.DataType.Name} );
             }
 
             return result;
@@ -218,7 +218,7 @@ namespace HuntingDog.DogEngine
                 result.Add(new FuncParameter()
                 {
                     Name = tc.Name,       
-                    Type = tc.DataType.SqlDataType.ToString(),
+                    Type = tc.DataType.Name
                 });
             }
 
@@ -238,7 +238,7 @@ namespace HuntingDog.DogEngine
                     Name = tc.Name,
                     IsOut = tc.IsOutputParameter,
                     DefaultValue  = tc.DefaultValue,
-                    Type = tc.DataType.SqlDataType.ToString(),
+                    Type = tc.DataType.Name,
                 });
             }
 

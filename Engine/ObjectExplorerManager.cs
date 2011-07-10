@@ -135,7 +135,7 @@ namespace DatabaseObjectSearcher
 
             var resultNode = SelectSMOObject(databasesNode, objectToSelect);
 
-            MSSQLController.Current.SearchWindow.Activate();
+            //MSSQLController.Current.SearchWindow.Activate();
 
             if (resultNode != null)
                 OpenTable(resultNode, connection);

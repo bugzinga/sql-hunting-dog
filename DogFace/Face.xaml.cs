@@ -236,10 +236,10 @@ namespace HuntingDog.DogFace
 
         }
 
-        Point _startPoint;
-        bool _isStarted = false;
       
+        bool _isDragDropStartedFromText = false;
 
+        bool _isDragDropStartedPropeties = false;
 
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -376,11 +376,19 @@ namespace HuntingDog.DogFace
             }
         }
 
-        void InvokeActionOnItem(Item item)
+        void InvokeAdditionalActionOnItem(Item item)
         {
             if (item.Entity.IsTable)
             {
                 StudioController.DesignTable(SelectedServer, item.Entity);
+            }
+        }
+
+        void InvokeActionOnItem(Item item)
+        {
+            if (item.Entity.IsTable)
+            {
+                StudioController.EditTableData(SelectedServer, item.Entity);
             }
             else if (item.Entity.IsProcedure)
             {
@@ -412,14 +420,22 @@ namespace HuntingDog.DogFace
 
         private void btnActionClick(object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkContentElement)sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeActionOnItem(item);
   
         }
 
+        private void btnAdditonalActionClick(object sender, RoutedEventArgs e)
+        {
+            var item = (Item)((FrameworkElement)sender).Tag;
+            InvokeAdditionalActionOnItem(item);
+  
+        }
+
+
         private void DefaultAction_Click(object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkContentElement)sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeDefaultOnItem(item);
         }
  
@@ -519,13 +535,18 @@ namespace HuntingDog.DogFace
             }
             else if (e.Key == Key.Right)
             {
-                MoveFocusItemsControl(true);
+                if (itemsControl.SelectedIndex != -1)
+                {
+                    //MoveFocusItemsControl(true);
+                    InvokeActionOnItem(itemsControl.SelectedItem as Item);
+                }
+
                 e.Handled = true;
 
             }
             else if (e.Key == Key.Left)
             {
-                MoveFocusItemsControl(false);
+                //MoveFocusItemsControl(false);
                 e.Handled = true;
                     
             }
@@ -608,44 +629,12 @@ namespace HuntingDog.DogFace
 
         private void TextBlock_MouseUp(object sender, MouseEventArgs e)
         {
-            _isStarted = false;
-        }
-
-        private void TextBlock_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && _isStarted == true)
-            {
-                _isStarted = false;
-
-                // Get the current mouse position
-                  Point mousePos = e.GetPosition(null);
-                Vector diff = _startPoint - mousePos;
-
-          
-                {
-                    // Get the dragged ListViewItem
-                    FrameworkElement item = sender as FrameworkElement;
-                    if (item != null)
-                    {
-                        ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
-
-                        // Find the data behind the ListViewItem
-                        Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
-                        if (contact != null && contact.Entity != null)
-                        {
-                            // Initialize the drag & drop operation
-
-                            DragDrop.DoDragDrop(listViewItem, contact.Entity.FullName, DragDropEffects.Copy);
-                        }
-                    }
-                }
-            }
+            _isDragDropStartedFromText = false;
         }
 
         private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
-            _startPoint = e.GetPosition(null);
-            _isStarted = true;
+            _isDragDropStartedFromText = true;
 
             if ((DateTime.Now.Ticks - LastTicks) < 3000000)
             {
@@ -655,6 +644,75 @@ namespace HuntingDog.DogFace
             }
             LastTicks = DateTime.Now.Ticks;
         }
+
+        private void PropertiesTextBlock_MouseUp(object sender, MouseEventArgs e)
+        {
+            _isDragDropStartedPropeties = false;
+        }
+        private void PropertiesTextBlock_MouseDown(object sender, MouseEventArgs e)
+        {
+            _isDragDropStartedPropeties = true;           
+        }
+
+
+        private void TextBlock_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedFromText == true)
+            {
+                _isDragDropStartedFromText = false;
+          
+                // Get the dragged ListViewItem
+                FrameworkElement item = sender as FrameworkElement;
+                if (item != null)
+                {
+                    ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
+
+                    // Find the data behind the ListViewItem
+                    Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                    if (contact != null && contact.Entity != null)
+                    {
+                        // Initialize the drag & drop operation
+
+                        DragDrop.DoDragDrop(listViewItem, contact.Entity.FullName, DragDropEffects.Copy);
+                    }
+                }
+               
+            }
+        }
+
+        private void PropertiesTextBlock_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedPropeties == true)
+            {
+                _isDragDropStartedPropeties = false;
+
+                try
+                {
+                    // Get the dragged ListViewItem
+                    FrameworkElement item = sender as FrameworkElement;
+                    if (item != null)
+                    {
+                        ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
+
+                        // Find the data behind the ListViewItem
+                        BaseParamItem pr = (BaseParamItem)listViewProperties.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                        if (pr != null)
+                        {
+                            // Initialize the drag & drop operation
+
+                            DragDrop.DoDragDrop(listViewItem, pr.Name, DragDropEffects.Copy);
+                        }
+                    }
+                }
+                catch
+                {
+                    // LOG
+                }
+
+            }
+        }
+
+     
 
         //void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
         //{

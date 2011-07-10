@@ -50,6 +50,9 @@ namespace HuntingDog.DogFace
 
         public string Name { get; set; }
 
+        public string NavigationTooltip { get; set; }
+        public string MainObjectTooltip { get; set; }
+
         public ImageSource Image { get; set; }
 
         public ImageSource Action1 { get; set; }

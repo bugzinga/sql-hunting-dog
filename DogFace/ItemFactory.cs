@@ -33,8 +33,93 @@ namespace HuntingDog.DogFace
         static BitmapImage imageProcess = new BitmapImage(new Uri(@"Art/process.png", UriKind.Relative));
         static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"Art/page_edit.png", UriKind.Relative));
 
+        static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"Art/forward_blue.png", UriKind.Relative));
+
+
         static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
-        
+
+
+        public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
+        {
+
+
+            var res = new List<Item>();
+            foreach (var source in sourceList)
+            {
+                var uiEntry = new Item() { Name = source.Name, Entity = source };
+                uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
+                //uiEntry.Action3 = imageProcess;
+                // uiEntry.Action3Description = "  ";
+
+                if (source.IsTable)
+                {
+                    uiEntry.Image = imageT;
+
+                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1Description = "Select";
+                    uiEntry.Action1Tooltip = "Select Data from Table";
+
+                    uiEntry.Action2 = imageProcess;
+                    uiEntry.Action2Description = "Edit";
+                    uiEntry.Action2Tooltip = "Edit Table Data";
+
+                    uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
+                    uiEntry.Action3 = imageWrench;
+                    uiEntry.Action3Description = "Design";
+                    uiEntry.Action3Tooltip = "Design Table";
+
+                    uiEntry.MainObjectTooltip = "Enter or Double Click to Select from Table.";
+                }
+                else if (source.IsProcedure)
+                {
+                    uiEntry.Image = imageS;
+                    uiEntry.Action1 = imageEdit;
+                    uiEntry.Action1Description = "Modify";
+                    uiEntry.Action1Tooltip = "Modify Stored Procedure";
+
+                    uiEntry.Action2 = imagePageEdit;
+                    uiEntry.Action2Description = "Execute";
+                    uiEntry.Action2Tooltip = "Execute Stored Proc";
+
+                    uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Procedure.";
+                }
+                else if (source.IsView)
+                {
+                    uiEntry.Image = imageV;
+                    uiEntry.Action1 = imageRightArrow;
+                    uiEntry.Action1Description = "Select";
+                    uiEntry.Action1Tooltip = "Select Data from View";
+
+                    uiEntry.Action2 = imageWrench;
+                    uiEntry.Action2Description = "Design";
+                    uiEntry.Action2Tooltip = "Design View";
+
+                    uiEntry.MainObjectTooltip = "Enter or Double Click to Select from View.";
+                }
+                else
+                {
+                    uiEntry.Image = imageF;
+                    uiEntry.Action1 = imageEdit;
+                    uiEntry.Action1Description = "Modify";
+                    uiEntry.Action1Tooltip = "Modify Function";
+
+                    uiEntry.Action2 = imagePageEdit;
+                    uiEntry.Action2Description = "Execute";
+                    uiEntry.Action2Tooltip = "Execute Function";
+
+                    uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Function.";
+                }
+
+                uiEntry.Action2 = imageForwardBlue;
+
+
+                res.Add(uiEntry);
+            }
+
+
+            return res;
+        }
+
         public static List<Item> BuildDatabase(IEnumerable<string> sources)
         {
             var res = new List<Item>();
@@ -60,76 +145,7 @@ namespace HuntingDog.DogFace
 
      
 
-        public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
-        {
-        
-
-            var res = new List<Item>();
-            foreach (var source in sourceList)
-            {
-                var uiEntry = new Item() { Name = source.Name, Entity = source };
-                uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
-                //uiEntry.Action3 = imageProcess;
-               // uiEntry.Action3Description = "  ";
-
-                if (source.IsTable)
-                {
-                    uiEntry.Image = imageT;
-
-                    uiEntry.Action1 = imageRightArrow;
-                    uiEntry.Action1Description = "Select";
-                    uiEntry.Action1Tooltip = "Select Data from Table";
-
-                    uiEntry.Action2 = imageProcess;
-                    uiEntry.Action2Description = "Edit";
-                    uiEntry.Action2Tooltip= "Edit Data";
-
-                    uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
-                    uiEntry.Action3 = imageWrench;
-                    uiEntry.Action3Description = "Design";
-                    uiEntry.Action3Tooltip = "Design Table";
-                }
-                else if (source.IsProcedure)
-                {
-                    uiEntry.Image = imageS;
-                    uiEntry.Action1 = imageEdit;
-                    uiEntry.Action1Description = "Modify";
-                    uiEntry.Action1Tooltip = "Modify Stored Procedure";
-
-                    uiEntry.Action2 = imagePageEdit;
-                    uiEntry.Action2Description = "Execute";
-                    uiEntry.Action2Tooltip = "Execute Stored Proc";
-                }
-                else if (source.IsView)
-                {
-                    uiEntry.Image = imageV;
-                    uiEntry.Action1 = imageRightArrow;
-                    uiEntry.Action1Description = "Select";
-                    uiEntry.Action1Tooltip = "Select Data from View";
-
-                    uiEntry.Action2 = imageWrench;
-                    uiEntry.Action2Description = "Design";
-                    uiEntry.Action2Tooltip = "Design View";
-                }
-                else
-                {
-                   uiEntry.Image = imageF;
-                   uiEntry.Action1 = imageEdit;
-                   uiEntry.Action1Description = "Modify";
-                   uiEntry.Action1Tooltip = "Modify Function";
-
-                   uiEntry.Action2 = imagePageEdit;
-                   uiEntry.Action2Description = "Execute";
-                   uiEntry.Action2Tooltip = "Execute Function";
-                }
-
-
-                res.Add(uiEntry);
-            }
-
-
-            return res;
-        }
+   
 
 
         public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
