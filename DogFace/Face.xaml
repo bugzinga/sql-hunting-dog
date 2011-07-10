@@ -72,7 +72,7 @@
                 <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
                         <Image VerticalAlignment="Center" Margin="2,1,0,1"  Source="{Binding Image}" />
-                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap"/>
+                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -174,10 +174,12 @@
                                           ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
                                           Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/-->
 
-                                    <ContentPresenter  Name="ContentSite" Content="{TemplateBinding ComboBox.SelectionBoxItem}"
+                                    
+                                    <ContentPresenter Name="ContentSite" Content="{TemplateBinding ComboBox.SelectionBoxItem}"
                                                       ContentTemplate = "{StaticResource DisplayImageWithText}"
                                                       ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
-                                                      Margin="{TemplateBinding Control.Padding}"
+                                                      
+                                                      Margin="0,0,13,0"
                                                       HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                                                       VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                                       SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" 
@@ -603,7 +605,7 @@
                                         AncestorType={x:Type Grid}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=18}"
                     >
                  
-                    <TextBlock FontSize="14"  DockPanel.Dock="Right"  Width="120">Type</TextBlock>
+                    <TextBlock FontSize="14"  DockPanel.Dock="Right"  Width="116">Type</TextBlock>
                     <TextBlock FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Left" DockPanel.Dock="Left">Parameter</TextBlock>
                          
                 </DockPanel>

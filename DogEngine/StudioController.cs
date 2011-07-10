@@ -161,12 +161,31 @@ namespace HuntingDog.DogEngine
  
         }
 
-     
-
         public void RefreshDatabase(string serverName,string dbNameIsNotUserHere)
         {
             var server = Servers[serverName];
             server.DbSearcher.BuildDBObjectDictionary();
+        }
+
+        List<TableColumn> IStudioController.ListViewColumns(Entity entityObjecte)
+        {
+            var result = new List<TableColumn>();
+
+            var view = entityObjecte.InternalObject as View;
+            view.Columns.Refresh();
+            foreach (Column tc in view.Columns)
+            {
+                result.Add(new TableColumn()
+                {
+                    Name = tc.Name,
+                    IsPrimaryKey = tc.InPrimaryKey,
+                    IsForeignKey = tc.IsForeignKey,
+                    Nullable = tc.Nullable,
+                    Type = tc.DataType.SqlDataType.ToString()
+                });
+            }
+
+            return result;
         }
 
         List<TableColumn> IStudioController.ListColumns(Entity entityObjecte)
@@ -183,6 +202,24 @@ namespace HuntingDog.DogEngine
                     IsForeignKey = tc.IsForeignKey,
                     Nullable = tc.Nullable, 
                     Type = tc.DataType.SqlDataType.ToString()} );
+            }
+
+            return result;
+        }
+
+        List<FuncParameter> IStudioController.ListFuncParameters(Entity entityObject)
+        {
+            var result = new List<FuncParameter>();
+
+            var func = entityObject.InternalObject as UserDefinedFunction;
+            func.Parameters.Refresh();
+            foreach (UserDefinedFunctionParameter tc in func.Parameters)
+            {
+                result.Add(new FuncParameter()
+                {
+                    Name = tc.Name,       
+                    Type = tc.DataType.SqlDataType.ToString(),
+                });
             }
 
             return result;
@@ -207,6 +244,8 @@ namespace HuntingDog.DogEngine
 
             return result;
         }
+
+
 
         List<Entity> IStudioController.GetInvokedBy(Entity entityObject)
         {

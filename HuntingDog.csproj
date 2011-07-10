@@ -522,6 +522,8 @@
     <Resource Include="DogFace\Art\computer.png" />
     <Resource Include="DogFace\Art\database.png" />
     <Resource Include="DogFace\Art\edit.png" />
+    <Resource Include="DogFace\Art\forward.png" />
+    <Resource Include="DogFace\Art\forward_blue.png" />
     <Content Include="DogFace\Art\home.png" />
     <Content Include="DogFace\Art\mail.png" />
     <Resource Include="DogFace\Art\next.png" />

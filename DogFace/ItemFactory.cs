@@ -58,22 +58,7 @@ namespace HuntingDog.DogFace
             return res;
         }
 
-        public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
-        {
-            var res = new List<ProcedureParamItem>();
-            foreach (var par in paramList)
-            {
-                var viewParam = new ProcedureParamItem();
-                viewParam.Name = par.Name;
-                viewParam.Type = par.Type;
-                if(par.IsOut)
-                    viewParam.Out = "OUT";
-                res.Add(viewParam);
-            }
-
-            return res;
-        }
-
+     
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {
@@ -134,13 +119,11 @@ namespace HuntingDog.DogFace
                    uiEntry.Action1Tooltip = "Modify Function";
 
                    uiEntry.Action2 = imagePageEdit;
-                   uiEntry.Action2Description = "Executen";
+                   uiEntry.Action2Description = "Execute";
                    uiEntry.Action2Tooltip = "Execute Function";
                 }
 
-            
 
-                int i = 1;
                 res.Add(uiEntry);
             }
 
@@ -148,5 +131,54 @@ namespace HuntingDog.DogFace
             return res;
         }
 
+
+        public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
+        {
+            var res = new List<ProcedureParamItem>();
+            foreach (var par in paramList)
+            {
+                var viewParam = new ProcedureParamItem();
+                viewParam.Name = par.Name;
+                viewParam.Type = par.Type;
+                if (par.IsOut)
+                    viewParam.Out = "OUT";
+                res.Add(viewParam);
+            }
+
+            return res;
+        }
+
+
+        internal static List<TableParamItem> BuildTableColumns(List<DogEngine.TableColumn> columns)
+        {
+            var res = new List<TableParamItem>();
+            foreach (var par in columns)
+            {
+                var viewParam = new TableParamItem();
+                viewParam.Name = par.Name;
+                viewParam.Type = par.Type;
+
+                viewParam.IsPrimaryKey = par.IsPrimaryKey;
+                viewParam.IsForeignKey = par.IsForeignKey;    
+                res.Add(viewParam);
+            }
+
+            return res;
+        }
+
+        internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FuncParameter> funcParameters)
+        {
+            return funcParameters.ConvertAll<FuncParamItem>(x => new FuncParamItem() { Name = x.Name, Type = x.Type });
+                
+        }
+
+        internal static List<ViewParamItem> BuildViewColumns(List<DogEngine.TableColumn> columns)
+        {
+            return columns.ConvertAll<ViewParamItem>(x => new ViewParamItem() { 
+                Name = x.Name,
+                Type = x.Type, 
+                IsForeignKey = x.IsForeignKey, 
+                IsPrimaryKey = x.IsPrimaryKey });
+        }
     }
 }

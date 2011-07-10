@@ -14,12 +14,34 @@ using System.Windows.Shapes;
 
 namespace HuntingDog.DogFace
 {
-    public class ProcedureParamItem : DependencyObject
+    public class BaseParamItem : DependencyObject
     {
         public HuntingDog.DogEngine.ProcedureParameter Entity { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+    }
+
+    public class ProcedureParamItem : BaseParamItem
+    { 
         public string Out { get; set; }
+    }
+
+    public class TableParamItem : BaseParamItem
+    {
+        public bool IsPrimaryKey { get; set; }
+        public bool IsForeignKey { get; set; }
+        public string defaultValue { get; set; }
+    }
+
+    public class ViewParamItem : BaseParamItem
+    {
+        public bool IsPrimaryKey { get; set; }
+        public bool IsForeignKey { get; set; }
+        public string defaultValue { get; set; }
+    }
+
+    public class FuncParamItem : BaseParamItem
+    {  
     }
 
     public class Item:DependencyObject

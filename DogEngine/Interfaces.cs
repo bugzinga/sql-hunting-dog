@@ -17,6 +17,12 @@ namespace HuntingDog.DogEngine
         public object InternalObject { get; set; }
     }
 
+    public class FuncParameter
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+    }
+
     public class ProcedureParameter
     {
         public string Name { get; set; }
@@ -56,7 +62,10 @@ namespace HuntingDog.DogEngine
 
         // columns, pro parameters
         List<TableColumn> ListColumns(Entity entityObject);
+        List<TableColumn> ListViewColumns(Entity entityObject);
         List<ProcedureParameter> ListProcParameters(Entity entityObject);
+        List<FuncParameter> ListFuncParameters(Entity entityObject);
+  
 
         // dependencies
         List<Entity> GetInvokedBy(Entity entityObjecte);

@@ -317,6 +317,21 @@ namespace HuntingDog.DogFace
                         var procedureParameters = StudioController.ListProcParameters(item.Entity);
                         listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);
                     }
+                    else if (item.Entity.IsTable)
+                    {
+                        var columns = StudioController.ListColumns(item.Entity);
+                        listViewProperties.ItemsSource = ItemFactory.BuildTableColumns(columns);
+                    }
+                    else if (item.Entity.IsFunction)
+                    {
+                        var funcParameters = StudioController.ListFuncParameters(item.Entity);
+                        listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(funcParameters);
+                    }
+                    else if (item.Entity.IsView)
+                    {
+                        var columns = StudioController.ListViewColumns(item.Entity);
+                        listViewProperties.ItemsSource = ItemFactory.BuildViewColumns(columns);
+                    }
 
                 }
              
