@@ -72,7 +72,7 @@
                 <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
                         <Image VerticalAlignment="Center" Margin="2,1,0,1"  Source="{Binding Image}" />
-                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -164,7 +164,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ComboBox">
-                            <Border Name="br" CornerRadius="6"  BorderThickness="3" Padding="1">
+                            <Border Name="br" CornerRadius="6"  BorderThickness="2" Padding="0">
                                 <Grid>
                                     <ToggleButton Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
 
@@ -280,7 +280,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ListViewItem">
 
-                            <Border Name="SpecialBorder"  Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="2" CornerRadius="6" >
+                            <Border Name="SpecialBorder"  Background="Transparent" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="1" CornerRadius="6" >
                                 <Border.RenderTransform>
                                     <ScaleTransform ScaleX="1" ScaleY="1" />
                                 </Border.RenderTransform>
@@ -379,7 +379,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="80"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid >
@@ -391,9 +391,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition  Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <ComboBox FontSize="14" BorderThickness="2" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
+            <ComboBox  ToolTip="MS SQL Servers"  FontSize="14" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
                           Margin="2,5" x:Name="cbServer"  SelectionChanged="cbServer_SelectionChanged"
                            Style="{StaticResource ImageComboBox}" >
 
@@ -410,9 +411,9 @@
             </ComboBox>
 
 
-            <ComboBox FontSize="14" BorderThickness="2" Style="{StaticResource ImageComboBox}"
+            <ComboBox  Grid.ColumnSpan="2"  ToolTip="Databases" Grid.Column="1" FontSize="14"  Style="{StaticResource ImageComboBox}"
                           GotFocus="cbDatabase_GotFocus" LostFocus="cbDatabase_LostFocus"
-                          PreviewKeyDown="cbDatabase_PreviewKeyDown"  Margin="2,5" Grid.Column="1"
+                          PreviewKeyDown="cbDatabase_PreviewKeyDown"  Margin="2,5"
                           x:Name="cbDatabase" SelectionChanged="cbDatabase_SelectionChanged" >
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -425,16 +426,26 @@
 
             </ComboBox>
 
-
-            <Border MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" Grid.Row="1" Grid.ColumnSpan="2" CornerRadius="6" BorderThickness="3" BorderBrush="#506AA4B6">
-                <DockPanel >
+          
+                
+                <Button Grid.Column="2" Grid.Row="1" x:Name="btnRefresh" Click="Refresh_Click"  Margin="0,0,3,3"  VerticalAlignment="Center"
+                   Focusable="False" 
+                         BorderBrush="#506AA4B6" ToolTip="Refresh database objects"
+                        
+                           BorderThickness="1" Background="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                        >
+                    <Image Source="Resources\refresh.png" Height="18" Width="18"></Image>
+                </Button>
+            <Border  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" 
+                     HorizontalAlignment="Stretch" MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" CornerRadius="6" BorderThickness="2" BorderBrush="#506AA4B6">
+                    <DockPanel  HorizontalAlignment="Stretch" >
                     <Image Margin="2,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
                     <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
                            Margin="0,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
 
                 </DockPanel>
             </Border>
-
+         
 
         </Grid>
 
@@ -442,16 +453,31 @@
 
         <Grid  Grid.Row="1" x:Name="splitterGrid">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
+                <RowDefinition  Height="5*"></RowDefinition>
                 <RowDefinition Height="8"></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
             </Grid.RowDefinitions>
 
+
+            <Grid x:Name="gridEmptyResult" Visibility="Collapsed">
+              
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                <StackPanel Orientation="Horizontal" Margin="0">
+                    <Image Width="24" Height="24" Margin="5" Source="Art\warning.png"></Image>
+                    <TextBlock VerticalAlignment="Center" FontSize="16">No results were found</TextBlock>
+                </StackPanel>
+
+                <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">You can try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
+                 
+                </StackPanel>
+            </Grid>
+
+          
 
             <ListView Margin="3,2,2,2" 
         PreviewKeyDown="itemsControl_PreviewKeyDown" 
 
-                  KeyDown="itemsControl_KeyDown"
+                
             x:Name="itemsControl" BorderThickness="0" 
              ItemContainerStyle="{StaticResource SimpleListViewItem}"
             SelectionChanged="itemsControl_SelectionChanged_1">
@@ -460,7 +486,7 @@
 
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
+                        <VirtualizingStackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 
@@ -598,7 +624,7 @@
 
             </ListView>
 
-            <GridSplitter Grid.Row="1" Width="Auto" Height="8"   ResizeDirection="Rows"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+            <GridSplitter Grid.Row="1" Width="Auto" Height="8"  Foreground="{StaticResource blueBrush}"  ResizeDirection="Rows"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
 
             <Grid Name="propetiesGrid" Grid.Row="2">
                 <!--<Grid.ColumnDefinitions>                  
@@ -620,9 +646,9 @@
                       Width="{Binding RelativeSource={RelativeSource FindAncestor,
                                         AncestorType={x:Type Grid}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=18}"
                     >
-                 
-                    <TextBlock FontSize="14"  DockPanel.Dock="Right"  Width="116">Type</TextBlock>
-                    <TextBlock FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Left" DockPanel.Dock="Left">Parameter</TextBlock>
+
+                        <TextBlock x:Name="txtPropertiesType" FontSize="14"  DockPanel.Dock="Right"  Width="116">Type</TextBlock>
+                    <TextBlock x:Name="txtPropertiesParameter" FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Left" DockPanel.Dock="Left">Parameter</TextBlock>
                          
                 </DockPanel>
 
@@ -680,7 +706,8 @@
         </Grid>
         <!--/Border-->
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <TextBlock  x:Name="txtStatusTest">status</TextBlock>
+            <Image VerticalAlignment="Center" x:Name="imgWorking" Source="Art\process.png" Width="20" Height="20" Margin="4,0,4,0"></Image>
+            <TextBlock  VerticalAlignment="Center" x:Name="txtStatusTest">status</TextBlock>
             <!--<Button Height="40" Click="Button_Click">Select First</Button>-->
             
         </StackPanel>

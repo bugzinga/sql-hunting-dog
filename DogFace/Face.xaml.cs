@@ -116,11 +116,13 @@ namespace HuntingDog.DogFace
 
         }
 
+        public const string ConnectNewServerString = "Connect New Server...";
+
         public void ReloadServers()
         {   
             var servers = StudioController.ListServers();
             var srv = ItemFactory.BuildServer(servers);
-            srv.Add(new Item() { Name = "Connect New..." });
+            srv.Add(new Item() { Name = ConnectNewServerString });
             cbServer.ItemsSource = srv;
 
             _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
@@ -128,7 +130,13 @@ namespace HuntingDog.DogFace
 
         private void SetStatus(string text)
         {
-            InvokeInUI(delegate { txtStatusTest.Text = text; });
+            SetStatus(text, false);
+        }
+        private void SetStatus(string text,bool showImage)
+        {
+            InvokeInUI(delegate {
+                imgWorking.Visibility = showImage ? Visibility.Visible : Visibility.Hidden;
+                txtStatusTest.Text = text; });
         }
 
         // Reload all servers ad read all business object for fast search and access
@@ -136,7 +144,8 @@ namespace HuntingDog.DogFace
         {
             foreach (var server in (List<string>)arg)
             {
-                SetStatus("Refreshing " + server + "...");
+                SetStatus("Refreshing " + server + "...",true);
+
                 StudioController.RefreshServer(server);
 
                 SetStatus("Completed " + server);
@@ -191,7 +200,7 @@ namespace HuntingDog.DogFace
                 if (cbServer.SelectedItem == null)
                     return false;
 
-                return (cbServer.SelectedItem as Item).Name == "Connect New...";
+                return (cbServer.SelectedItem as Item).Name == ConnectNewServerString;
             }
         }
 
@@ -251,6 +260,7 @@ namespace HuntingDog.DogFace
             if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && SelectedDatabase!=null)
             {
                 var sp = new SearchAsyncParam();
+                sp.SequenceNumber = ++_requestSequenceNumber;
                 sp.Srv = SelectedServer;
                 sp.Text = txtSearch.Text;
                 sp.Database = SelectedDatabase;
@@ -265,6 +275,23 @@ namespace HuntingDog.DogFace
             }
         }
 
+        volatile int _requestSequenceNumber = 0;
+
+        string _lastSrv, _lastDb, _lastText;
+
+        private bool SameAsPreviousSearch(SearchAsyncParam arg)
+        {
+            if (arg.Srv == _lastSrv && arg.Database == _lastDb && _lastText!=null && arg.Text.TrimEnd(' ') == _lastText.TrimEnd(' '))
+            {
+                return true;
+            }
+
+            _lastSrv = arg.Srv;
+            _lastDb = arg.Database;
+            _lastText = arg.Text;
+            return false;
+        }
+
 
         private void Async_PerformSearch(object arg)
         {
@@ -272,20 +299,51 @@ namespace HuntingDog.DogFace
                 return;
 
             var par = (SearchAsyncParam)arg;
-            SetStatus("Searching '" + par.Text + "' in " + par.Database);
+
+            // new request was added - this one is outdated
+            if (par.SequenceNumber < _requestSequenceNumber)
+                return;
+
+            if (SameAsPreviousSearch(par))
+            {
+                return;
+            }
+
+            SetStatus("Searching '" + par.Text + "' in " + par.Database,true);
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
+            // new request was added - this one is outdated
+            if (par.SequenceNumber < _requestSequenceNumber)
+                return;
 
-            InvokeInUI(delegate { 
-                
-                itemsControl.ItemsSource = ItemFactory.BuildFromEntries(result);
+            SetStatus("Found " + result.Count + " objects ");
+
+            InvokeInUI(delegate {
+
+                var items = ItemFactory.BuildFromEntries(result);
+                itemsControl.ItemsSource = items;
             
                 itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
+
+                if (items.Count == 0)
+                {
+                    gridEmptyResult.Visibility = System.Windows.Visibility.Visible;
+                    itemsControl.Visibility = System.Windows.Visibility.Collapsed;
+                   // txtEmptyLine1.Text =  par.Text;
+                    //txtEmptyLine2.Text =  par.Database ;
+                    //txtEmptyLine3.Text = par.Srv;
+                }
+                else
+                {
+                    gridEmptyResult.Visibility = System.Windows.Visibility.Collapsed;
+                    itemsControl.Visibility = System.Windows.Visibility.Visible;
+                }
+
             });
 
-            SetStatus("Found " + result.Count + " objects ");
+            SetStatus("Finish " + result.Count + " objects ");
 
    
          }
@@ -297,11 +355,57 @@ namespace HuntingDog.DogFace
             Dispatcher.Invoke((Delegate)invoker);
         }
 
-   
+
+        private void Async_ShowProperties(object arg)
+        {
+            var ent = arg as Entity;
+            if (ent == null)
+                return;
+
+         
+            SetStatus("Retreveing details...",true);
+            if (ent.IsProcedure)
+            {
+                var procedureParameters = StudioController.ListProcParameters(ent);
+
+                  InvokeInUI(delegate {
+                      txtPropertiesParameter.Text = "Parameter";
+                     listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);  });
+            }
+            else if (ent.IsTable)
+            {
+                var columns = StudioController.ListColumns(ent);
+                
+                 InvokeInUI(delegate {
+                     txtPropertiesParameter.Text = "Column";
+                 listViewProperties.ItemsSource =  ItemFactory.BuildTableColumns(columns);});
+            }
+            else if (ent.IsFunction)
+            {
+                var funcParameters = StudioController.ListFuncParameters(ent);
+                
+                  InvokeInUI(delegate {
+                      txtPropertiesParameter.Text = "Parameter";
+                 listViewProperties.ItemsSource =  ItemFactory.BuildProcedureParmeters(funcParameters);});
+            }
+            else if (ent.IsView)
+            {
+                var columns = StudioController.ListViewColumns(ent);
+                
+                  InvokeInUI(delegate {
+                      txtPropertiesParameter.Text = "Column";
+                 listViewProperties.ItemsSource =  ItemFactory.BuildViewColumns(columns);});
+            }
+
+            SetStatus("");
+
+        }
+
 
 
         private void itemsControl_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
+            //listViewProperties.ItemsSource = null;
             if (itemsControl.SelectedIndex == -1)
             {
                 // clear propertties
@@ -311,28 +415,9 @@ namespace HuntingDog.DogFace
             {
                 var item = (itemsControl.SelectedItem as Item);
                 if(item!=null)
-                {  
-                    if(item.Entity.IsProcedure)
-                    {
-                        var procedureParameters = StudioController.ListProcParameters(item.Entity);
-                        listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);
-                    }
-                    else if (item.Entity.IsTable)
-                    {
-                        var columns = StudioController.ListColumns(item.Entity);
-                        listViewProperties.ItemsSource = ItemFactory.BuildTableColumns(columns);
-                    }
-                    else if (item.Entity.IsFunction)
-                    {
-                        var funcParameters = StudioController.ListFuncParameters(item.Entity);
-                        listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(funcParameters);
-                    }
-                    else if (item.Entity.IsView)
-                    {
-                        var columns = StudioController.ListViewColumns(item.Entity);
-                        listViewProperties.ItemsSource = ItemFactory.BuildViewColumns(columns);
-                    }
-
+                {
+                    _processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true);
+    
                 }
              
             }
@@ -468,10 +553,6 @@ namespace HuntingDog.DogFace
             }
         }
 
-
-        private void itemsControl_KeyDown(object sender, KeyEventArgs e)
-        { 
-        }
 
 
 
@@ -833,6 +914,12 @@ namespace HuntingDog.DogFace
             txtSearch.Focus();
         }
 
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            if(SelectedServer!=null)
+                _processor.AddRequest(Async_ReloadServers, new List<string>{ SelectedServer}, (int)ERquestType.Server, true);
+        }
+
 
 
 
@@ -854,7 +941,7 @@ namespace HuntingDog.DogFace
 
     class SearchAsyncParam
     {
-      
+        public int SequenceNumber { get; set; }
         public string Srv { get; set; }
         public string Text { get; set; }
         public string Database{get;set;}

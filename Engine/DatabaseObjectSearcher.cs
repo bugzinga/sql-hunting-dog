@@ -62,8 +62,6 @@ namespace DatabaseObjectSearcher
             server.SetDefaultInitFields(typeof(Column), true);
             server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
 
-
-            HasObjectDictionary = false;
         }
 
         public List<DatabaseDependencyResult> FindDependencyObjects(DatabaseSearchResult src, DependecyResults links)
@@ -106,6 +104,7 @@ namespace DatabaseObjectSearcher
             lock (searchLock)
             {
                 server.Refresh();
+                server.Databases.Refresh();
                 foreach (Database d in server.Databases)
                 {
                     try
@@ -161,6 +160,10 @@ namespace DatabaseObjectSearcher
         {
             lock (searchLock)
             {
+                // need to refresh object - new object can be added/removed
+                if (HasObjectDictionary)
+                    RefresBaseDictionary();
+
                 dbDic.ClearObjectsOnly();
 
                 foreach (Database d in server.Databases)
@@ -168,7 +171,6 @@ namespace DatabaseObjectSearcher
                     try
                     {
 
-                        d.Refresh();
                         if (!d.IsSystemObject && d.IsAccessible) // even with pre-fetching this is still slow if there are thousands of databases on a remote server with a slow connection
                         {
                             //dbDic.AddWithConn(d,connectionInfo);

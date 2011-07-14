@@ -154,6 +154,7 @@ namespace HuntingDog.DogEngine
         void IStudioController.RefreshServer(string serverName)
         {
             var server = Servers[serverName];
+
             server.DbSearcher.BuilDataBaseDictionary();
 
 
