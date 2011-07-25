@@ -38,6 +38,7 @@ namespace HuntingDog.DogFace
 
         static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
 
+        static BitmapImage imageWorkplace = new BitmapImage(new Uri(@"Images/workplace2.png", UriKind.Relative));
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {
@@ -120,6 +121,8 @@ namespace HuntingDog.DogFace
             return res;
         }
 
+    
+
         public static List<Item> BuildDatabase(IEnumerable<string> sources)
         {
             var res = new List<Item>();
@@ -135,7 +138,7 @@ namespace HuntingDog.DogFace
             var res = new List<Item>();
             foreach (var srvName in sources)
             {
-                res.Add(new Item() { Name = srvName, Image = imageSer });
+                res.Add(new Item() { Name = srvName, Image = imageWorkplace });
             }
 
             res.Sort((x,y) => string.Compare(x.Name,y.Name));
@@ -181,6 +184,9 @@ namespace HuntingDog.DogFace
 
             return res;
         }
+
+
+
 
         internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FuncParameter> funcParameters)
         {

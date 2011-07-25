@@ -71,10 +71,15 @@
             <DataTemplate x:Key="DisplayImageWithText">
                 <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
-                        <Image VerticalAlignment="Center" Margin="2,1,0,1"  Source="{Binding Image}" />
-                        <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                        <Image VerticalAlignment="Center" Margin="2" Width="18" Height="18"  Source="{Binding Image}" />
+                        <TextBlock GotFocus="TextBlock_GotFocus" VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap" Opacity="0.6" TextTrimming="CharacterEllipsis">
+                         
+                        </TextBlock>
                     </StackPanel>
                 </Border>
+                
+                
+             
             </DataTemplate>
 
             <!-- Used for Arrow -->
@@ -316,6 +321,10 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="MenuListViewItem" TargetType="ListViewItem" >
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            </Style>
+
             <Style x:Key="PropertyListViewItem" TargetType="ListViewItem" >
 
                 <!--<Setter Property="IsSelected" Value="{Binding IsChecked, Mode=TwoWay}"/>-->
@@ -439,9 +448,27 @@
             <Border  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" 
                      HorizontalAlignment="Stretch" MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" CornerRadius="6" BorderThickness="2" BorderBrush="#506AA4B6">
                     <DockPanel  HorizontalAlignment="Stretch" >
-                    <Image Margin="2,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="28" Height="28"></Image>
-                    <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch" PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown"
-                           Margin="0,2,5,2"  FontSize="16" BorderBrush="Transparent" TextChanged="txtSearch_TextChanged"></TextBox>
+                    
+                        <Image Margin="2,0,0,0" Name="imgSearch" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="20" Height="20" Opacity="0.3" ></Image>
+
+                    <TextBox  DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch"
+                             PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" BorderThickness="0"
+                           Margin="0,2,5,2"  FontSize="16"
+                                
+                             TextChanged="txtSearch_TextChanged">
+                        <!--<TextBox.Style >
+                            <Style TargetType="{x:Type TextBox}">
+
+                            <Style.Triggers>
+                                <Trigger Property="IsFocused" Value="true">
+                                        <Setter  Property="Opaque" Value="1"></Setter>
+                                    </Trigger>
+                            </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>-->
+                       
+
+                    </TextBox>
 
                 </DockPanel>
             </Border>
@@ -494,7 +521,7 @@
                     
                     <DataTemplate>
                                             
-                        <Grid  RenderTransformOrigin="0.5,0.5">
+                        <Grid  RenderTransformOrigin="0.5,0.5" SnapsToDevicePixels="True">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="28"/>
@@ -583,24 +610,58 @@
 
                                 </DockPanel>
 
-                                <TextBlock  ToolTip="{Binding MainObjectTooltip}"
+                                <TextBlock   ToolTip="{Binding MainObjectTooltip}"
                                MouseUp="TextBlock_MouseUp"
                                 MouseDown="TextBlock_MouseDown_1" 
                                MouseMove="TextBlock_MouseMove"
-                               DockPanel.Dock="Left"  TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1"
+                               DockPanel.Dock="Left" Name="myEnityText" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="White"   Tag="{Binding}" Grid.Column="1"
                                  Margin="0,0,0,0" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
                            
                               />
 
-                                
+                                <Popup  Name="myPopup" IsOpen="False" AllowsTransparency="True" Placement="Right" PlacementTarget="{Binding ElementName=myEnityText}"
+                                       StaysOpen="False" Opened="myPopup_Opened" Focusable="False" LostKeyboardFocus="myPopup_LostKeyboardFocus">
+
+
+                                    <Border x:Name="DropDownBorder" SnapsToDevicePixels="True"
+                                            Background="{StaticResource WindowBackgroundBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            BorderBrush="{StaticResource blueBrush}" Padding="4">
+                                    <ListView SelectedIndex="0"
+                                              LostFocus="popupListView_LostFocus"
+                                              ItemContainerStyle="{StaticResource MenuListViewItem}"
+                                              Name="popupListView" KeyboardNavigation.DirectionalNavigation="Contained" BorderThickness="0" PreviewKeyDown="popupListView_PreviewKeyDown" >
+
+                                            <ListView.ItemTemplate>
+
+                                                <DataTemplate>
+                                                    <TextBlock FontSize="14" Text="{Binding .}"></TextBlock>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+
+                                </Popup>
+
+
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers>
 
-                          <DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
-                                <Setter  TargetName="actionDock" Property="Visibility" Value="Visible"/>                          
+                          <!--<DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
+                                <Setter  TargetName="myPopup" Property="IsOpen" Value="False"/>
                             </DataTrigger>
 
+                            <DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
+                                <Setter  TargetName="myPopup" Property="IsOpen" Value="True"/>
+                            </DataTrigger>-->
+
+
+                            <!--<DataTrigger Binding="{Binding Path=IsChecked}" Value="True">
+                                <Setter  TargetName="actionDock" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>-->
+                            
                             <!--<DataTrigger Binding="{Binding Path=IsChecked}" Value="False">
                                 <Setter  TargetName="btnAction1" Property="Visibility" Value="Collapsed"/>
                                 <Setter  TargetName="btnAction2" Property="Visibility" Value="Collapsed"/>
@@ -608,13 +669,17 @@
                             </DataTrigger>-->
 
 
+                            <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListViewItem}},Path=IsFocused}" Value="True">
+                                <Setter  TargetName="myEnityText" Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>-->
+                            
                           <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListViewItem}},Path=IsMouseOver}" Value="True">
                                 <Setter  TargetName="actionDock" Property="Visibility" Value="Visible"/>
                             </DataTrigger>-->
 
-                            <!--<Trigger Property="IsMouseOver" Value="True">
-                                <Setter  TargetName="btnAction1" Property="Visibility" Value="Visible"/>
-                                <Setter  TargetName="btnAction2" Property="Visibility" Value="Visible"/>
+                           <!--<Trigger Property="IsMouseOver" Value="True">
+                                <Setter  TargetName="myPopup" Property="IsOpen" Value="True"/>
+                               
                             </Trigger>-->
                          
                         </DataTemplate.Triggers>
@@ -647,7 +712,7 @@
                                         AncestorType={x:Type Grid}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=18}"
                     >
 
-                        <TextBlock x:Name="txtPropertiesType" FontSize="14"  DockPanel.Dock="Right"  Width="116">Type</TextBlock>
+                        <TextBlock x:Name="txtPropertiesType" FontSize="14"  DockPanel.Dock="Right"  Width="106">Type</TextBlock>
                     <TextBlock x:Name="txtPropertiesParameter" FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Left" DockPanel.Dock="Left">Parameter</TextBlock>
                          
                 </DockPanel>
@@ -677,7 +742,7 @@
                                         MouseUp="PropertiesTextBlock_MouseUp"
                                         MouseDown="PropertiesTextBlock_MouseDown" 
                                        MouseMove="PropertiesTextBlock_MouseMove"
-                                    FontSize="14"  DockPanel.Dock="Right"   Width="90"  Margin="2,0,0,0"></TextBlock>
+                                    FontSize="14"  DockPanel.Dock="Right"   Width="80"  Margin="2,0,0,0"></TextBlock>
                                 <TextBlock FontSize="14"  
                                     
                                  MouseUp="PropertiesTextBlock_MouseUp"

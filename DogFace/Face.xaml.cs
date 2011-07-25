@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -65,7 +66,7 @@ namespace HuntingDog.DogFace
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
-            var scroll = FindChild<ScrollContentPresenter>(itemsControl);
+            var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
             //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
             _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
@@ -215,6 +216,17 @@ namespace HuntingDog.DogFace
         }
 
 
+        Item SelectedItem
+        {
+            get
+            {
+                if(itemsControl.SelectedItem==null)
+                    return null;
+
+                return itemsControl.SelectedItem as Item; 
+            }
+        }
+
         string SelectedDatabase
         {
             get
@@ -358,10 +370,11 @@ namespace HuntingDog.DogFace
 
         private void Async_ShowProperties(object arg)
         {
+            //SystemColors.ControlLightBrushKey
             var ent = arg as Entity;
             if (ent == null)
                 return;
-
+        
          
             SetStatus("Retreveing details...",true);
             if (ent.IsProcedure)
@@ -439,6 +452,80 @@ namespace HuntingDog.DogFace
         {
 
             Stop();
+        }
+
+
+        internal IEnumerable<string> BuilsAvailableActions(Item item)
+        {
+            var res = new List<string>();
+
+            if (item.Entity.IsProcedure)
+                return new List<string> { "Modify", "Execute", "Locate", "Show Dependencies" };
+            if (item.Entity.IsFunction)
+                return new List<string> { "Modify", "Execute", "Locate", "Show Dependencies" };
+            else if (item.Entity.IsTable)
+                return new List<string> { "Select Data", "Edit Data", "Design Table", "Locate", "Show Dependencies" };
+            else if (item.Entity.IsView)
+                return new List<string> { "Select Data","Modify View", "Locate", "Show Dependencies" };
+
+            return res;
+        }
+
+        void InvokeActionByName(Item item, string actionName)
+        {
+            if(item==null || string.IsNullOrEmpty(actionName))
+                return;
+
+            if(actionName=="Locate")
+            {
+                StudioController.NavigateObject(SelectedServer,item.Entity);
+                return;
+            }
+
+            if (actionName == "Show Dependencies")
+            {
+                // show dependecies in a new window
+            }
+
+
+            if (item.Entity.IsTable)
+            {
+                switch (actionName)
+                {
+                    case "Select Data": StudioController.SelectFromTable(SelectedServer, item.Entity); break;
+                    case "Edit Data": StudioController.EditTableData(SelectedServer, item.Entity); break;
+                    case "Design Table": StudioController.DesignTable(SelectedServer, item.Entity); break;
+                }
+            }
+            else if(item.Entity.IsView)
+            {
+                switch (actionName)
+                {
+                    case "Select Data": StudioController.SelectFromView(SelectedServer, item.Entity); break;  
+                    case "Modify View": StudioController.ModifyView(SelectedServer, item.Entity); break;     
+                }
+            }
+            else if (item.Entity.IsProcedure)
+            {
+                switch (actionName)
+                {
+                    case "Modify": StudioController.ModifyProcedure(SelectedServer, item.Entity); break;
+                    case "Execute": StudioController.ExecuteProcedure(SelectedServer, item.Entity); break;
+                  
+                }
+            }
+            else if (item.Entity.IsFunction)
+            {
+                switch (actionName)
+                {
+                    case "Modify": StudioController.ModifyFunction(SelectedServer, item.Entity); break;
+                    case "Execute": StudioController.ExecuteFunction(SelectedServer, item.Entity); break;
+                  
+                }
+            }
+
+  
+
         }
 
         void InvokeDefaultOnItem(Item item)
@@ -584,8 +671,13 @@ namespace HuntingDog.DogFace
             return false;
         }
 
+        
+
         private void itemsControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (!IsItemFocused(itemsControl))
+                return;
+
             if (e.Key == Key.Tab)
             {
                 itemsControl.SelectedIndex = -1;
@@ -597,22 +689,30 @@ namespace HuntingDog.DogFace
             }
             else if (e.Key == Key.Up && itemsControl.SelectedIndex == 0)
             {
-                itemsControl.SelectedIndex = -1;
-
-                // jump to text search box from Result View - 
-                itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
               
-                e.Handled = true;
+                    itemsControl.SelectedIndex = -1;
+
+                    // jump to text search box from Result View - 
+                    itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
+
+                    e.Handled = true;
             }
             else if (e.Key == Key.Down && itemsControl.SelectedIndex == itemsControl.Items.Count-1)
             {
+            
                 // last item - do nothing
-                e.Handled = true;
+                    e.Handled = true;
+
+               
             }
             else if ((e.Key == Key.Enter || e.Key == Key.Space) && itemsControl.SelectedIndex != -1)
-            {
-                InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
-                e.Handled = true;
+            {           
+                    // open popup control and move focus to teh first item there
+                    OpenPopup();
+
+                    e.Handled = true;
+ 
+
             }
             else if (e.Key == Key.Right)
             {
@@ -632,6 +732,7 @@ namespace HuntingDog.DogFace
                     
             }
         }
+
 
         private void cbDatabase_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -746,7 +847,7 @@ namespace HuntingDog.DogFace
                 FrameworkElement item = sender as FrameworkElement;
                 if (item != null)
                 {
-                    ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
+                    ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
 
                     // Find the data behind the ListViewItem
                     Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
@@ -773,7 +874,7 @@ namespace HuntingDog.DogFace
                     FrameworkElement item = sender as FrameworkElement;
                     if (item != null)
                     {
-                        ListViewItem listViewItem = FindAncestor<ListViewItem>(item);
+                        ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
 
                         // Find the data behind the ListViewItem
                         BaseParamItem pr = (BaseParamItem)listViewProperties.ItemContainerGenerator.ItemFromContainer(listViewItem);
@@ -795,79 +896,6 @@ namespace HuntingDog.DogFace
 
      
 
-        //void scroll_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-
-        //    var sp = FindChild<VirtualizingStackPanel>(itemsControl);
-            
-        //    return;
-
-        //    //var gv = itemsControl.View as GridView;
-
-        //    //var scroll = sender as ScrollContentPresenter;
-
-        //    //var totalWidth = scroll.ActualWidth;
-            
-        //    //totalWidth -= gv.Columns[0].ActualWidth;
-        //    //totalWidth -= gv.Columns[2].ActualWidth;
-
-        //    //// Magic number - we need to take into acctound padding/margins and all other stuff and caclulate Width of the central column
-        //    //// we Width is too high scrool bar will appear. 
-        //    //totalWidth -= 8;
-
-        //    //if(totalWidth < 100)
-        //    //    totalWidth  = 100;
-        //    //gv.Columns[1].Width = totalWidth;
-
-        //    //var sp = FindChild<VirtualizingStackPanel>(itemsControl);
-        //    //sp.Arrange();
-        //    //var parent = VisualTreeHelper.GetParent(sp) as ItemsPresenter;
-
-        //    //sp.Width = parent.ActualWidth;
-        //}
-
-   
-      
-
-
-        public static T FindChild<T>(DependencyObject from) where T : class
-        {
-            if (from == null)
-            {
-                return null;
-            }
-
-            T candidate = from as T;
-            if (candidate != null)
-            {
-                return candidate;
-            }
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(from); i++)
-            {
-                var isOur = FindChild<T> ( VisualTreeHelper.GetChild(from, i));
-                if (isOur != null)
-                    return isOur;
-            }
-
-            return null;
-        }
-
-        public static T FindAncestor<T>(DependencyObject from) where T : class
-        {
-            if (from == null)
-            {
-                return null;
-            }
-
-            T candidate = from as T;
-            if (candidate != null)
-            {
-                return candidate;
-            }
-
-            return FindAncestor<T>(VisualTreeHelper.GetParent(from));
-        }
 
         Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x64,0x95,0xed));
         Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x60, 0x64, 0x95, 0xed));
@@ -900,12 +928,14 @@ namespace HuntingDog.DogFace
         private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             borderText.BorderBrush = _borderBrush;
+            imgSearch.Opacity = 1;
             txtSearch.SelectAll();
            
         }
 
         private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
         {
+            imgSearch.Opacity = 0.5;
             borderText.BorderBrush = _blurBrush;
         }
 
@@ -920,13 +950,151 @@ namespace HuntingDog.DogFace
                 _processor.AddRequest(Async_ReloadServers, new List<string>{ SelectedServer}, (int)ERquestType.Server, true);
         }
 
+        private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
 
 
+        void OpenPopup()
+        {
+            var si = SelectedItem;
+            if (si == null)
+                return;
+
+            var cont = itemsControl.ItemContainerGenerator.ContainerFromItem(si);
+
+            var popup = WpfUtil.FindChild<Popup>(cont);
+            if (popup != null)
+            {
+                var lv = (popup.Child as Border).Child as ListView;
+                lv.ItemsSource = BuilsAvailableActions(si);
+
+                popup.IsOpen = true;
+            }
+        }
+
+        private bool IsItemFocused(ListView lv)
+        {
+            var it = GetSelectedItem(lv);
+            if (it != null)
+                return it.IsFocused;
+
+            return false;
+        }
 
 
+        private Control GetSelectedItem(ListView lv)
+        {
+            return lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control;
+        }
 
+        private void popupListView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape || e.Key == Key.Left  || e.Key == Key.Right)
+            {
+                var lv = sender as ListView;
+                var popup = (lv.Parent as Border).Parent as Popup;
+  
+                if(popup!=null)
+                    popup.IsOpen = false;
+
+                if (itemsControl.SelectedItem != null)
+                {
+                    var it1 = GetSelectedItem(itemsControl);
+                    if (it1 != null)
+                    {
+                        it1.Focus();
+                    }
+                }
+                            
+                e.Handled = true;
+            }
+            else if(e.Key == Key.Up)
+            {
+                var lv = sender as ListView;
+                if(lv.SelectedIndex == 0)
+                    e.Handled = true;
+            }
+            else if (e.Key == Key.Down)
+            {
+                 var lv = sender as ListView;
+                 if (lv.SelectedIndex == lv.Items.Count-1)
+                     e.Handled = true;
+
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Space)
+            {
+                // invoke action
+                var lv = sender as ListView;
+                if (lv != null && lv.SelectedItem!=null)
+                {
+                    InvokeActionByName(SelectedItem, lv.SelectedItem.ToString());
+                }
+
+                var popup = (lv.Parent as Border).Parent as Popup;
+                if (popup != null)
+                    popup.IsOpen = false;
+
+                //if (itemsControl.SelectedItem != null)
+                //{
+                //    var it1 = GetSelectedItem(itemsControl);
+                //    if (it1 != null)
+                //    {
+                //        it1.Focus();
+                //    }
+                //}
+
+                e.Handled = true;
+            }
+        }
+
+        private void myPopup_Opened(object sender, EventArgs e)
+        {
+            var popup = sender as Popup;
+
+            var lv = (popup.Child as Border).Child as ListView;
+            if (lv != null)
+            {
+                var selectedItem = SelectedItem;
+                if (selectedItem != null)
+                {
+                    //lv.ItemsSource = BuilsAvailableActions(selectedItem);
+                    lv.SelectedIndex = 0;
+                    var firstElement = lv.ItemContainerGenerator.ContainerFromIndex(0) as UIElement;
+                    if(firstElement!=null)
+                     firstElement.Focus();
+                }
+            }
+            //this.Child.MoveFocus(new TraversalRequest(
+            //        FocusNavigationDirection.Next));
+        }
 
      
+
+
+        private void popupListView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //var lv = sender as ListView    ;
+            //var border = lv.Parent as Border;
+            //if (border != null)
+            //{
+            //    var popup = (border.Parent as Popup);
+            //    if (popup != null)
+            //        popup.IsOpen = false;
+            //}
+        }
+
+        private void myPopup_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (this.IsKeyboardFocusWithin)
+                return;
+            var popup = sender as Popup;
+            if(popup!=null)
+                popup.IsOpen = false;
+
+        }
+
 
         //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
         //{

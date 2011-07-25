@@ -76,5 +76,7 @@ namespace HuntingDog.DogFace
         public bool IsMouseOver { get { return (bool)GetValue(IsMouseOverProperty); } set { SetValue(IsMouseOverProperty, value); } }
         public static readonly DependencyProperty IsMouseOverProperty =
             DependencyProperty.Register("IsMouseOver", typeof(bool), typeof(Item));
+
+      
     }
 }

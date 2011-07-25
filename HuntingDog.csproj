@@ -122,6 +122,7 @@
       <DependentUpon>ucWpf.xaml</DependentUpon>
     </Compile>
     <Compile Include="DogFace\UserPreferences.cs" />
+    <Compile Include="DogFace\WpfUtil.cs" />
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="Engine\DatabaseObjectSearcher.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
@@ -519,6 +520,9 @@
     <Content Include="DogFace\Art\calendar_blank.png" />
     <Content Include="DogFace\Art\chart.png" />
     <Content Include="DogFace\Art\clock.png" />
+    <Content Include="DogFace\Images\workplace.png" />
+    <Resource Include="DogFace\Images\workplace2.png" />
+    <Resource Include="DogFace\Images\workstation1.png" />
     <Resource Include="DogFace\Art\computer.png" />
     <Resource Include="DogFace\Art\database.png" />
     <Resource Include="DogFace\Art\edit.png" />
@@ -535,6 +539,9 @@
     <Resource Include="DogFace\Art\warning.png" />
     <Content Include="DogFace\Images\harddisk.png" />
     <Resource Include="DogFace\Images\server.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DogFace\Images\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
