@@ -273,13 +273,46 @@
     <Grid>
         <Grid.Resources>
 
-    
+            <Style x:Key="ContextMenuStyle1" TargetType="{x:Type ContextMenu}">
+                <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                            <Border Uid="Border_93">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Tag" Value="{DynamicResource {x:Static SystemParameters.DropShadowKey}}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Padding" Value="0,0,5,5"/>
+                                                <Setter Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect BlurRadius="4" Opacity="0.8" ShadowDepth="1"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            <Style x:Key="SimpleListViewItem" TargetType="ListViewItem" >
+
+            <ContextMenu  x:Key="ContextActionMenu" VerticalOffset="0" HorizontalOffset="0" >
+              
+            </ContextMenu>
+
+            <Style x:Key="SimpleListViewItem" TargetType="ListViewItem"  >
 
                 <Setter Property="IsSelected" Value="{Binding IsChecked, Mode=TwoWay}"/>
-
-             
+                <EventSetter Event="ContextMenuOpening" Handler="ListViewContextMenuOpening" />
+                <Setter Property="ContextMenu" Value="{StaticResource ContextActionMenu}"/>
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -297,9 +330,8 @@
                             
                             
                             <ControlTemplate.Triggers>
-                                
-                                
-                                
+
+                             
                                 <Trigger Property="IsSelected" Value="true">
                                     <Setter TargetName="SpecialBorder" Property="BorderBrush" Value="{StaticResource blueBlurBrush}"/>
                                 </Trigger>
@@ -323,6 +355,12 @@
 
             <Style x:Key="MenuListViewItem" TargetType="ListViewItem" >
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <!--<Style.Triggers>
+                    <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Self}}" 
+                         Value="True">
+                        <Setter Property="IsSelected" Value="True" />
+                    </DataTrigger>
+                </Style.Triggers>-->
             </Style>
 
             <Style x:Key="PropertyListViewItem" TargetType="ListViewItem" >
@@ -503,11 +541,11 @@
 
             <ListView Margin="3,2,2,2" 
         PreviewKeyDown="itemsControl_PreviewKeyDown" 
-
-                
+           
+             
             x:Name="itemsControl" BorderThickness="0" 
              ItemContainerStyle="{StaticResource SimpleListViewItem}"
-            SelectionChanged="itemsControl_SelectionChanged_1">
+            SelectionChanged="ItemsControlSelectionChanged1">
             
                 <ListView.Resources/>
 
@@ -554,61 +592,7 @@
                                        >
 
 
-                                <DockPanel Visibility="Collapsed" DockPanel.Dock="Right"  Name="actionDock" LastChildFill="True" >
-                                    
-                                <!--<TextBlock  Margin="4,0,0,0"  VerticalAlignment="Center" Name="btnAction3"  DockPanel.Dock="Right"   Visibility="{Binding Action3Visibility}" >
-                                        <Hyperlink   Style="{StaticResource myHyperlink}" Tag="{Binding}" >
-                                        <TextBlock   FontSize="14"
-
-                                             ToolTip="{Binding Action3Tooltip}" 
-                                            VerticalAlignment="Center" Text="{Binding Action3Description}">
-       
-                                        </TextBlock>
-
-                                        </Hyperlink>
-                                 </TextBlock>-->
-
-                                    <Button Tag="{Binding}" ToolTip="{Binding Action3Tooltip}"   Visibility="{Binding Action3Visibility}"
-                                            
-                                            Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                            Click="btnAdditonalActionClick"  Margin="2,0,0,0" VerticalAlignment="Center"
-                                            Name="btnAction3"  DockPanel.Dock="Right" >
-                                        <Image  Source="{Binding Action3}" HorizontalAlignment="Center" Height="18" Width="18"></Image>
-                                    </Button>
-
-
-                                    <Button Tag="{Binding}" ToolTip="{Binding Action2Tooltip}" 
-                                            Focusable="False" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                            Click="btnActionClick"  Margin="2,0,0,0" VerticalAlignment="Center"
-                                            Name="btnAction2"  DockPanel.Dock="Right" >
-                                        <Image  Source="{Binding Action2}" HorizontalAlignment="Center" Height="18" Width="18"></Image>
-                                    </Button>
-                                    
-                                <!--<TextBlock   Margin="4,0,0,0" VerticalAlignment="Center" Name="btnAction2"  DockPanel.Dock="Right"  >
-                                        <Hyperlink  Style="{StaticResource myHyperlink}"  Click="btnActionClick"  Tag="{Binding}" >
-                                        <TextBlock   FontSize="14"
-
-                                             ToolTip="{Binding Action2Tooltip}" 
-                                            Margin="0,0,0,0"  VerticalAlignment="Center" Text="{Binding Action2Description}">
-       
-                                        </TextBlock>
-
-                                        </Hyperlink>
-                                 </TextBlock>-->
-
-                                <!--<TextBlock VerticalAlignment="Center" Name="btnAction1"  DockPanel.Dock="Right"  >
-                                        <Hyperlink   Style="{StaticResource myHyperlink}" Click="DefaultAction_Click"  Tag="{Binding}" >
-                                        <TextBlock   FontSize="14"
-
-                                             ToolTip="{Binding Action1Tooltip}" 
-                                            Margin="0,0,0,0"  VerticalAlignment="Center" Text="{Binding Action1Description}">
-       
-                                        </TextBlock>
-
-                                        </Hyperlink>
-                                 </TextBlock>-->
-
-                                </DockPanel>
+                           
 
                                 <TextBlock   ToolTip="{Binding MainObjectTooltip}"
                                MouseUp="TextBlock_MouseUp"
@@ -619,7 +603,7 @@
                            
                               />
 
-                                <Popup  Name="myPopup" IsOpen="False" AllowsTransparency="True" Placement="Right" PlacementTarget="{Binding ElementName=myEnityText}"
+                                <!--<Popup  Margin="10,0,10,0"  Name="myPopup" IsOpen="False" AllowsTransparency="True" Placement="Right" PlacementTarget="{Binding ElementName=myEnityText}"
                                        StaysOpen="False" Opened="myPopup_Opened" Focusable="False" LostKeyboardFocus="myPopup_LostKeyboardFocus">
 
 
@@ -630,19 +614,21 @@
                                             BorderBrush="{StaticResource blueBrush}" Padding="4">
                                     <ListView SelectedIndex="0"
                                               LostFocus="popupListView_LostFocus"
+                                              MouseMove="popupListView_MouseMove"
+                                            
                                               ItemContainerStyle="{StaticResource MenuListViewItem}"
                                               Name="popupListView" KeyboardNavigation.DirectionalNavigation="Contained" BorderThickness="0" PreviewKeyDown="popupListView_PreviewKeyDown" >
 
                                             <ListView.ItemTemplate>
 
                                                 <DataTemplate>
-                                                    <TextBlock FontSize="14" Text="{Binding .}"></TextBlock>
+                                                    <TextBlock FontSize="14" Text="{Binding .}" MouseLeftButtonDown="popupTextBox_MouseLeftButtonDown"></TextBlock>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
                                         </ListView>
                                     </Border>
 
-                                </Popup>
+                                </Popup>-->
 
 
                             </DockPanel>

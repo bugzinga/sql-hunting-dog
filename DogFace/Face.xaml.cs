@@ -160,6 +160,7 @@ namespace HuntingDog.DogFace
             if (IsConnectNewServerSellected)
             {
                 StudioController.ConnectNewServer();
+                
                 return;
             }
 
@@ -185,7 +186,7 @@ namespace HuntingDog.DogFace
                 _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
                 cbDatabase.Focus();
-                cbDatabase.IsDropDownOpen = true;
+                //cbDatabase.IsDropDownOpen = true;
             }
 
             // keep track of last selected database on this server - need to restore it back!
@@ -215,6 +216,16 @@ namespace HuntingDog.DogFace
             }
         }
 
+        ListViewItem SelectedListViewItem
+        {
+            get
+            {
+                if (itemsControl.SelectedItem == null)
+                    return null;
+
+                return itemsControl.ItemContainerGenerator.ContainerFromItem(itemsControl.SelectedItem) as ListViewItem;
+            }
+        }
 
         Item SelectedItem
         {
@@ -416,8 +427,16 @@ namespace HuntingDog.DogFace
 
 
 
-        private void itemsControl_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        private void ItemsControlSelectionChanged1(object sender, SelectionChangedEventArgs e)
         {
+            if (e.RemovedItems.Count > 0)
+            {
+                //var removedItem = (e.RemovedItems[0] as Item);
+                //var previousPopup = GetPopupFromItem(removedItem);
+                //if (previousPopup != null)
+                //    previousPopup.IsOpen = false;
+            }
+
             //listViewProperties.ItemsSource = null;
             if (itemsControl.SelectedIndex == -1)
             {
@@ -429,8 +448,7 @@ namespace HuntingDog.DogFace
                 var item = (itemsControl.SelectedItem as Item);
                 if(item!=null)
                 {
-                    _processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true);
-    
+                    _processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true); 
                 }
              
             }
@@ -635,7 +653,7 @@ namespace HuntingDog.DogFace
             }
             else if (e.Key == Key.Up)
             {
-                txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
+                txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Up));
                 e.Handled = true;
             }
         }
@@ -708,7 +726,7 @@ namespace HuntingDog.DogFace
             else if ((e.Key == Key.Enter || e.Key == Key.Space) && itemsControl.SelectedIndex != -1)
             {           
                     // open popup control and move focus to teh first item there
-                    OpenPopup();
+                    OpenContextMenu();
 
                     e.Handled = true;
  
@@ -816,15 +834,27 @@ namespace HuntingDog.DogFace
 
         private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
-            _isDragDropStartedFromText = true;
-
-            if ((DateTime.Now.Ticks - LastTicks) < 3000000)
+            if (e.RightButton == MouseButtonState.Pressed)
             {
+                // show be treated as Enter need to move focus and open Popup
                 if (itemsControl.SelectedItem != null)
-                    InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
-
+                {
+                    var controlSelected = itemsControl.ItemContainerGenerator.ContainerFromItem(SelectedItem);
+                }
+                //OpenPopup();
             }
-            LastTicks = DateTime.Now.Ticks;
+            else
+            {
+                _isDragDropStartedFromText = true;
+
+                if ((DateTime.Now.Ticks - LastTicks) < 3000000)
+                {
+                    if (itemsControl.SelectedItem != null)
+                        InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
+
+                }
+                LastTicks = DateTime.Now.Ticks;
+            }
         }
 
         private void PropertiesTextBlock_MouseUp(object sender, MouseEventArgs e)
@@ -955,22 +985,65 @@ namespace HuntingDog.DogFace
 
         }
 
+        //private void itemsControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    OpenPopup();
+        //}
 
-        void OpenPopup()
+        ContextMenu GetCtxMenuFromItem(Item si) 
         {
-            var si = SelectedItem;
             if (si == null)
-                return;
+                return null;
 
             var cont = itemsControl.ItemContainerGenerator.ContainerFromItem(si);
-
-            var popup = WpfUtil.FindChild<Popup>(cont);
-            if (popup != null)
+            if (cont != null)
             {
-                var lv = (popup.Child as Border).Child as ListView;
-                lv.ItemsSource = BuilsAvailableActions(si);
+                return (cont as ListViewItem).ContextMenu;
+            }
 
-                popup.IsOpen = true;
+            return null;
+        }
+
+        private void ListViewContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var li = sender as ListViewItem;
+            if(li!=null)
+            {
+                var ctx = li.ContextMenu;
+                // happens only when user does a righ click
+                ctx.Placement = PlacementMode.MousePoint;          
+                ctx.HorizontalOffset = 0;
+                ctx.VerticalOffset = 4;
+
+                ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
+            }
+        }
+
+        void PrepareContextMenu(ContextMenu ctx,Item item)
+        {
+            
+        }
+
+        void OpenContextMenu()
+        {
+
+            var ctx = GetCtxMenuFromItem(SelectedItem);
+            if (ctx != null)
+            {
+                ctx.Placement = PlacementMode.Left;
+                ctx.PlacementTarget = SelectedListViewItem;
+                ctx.HorizontalOffset = itemsControl.ActualWidth/2;
+                ctx.VerticalOffset = SelectedListViewItem.ActualHeight/2;
+
+                //var listViewItem = SelectedListViewItem;
+                //var txt = WpfUtil.FindChild<TextBlock>(SelectedListViewItem);
+
+                //ctx.PlacementTarget = txt;
+                ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
+                ctx.IsOpen = true;
+               // var lv = (popup.Child as Border).Child as ListView;
+              //  lv.ItemsSource = BuilsAvailableActions(SelectedItem);
+
             }
         }
 
@@ -989,7 +1062,7 @@ namespace HuntingDog.DogFace
             return lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control;
         }
 
-        private void popupListView_PreviewKeyDown(object sender, KeyEventArgs e)
+        /*private void popupListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape || e.Key == Key.Left  || e.Key == Key.Right)
             {
@@ -1047,54 +1120,30 @@ namespace HuntingDog.DogFace
 
                 e.Handled = true;
             }
-        }
+        }*/
 
-        private void myPopup_Opened(object sender, EventArgs e)
-        {
-            var popup = sender as Popup;
+        //private void myPopup_Opened(object sender, EventArgs e)
+        //{
+        //    var popup = sender as Popup;
 
-            var lv = (popup.Child as Border).Child as ListView;
-            if (lv != null)
-            {
-                var selectedItem = SelectedItem;
-                if (selectedItem != null)
-                {
-                    //lv.ItemsSource = BuilsAvailableActions(selectedItem);
-                    lv.SelectedIndex = 0;
-                    var firstElement = lv.ItemContainerGenerator.ContainerFromIndex(0) as UIElement;
-                    if(firstElement!=null)
-                     firstElement.Focus();
-                }
-            }
-            //this.Child.MoveFocus(new TraversalRequest(
-            //        FocusNavigationDirection.Next));
-        }
+        //    var lv = (popup.Child as Border).Child as ListView;
+        //    if (lv != null)
+        //    {
+        //        var selectedItem = SelectedItem;
+        //        if (selectedItem != null)
+        //        {
+        //            //lv.ItemsSource = BuilsAvailableActions(selectedItem);
+        //            lv.SelectedIndex = 0;
+        //            var firstElement = lv.ItemContainerGenerator.ContainerFromIndex(0) as UIElement;
+        //            if(firstElement!=null)
+        //             firstElement.Focus();
+        //        }
+        //    }
+        //    //this.Child.MoveFocus(new TraversalRequest(
+        //    //        FocusNavigationDirection.Next));
+        //}
 
      
-
-
-        private void popupListView_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //var lv = sender as ListView    ;
-            //var border = lv.Parent as Border;
-            //if (border != null)
-            //{
-            //    var popup = (border.Parent as Popup);
-            //    if (popup != null)
-            //        popup.IsOpen = false;
-            //}
-        }
-
-        private void myPopup_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (this.IsKeyboardFocusWithin)
-                return;
-            var popup = sender as Popup;
-            if(popup!=null)
-                popup.IsOpen = false;
-
-        }
-
 
         //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
         //{
@@ -1105,6 +1154,7 @@ namespace HuntingDog.DogFace
         //{
         //    borderItems.BorderBrush = Brushes.Transparent;
         //}
+     
     }
 
     class SearchAsyncParam
