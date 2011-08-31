@@ -116,6 +116,7 @@
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DogFace\HtmlTextBlock.cs" />
     <Compile Include="DogFace\Item.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
     <Compile Include="DogFace\ucWpf.xaml.cs">

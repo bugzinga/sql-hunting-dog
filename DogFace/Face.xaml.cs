@@ -478,13 +478,13 @@ namespace HuntingDog.DogFace
             var res = new List<string>();
 
             if (item.Entity.IsProcedure)
-                return new List<string> { "Modify", "Execute", "Locate", "Show Dependencies" };
+                return new List<string> { "Modify", "Execute", "Locate",  };
             if (item.Entity.IsFunction)
-                return new List<string> { "Modify", "Execute", "Locate", "Show Dependencies" };
+                return new List<string> { "Modify", "Execute", "Locate",  };
             else if (item.Entity.IsTable)
-                return new List<string> { "Select Data", "Edit Data", "Design Table", "Locate", "Show Dependencies" };
+                return new List<string> { "Select Data", "Edit Data", "Design Table", "Locate", };
             else if (item.Entity.IsView)
-                return new List<string> { "Select Data","Modify View", "Locate", "Show Dependencies" };
+                return new List<string> { "Select Data","Modify View", "Locate",  };
 
             return res;
         }
@@ -998,10 +998,27 @@ namespace HuntingDog.DogFace
             var cont = itemsControl.ItemContainerGenerator.ContainerFromItem(si);
             if (cont != null)
             {
+                
                 return (cont as ListViewItem).ContextMenu;
             }
 
             return null;
+        }
+
+        private void ListViewContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {            
+        }
+
+        private void UnsubscribeToAction(ContextMenu ctx)
+        {
+            foreach (var item in ctx.Items)
+            {
+                var menuItem = ctx.ItemContainerGenerator.ContainerFromItem(item) as MenuItem;
+                if (menuItem != null)
+                {
+                    menuItem.Click -= menuItem_Click;
+                }
+            }
         }
 
         private void ListViewContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1016,6 +1033,39 @@ namespace HuntingDog.DogFace
                 ctx.VerticalOffset = 4;
 
                 ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
+
+               
+            }
+        }
+
+        private void SubscribeToAction(ContextMenu ctx)
+        {
+           bool focused = false;
+            foreach (var item in ctx.Items)
+            {
+                var menuItem = ctx.ItemContainerGenerator.ContainerFromItem(item) as MenuItem;
+                if(menuItem!=null)
+                {
+                    menuItem.Click += menuItem_Click;
+                    if (!focused)
+                     menuItem.Focus();
+
+                    focused = true;
+                }
+            }
+
+           
+            
+        }
+
+        void menuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if(menuItem!=null)
+            {
+                var cmd = menuItem.Header.ToString();
+                InvokeActionByName(SelectedItem, cmd);
+
             }
         }
 
@@ -1040,6 +1090,8 @@ namespace HuntingDog.DogFace
 
                 //ctx.PlacementTarget = txt;
                 ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
+               
+                
                 ctx.IsOpen = true;
                // var lv = (popup.Child as Border).Child as ListView;
               //  lv.ItemsSource = BuilsAvailableActions(SelectedItem);
@@ -1060,6 +1112,16 @@ namespace HuntingDog.DogFace
         private Control GetSelectedItem(ListView lv)
         {
             return lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control;
+        }
+
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            UnsubscribeToAction(sender as ContextMenu);
+        }
+
+        private void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            SubscribeToAction(sender as ContextMenu);
         }
 
         /*private void popupListView_PreviewKeyDown(object sender, KeyEventArgs e)
