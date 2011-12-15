@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using DatabaseObjectSearcher;
 using System.IO;
-using System.Xml.Serialization;
+using System.IO.IsolatedStorage;
+
 
 namespace HuntingDog.DogFace
 {
@@ -21,20 +22,35 @@ namespace HuntingDog.DogFace
     public class UserPreferencesStorage:List<Entry> 
     {
 
-        public const string _settingFileName = "Preferences.xml";
+        public const string _settingFileName = "HuntingDogPreferences.txt";
 
         public void Save()
         {
             try
             {
-                var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");
+                var isoStore = GetIsolatedStorageFile();
 
-                if (!Directory.Exists(dirName))
-                    Directory.CreateDirectory(dirName);
+                var oStream =new IsolatedStorageFileStream(_settingFileName, FileMode.Create, isoStore);
 
-                var fullName = Path.Combine(dirName, _settingFileName);
+                using(var writer = new StreamWriter(oStream))
+                {
+                    foreach (var entry in this)
+                    {
+                        writer.WriteLine(entry.Key);
+                        writer.WriteLine(entry.Value);                        
+                    }
+                    writer.Close();
+                }
 
-                Serializator.Save(fullName, this);
+                oStream.Close();
+                //var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");
+
+                //if (!Directory.Exists(dirName))
+                //    Directory.CreateDirectory(dirName);
+
+                //var fullName = Path.Combine(dirName, _settingFileName);
+
+                //Serializator.Save(fullName, this);
             }
             catch
             {
@@ -47,12 +63,33 @@ namespace HuntingDog.DogFace
         {
             try
             {
-                var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");
-                var fullName = Path.Combine(dirName, _settingFileName);
+                var isoStore = GetIsolatedStorageFile();
 
-                if(File.Exists(fullName))
+                if(isoStore.GetFileNames(_settingFileName).Length>0)
                 {
-                    return Serializator.Load<UserPreferencesStorage>(fullName);
+                
+                    var iStream =new IsolatedStorageFileStream(_settingFileName,FileMode.Open, isoStore);
+
+                    using(var reader = new StreamReader(iStream))
+                    {
+
+                        var newPref = new UserPreferencesStorage();
+
+                        while(true)
+                        {
+                            var lineKey = reader.ReadLine();
+                            var lineValue = reader.ReadLine();
+                            if(lineKey==null || lineValue==null)
+                                break;
+
+                            newPref.Add(new Entry(){Key = lineKey,Value = lineValue});
+                        }
+                     
+                        return newPref;
+                    }
+
+                  
+                    //return Serializator.Load<UserPreferencesStorage>(fullName);
                 }
             }
             catch
@@ -62,6 +99,12 @@ namespace HuntingDog.DogFace
 
             return new UserPreferencesStorage();
 
+        }
+
+        private static IsolatedStorageFile GetIsolatedStorageFile()
+        {
+            var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+            return isoStore;
         }
 
         public string GetByName(string key)

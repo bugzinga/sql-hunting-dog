@@ -37,9 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v9.3, Version=9.3.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v9.3, Version=9.3.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraEditors.v9.3, Version=9.3.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -86,6 +83,7 @@
     <Reference Include="Microsoft.VisualStudio.Data">
       <HintPath>..\ReferencesSQLExpress\Microsoft.VisualStudio.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Royale" />
@@ -113,6 +111,7 @@
   <ItemGroup>
     <Compile Include="DogEngine\Interfaces.cs" />
     <Compile Include="DogEngine\StudioController.cs" />
+    <Compile Include="DogFace\BackgroundProcessor.cs" />
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
@@ -140,88 +139,19 @@
     <Compile Include="Engine\Server Hit\ServerHit.cs" />
     <Compile Include="Engine\Server Hit\SmartDictionary.cs" />
     <Compile Include="Engine\Utils.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="User Interface\BackgroundProcessor.cs" />
-    <Compile Include="User Interface\Controls\CheckedButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="User Interface\Controls\CircularProgressControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="User Interface\Controls\CircularProgressControl.Designer.cs">
-      <DependentUpon>CircularProgressControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="User Interface\Controls\PictureButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="User Interface\Controls\SmartLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="User Interface\CustomRichEdit.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User Interface\ucHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="User Interface\ucHost.Designer.cs">
       <DependentUpon>ucHost.cs</DependentUpon>
     </Compile>
-    <None Include="User Interface\ucSearchItem2.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucSearchItem2.Designer.cs">
-      <DependentUpon>ucSearchItem2.cs</DependentUpon>
-    </None>
-    <Compile Include="User Interface\DogMessageFilter.cs" />
-    <None Include="User Interface\ucIndexItem.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucIndexItem.Designer.cs">
-      <DependentUpon>ucIndexItem.cs</DependentUpon>
-    </None>
-    <Compile Include="User Interface\ExtendedGraphic.cs" />
-    <None Include="User Interface\ucGroupItem.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucGroupItem.Designer.cs">
-      <DependentUpon>ucGroupItem.cs</DependentUpon>
-    </None>
-    <Compile Include="User Interface\Detail.cs" />
-    <Compile Include="User Interface\List View\IListViewInterfaces.cs" />
-    <Compile Include="User Interface\List View\ucListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="User Interface\List View\ucListView.Designer.cs">
-      <DependentUpon>ucListView.cs</DependentUpon>
-    </Compile>
-    <None Include="User Interface\SearchObjectFactory.cs" />
-    <None Include="User Interface\ucDependencyItem.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucDependencyItem.Designer.cs">
-      <DependentUpon>ucDependencyItem.cs</DependentUpon>
-    </None>
-    <None Include="User Interface\ucDetailItem.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucDetailItem.Designer.cs">
-      <DependentUpon>ucDetailItem.cs</DependentUpon>
-    </None>
-    <None Include="User Interface\ucMainControl.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucMainControl.Designer.cs">
-      <DependentUpon>ucMainControl.cs</DependentUpon>
-    </None>
-    <None Include="User Interface\ucSearchItem.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="User Interface\ucSearchItem.Designer.cs">
-      <DependentUpon>ucSearchItem.cs</DependentUpon>
-    </None>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
@@ -236,30 +166,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="User Interface\ucHost.resx">
       <DependentUpon>ucHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucSearchItem2.resx">
-      <DependentUpon>ucSearchItem2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucIndexItem.resx">
-      <DependentUpon>ucIndexItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucGroupItem.resx">
-      <DependentUpon>ucGroupItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\List View\ucListView.resx">
-      <DependentUpon>ucListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucDependencyItem.resx">
-      <DependentUpon>ucDependencyItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucDetailItem.resx">
-      <DependentUpon>ucDetailItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucMainControl.resx">
-      <DependentUpon>ucMainControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucSearchItem.resx">
-      <DependentUpon>ucSearchItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -543,6 +449,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DogFace\Images\NewFolder1\" />
+    <Folder Include="User Interface\Controls\" />
+    <Folder Include="User Interface\List View\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

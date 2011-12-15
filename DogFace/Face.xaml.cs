@@ -174,14 +174,15 @@ namespace HuntingDog.DogFace
                 // changed server - try to restore database user worked with last time
                 var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
                 //cbDatabase.SelectedValue= databaseName;
-
-                _databaseChangedByUser = true;
+              
 
                 // if we failed to select database (for example it deos not exsit any more - select first one...)
                 if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
                 {
                     cbDatabase.SelectedIndex = 0;
                 }
+
+                _databaseChangedByUser = true;
 
                 _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
