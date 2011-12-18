@@ -45,8 +45,15 @@ namespace DatabaseObjectSearcher
         View = 8
     }
 
-    public class DatabaseSearchResult: IComparable<DatabaseSearchResult>
+    public class DatabaseSearchResult: IComparable<DatabaseSearchResult>,IDisposable
     {
+
+        public void Dispose()
+        {
+           //if(result!=null)
+           //    result
+        }
+
         private ScriptSchemaObjectBase result;
         private SqlConnectionInfo connection;
         public Database DataBase { get; private set; }
@@ -166,5 +173,7 @@ namespace DatabaseObjectSearcher
         }
 
         #endregion
+
+
     }
 }

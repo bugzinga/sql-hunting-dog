@@ -6,12 +6,15 @@ using NLog;
 using NLog.Targets;
 using NLog.Config;
 
-namespace HuntingDog.Logging
+namespace HuntingDog
 {
     public class MyLogger
     {
-        public static  void Init()
+
+        static MyLogger()
         {
+            //LogManager.ThrowExceptions = true;
+
           // Step 1. Create configuration object 
             LoggingConfiguration config = new LoggingConfiguration();
 
@@ -19,15 +22,20 @@ namespace HuntingDog.Logging
             config.AddTarget("file", fileTarget);
 
             // Step 3. Set target properties 
-            fileTarget.FileName = "${basedir}/HuntingDogLog.txt";
+            fileTarget.FileName = "${basedir}/Logs/HuntingDogLog.txt";
+            //fileTarget.FileName = @"c:\HuntingDogLog.txt";
+            
             fileTarget.Layout = "${message}";
 
 
-            LoggingRule rule2 = new LoggingRule("*", LogLevel.Debug, fileTarget);
+            LoggingRule rule2 = new LoggingRule("*", LogLevel.Trace, fileTarget);
             config.LoggingRules.Add(rule2);
 
             // Step 5. Activate the configuration
             LogManager.Configuration = config;
+
+            Logger logger = LogManager.GetLogger("foo");
+            logger.Info("Program started"); 
 
         }
 

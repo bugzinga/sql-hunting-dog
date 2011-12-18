@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HuntingDog;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 //using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
@@ -45,6 +46,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
                 // NEED TO LOG
+                MyLogger.LogError("Error Initialising object explorer (subscribing selection changed event) " + ex.Message, ex);
             }
 
             try
@@ -55,7 +57,8 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                // NEED TO LOG
+
+                MyLogger.LogError("Error Initialising object explorer  (subscribing command event)" + ex.Message, ex);
             }
         }
 
@@ -64,26 +67,39 @@ namespace DatabaseObjectSearcher
 
         void provider_SelectionChanged(object sender, NodesChangedEventArgs args)
         {
-       
-            foreach (var n in args.ChangedNodes)
+            try
             {
-                if (n.Parent == null)
+                foreach (var n in args.ChangedNodes)
                 {
-                    // this could mean that new server was added
-                    var res = " server " + n.Name + n.Connection.ServerName;
-                    if (OnNewServerConnected != null)
-                        OnNewServerConnected(n.Name);
-                }
+                    if (n.Parent == null)
+                    {
+                        MyLogger.LogMessage("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
+                        // this could mean that new server was added
+                        var res = " server " + n.Name + n.Connection.ServerName;
+                        if (OnNewServerConnected != null)
+                            OnNewServerConnected(n.Name);
+                    }
+                } 
+
             }
+            catch(Exception ex)
+            {
+                MyLogger.LogError("Error processing OnSelectionChanged event: " + ex.Message, ex);
+            }
+       
+           
 
            
         }
 
         public void AfterExecute(string Guid, int ID, object CustomIn, object CustomOut)
         {
+            MyLogger.LogMessage("After execute command:" + ID + " guid:" + Guid);
+
             // this coul mean that server was removed
             if (ID == 516)
             {
+                MyLogger.LogMessage("Server disconnected..!");
                 if (OnServerDisconnected != null)
                     OnServerDisconnected();
             }
@@ -126,21 +142,30 @@ namespace DatabaseObjectSearcher
 
         internal void OpenTable(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
         {
-            IExplorerHierarchy hierarchy = GetHierarchyForConnection(connection);
-            if (hierarchy == null)
+            try
             {
-                return; // there is nothing we can really do if we don't have one of these
+                 IExplorerHierarchy hierarchy = GetHierarchyForConnection(connection);
+                if (hierarchy == null)
+                {
+                    return; // there is nothing we can really do if we don't have one of these
+                }
+                HierarchyTreeNode databasesNode = GetUserDatabasesNode(hierarchy.Root);
+
+                var resultNode = SelectSMOObject(databasesNode, objectToSelect);
+
+                //MSSQLController.Current.SearchWindow.Activate();
+
+                if (resultNode != null)
+                    OpenTable(resultNode, connection);
+
+                 
             }
-            HierarchyTreeNode databasesNode = GetUserDatabasesNode(hierarchy.Root);
+            catch(Exception ex)
+            {
+                MyLogger.LogError("Error opening table: " + objectToSelect.Name ,ex);
+            }
 
-            var resultNode = SelectSMOObject(databasesNode, objectToSelect);
-
-            //MSSQLController.Current.SearchWindow.Activate();
-
-            if (resultNode != null)
-                OpenTable(resultNode, connection);
-
-          
+        
         }
 
 

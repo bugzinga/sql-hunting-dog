@@ -52,9 +52,9 @@ namespace HuntingDog.DogFace
 
                 //Serializator.Save(fullName, this);
             }
-            catch
+            catch (Exception ex)
             {
-                // need to inform user - but don't want to disturb him.
+                MyLogger.LogError("Could not save user preferences:" + ex.Message,ex);
             }
         }
 
@@ -92,9 +92,9 @@ namespace HuntingDog.DogFace
                     //return Serializator.Load<UserPreferencesStorage>(fullName);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                
+                MyLogger.LogMessage("Could not load user preferences:" + ex.Message);
             }
 
             return new UserPreferencesStorage();

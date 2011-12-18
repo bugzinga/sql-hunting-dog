@@ -58,6 +58,7 @@ namespace HuntingDog.DogFace
 
         public Face()
         {
+            MyLogger.LogMessage("XAML Face Constructed.");
             InitializeComponent();
         }
 
@@ -65,6 +66,8 @@ namespace HuntingDog.DogFace
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+
+            MyLogger.LogMessage("XAML Loaded...");
 
             var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
             //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
@@ -114,13 +117,14 @@ namespace HuntingDog.DogFace
         void _processor_RequestFailed(BackgroundProcessor.Request arg1, Exception arg2)
         {
             // notify user about an error
-
+            MyLogger.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType,arg2);
         }
 
         public const string ConnectNewServerString = "Connect New Server...";
 
         public void ReloadServers()
-        {   
+        {
+            MyLogger.LogMessage("Reloading Servers- intitated by user");
             var servers = StudioController.ListServers();
             var srv = ItemFactory.BuildServer(servers);
             srv.Add(new Item() { Name = ConnectNewServerString });
@@ -148,9 +152,14 @@ namespace HuntingDog.DogFace
                 SetStatus("Refreshing " + server + "...",true);
 
                 StudioController.RefreshServer(server);
+            
 
                 SetStatus("Completed " + server);
+
+                MyLogger.LogMessage("Refreshing Servers "+server+"- completed.");
             }
+
+           
         }
 
 
@@ -337,9 +346,14 @@ namespace HuntingDog.DogFace
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
+            MyLogger.LogMessage("Searhcing " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
+
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
+            {
+                MyLogger.LogMessage("Cancelled search request because new request was added. " + par.Text);
                 return;
+            }
 
             SetStatus("Found " + result.Count + " objects ");
 
