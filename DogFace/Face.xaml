@@ -448,8 +448,8 @@
 
           
 
-            <ComboBox  ToolTip="MS SQL Servers"  FontSize="14" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
-                          Margin="2,5" x:Name="cbServer"  SelectionChanged="cbServer_SelectionChanged"
+            <ComboBox  ToolTip="MS SQL Servers" FontSize="14" GotFocus="cbServer_GotFocus" LostFocus="cbServer_LostFocus" PreviewKeyDown="cbServer_PreviewKeyDown"
+                          Margin="2,5" x:Name="cbServer" VerticalContentAlignment="Center"  SelectionChanged="cbServer_SelectionChanged"
                            Style="{StaticResource ImageComboBox}" >
 
 
@@ -468,7 +468,7 @@
             <ComboBox  Grid.ColumnSpan="2"  ToolTip="Databases" Grid.Column="1" FontSize="14"  Style="{StaticResource ImageComboBox}"
                           GotFocus="cbDatabase_GotFocus" LostFocus="cbDatabase_LostFocus"
                           PreviewKeyDown="cbDatabase_PreviewKeyDown"  Margin="2,5"
-                          x:Name="cbDatabase" SelectionChanged="cbDatabase_SelectionChanged" >
+                          x:Name="cbDatabase" VerticalContentAlignment="Center"  SelectionChanged="cbDatabase_SelectionChanged" >
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel  Orientation="Horizontal">
