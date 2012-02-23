@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DatabaseObjectSearcher
 {
-    public interface IObjectSearcherUI
-    {
-        void SetSearchController(MSSQLController controller);
-    }
+    //public interface IObjectSearcherUI
+    //{
+    //    void SetSearchController(MSSQLController controller);
+    //}
 }

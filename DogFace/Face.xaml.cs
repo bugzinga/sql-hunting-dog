@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -74,7 +75,8 @@ namespace HuntingDog.DogFace
 
             _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
             StudioController.Initialise();
-            StudioController.OnServersChanged += new Action(StudioController_OnServersChanged);
+            StudioController.OnServersAdded += new Action<List<string>>(StudioController_OnServersAdded);
+            StudioController.OnServersRemoved += new Action<List<string>>(StudioController_OnServersRemoved);
             StudioController.ShowYourself += new Action(StudioController_ShowYourself);
             ReloadServers();
 
@@ -98,39 +100,116 @@ namespace HuntingDog.DogFace
           
         }
 
+
+    
         void StudioController_ShowYourself()
         {
             txtSearch.Focus();
           
         }
 
+        void StudioController_OnServersAdded(List<string> listAdded)
+        {
+            MyLogger.LogMessage("Face: server added." + (listAdded.Count>0 ? listAdded[0] : ""));
+
+            foreach (var item in ItemFactory.BuildServer(listAdded))
+            {
+                _serverList.Add(item);
+            }
+
+            InvokeInUI(delegate {
+
+                if (_serverList.Count == 1)
+                {
+                    cbServer.SelectedIndex = 0;
+                    MyLogger.LogMessage("Face: first server is selected.");
+                }
+            });
+          
+
+        }
+
+
+        void StudioController_OnServersRemoved(List<string> removedList)
+        {
+            MyLogger.LogMessage("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
+
+          
+            InvokeInUI(delegate {
+
+                foreach (var s in _serverList.ToList())
+                {
+                    if (removedList.Contains(s.Name))
+                        _serverList.Remove(s);
+                }
+                
+                if(SelectedServer==null)
+                    {
+                        // move selection to first available server                
+                        if (_serverList.Count > 0)
+                        {
+                            MyLogger.LogMessage("Face: Selected Server was removed. Move focus to first server in list");
+                            cbServer.SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            MyLogger.LogMessage("Face: Selected Server was removed. Server list is empty.Clear everything");
+                            cbDatabase.ItemsSource = null;
+                        }
+                
+                    }
+            });
+ 
+
+        }
      
 
         void StudioController_OnServersChanged()
         {
-            ReloadServers();
+            MyLogger.LogMessage("Face: server list changed.");
+            InvokeInUI(delegate
+                           {
+                               ReloadServers();
 
-            if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
-                cbServer.SelectedIndex = 0;
+                               if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
+                                   cbServer.SelectedIndex = 0;
+                               else if(cbServer.Items.Count ==0)
+                               {
+                                   cbDatabase.ItemsSource = null;
+                                 
+                               }
+
+
+                           });
         }
 
         void _processor_RequestFailed(BackgroundProcessor.Request arg1, Exception arg2)
         {
+            SetStatus("Error:" + arg2.Message);
             // notify user about an error
             MyLogger.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType,arg2);
         }
 
         public const string ConnectNewServerString = "Connect New Server...";
 
+
+        private ObservableCollection<Item> _serverList = new ObservableCollection<Item>(); 
         public void ReloadServers()
         {
             MyLogger.LogMessage("Reloading Servers- intitated by user");
             var servers = StudioController.ListServers();
-            var srv = ItemFactory.BuildServer(servers);
-            srv.Add(new Item() { Name = ConnectNewServerString });
-            cbServer.ItemsSource = srv;
 
-            _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
+            foreach (var item in ItemFactory.BuildServer(servers))
+            {
+                _serverList.Add(item);
+            }
+            //srv.Add(new Item() { Name = ConnectNewServerString });
+            MyLogger.LogMessage("Reloading Servers - loaded:" + _serverList.Count + " servers.");
+            cbServer.ItemsSource = _serverList;
+
+            if (_serverList.Count == 1)
+                cbServer.SelectedIndex = 0;
+               // _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
         }
 
         private void SetStatus(string text)
@@ -186,10 +265,10 @@ namespace HuntingDog.DogFace
               
 
                 // if we failed to select database (for example it deos not exsit any more - select first one...)
-                if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
+                /*if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
                 {
                     cbDatabase.SelectedIndex = 0;
-                }
+                }*/
 
                 _databaseChangedByUser = true;
 
@@ -197,6 +276,12 @@ namespace HuntingDog.DogFace
 
                 cbDatabase.Focus();
                 //cbDatabase.IsDropDownOpen = true;
+            }
+            else
+            {
+               
+              
+                ClearSearchText();
             }
 
             // keep track of last selected database on this server - need to restore it back!
@@ -304,13 +389,29 @@ namespace HuntingDog.DogFace
             }
             else
             {
-                itemsControl.ItemsSource = null;
+                ClearSearchResult();
             }
         }
+
+        void ClearSearchText()
+        {
+            txtSearch.Text = string.Empty;
+        }
+
+         void ClearSearchResult()
+         {
+             itemsControl.ItemsSource = null;
+             ClearPreviousSearch();
+         }
 
         volatile int _requestSequenceNumber = 0;
 
         string _lastSrv, _lastDb, _lastText;
+
+        private void ClearPreviousSearch()
+        {
+            _lastText = null;
+        }
 
         private bool SameAsPreviousSearch(SearchAsyncParam arg)
         {
@@ -346,7 +447,7 @@ namespace HuntingDog.DogFace
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
-            MyLogger.LogMessage("Searhcing " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
+            MyLogger.LogMessage("Searching " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
 
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
@@ -393,7 +494,7 @@ namespace HuntingDog.DogFace
             Dispatcher.Invoke((Delegate)invoker);
         }
 
-
+/*
         private void Async_ShowProperties(object arg)
         {
             //SystemColors.ControlLightBrushKey
@@ -438,7 +539,7 @@ namespace HuntingDog.DogFace
 
             SetStatus("");
 
-        }
+        }*/
 
 
 
@@ -456,14 +557,15 @@ namespace HuntingDog.DogFace
             if (itemsControl.SelectedIndex == -1)
             {
                 // clear propertties
-                listViewProperties.ItemsSource = null;
+                //listViewProperties.ItemsSource = null;
             }
             else
             {
                 var item = (itemsControl.SelectedItem as Item);
                 if(item!=null)
                 {
-                    _processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true); 
+                    // DO NOT SHOW PROPERTIES
+                    //_processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true); 
                 }
              
             }
@@ -909,7 +1011,7 @@ namespace HuntingDog.DogFace
 
         private void PropertiesTextBlock_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedPropeties == true)
+            /*if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedPropeties == true)
             {
                 _isDragDropStartedPropeties = false;
 
@@ -936,7 +1038,7 @@ namespace HuntingDog.DogFace
                     // LOG
                 }
 
-            }
+            }*/
         }
 
      

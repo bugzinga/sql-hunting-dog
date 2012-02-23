@@ -109,7 +109,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DogEngine\DatabaseLoader.cs" />
     <Compile Include="DogEngine\Interfaces.cs" />
+    <Compile Include="DogEngine\ServerStorage.cs" />
     <Compile Include="DogEngine\StudioController.cs" />
     <Compile Include="DogFace\BackgroundProcessor.cs" />
     <Compile Include="DogFace\Face.xaml.cs">
@@ -124,9 +126,12 @@
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WpfUtil.cs" />
     <Compile Include="Engine\Connect.cs" />
+    <Compile Include="DogEngine\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseObjectSearcher.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
-    <Compile Include="Engine\DBDictionary.cs" />
+    <Compile Include="Engine\DependecyResults.cs" />
+    <Compile Include="Engine\NavigatorServer.cs" />
+    <Compile Include="Engine\ServerDictionary.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ImageTranslator.cs">
       <SubType>Component</SubType>

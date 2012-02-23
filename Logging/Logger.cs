@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using NLog;
@@ -8,6 +9,8 @@ using NLog.Config;
 
 namespace HuntingDog
 {
+
+
     public class MyLogger
     {
 
@@ -52,7 +55,20 @@ namespace HuntingDog
         {
             Logger.ErrorException(msg,ex);
         }
+        public static void LogError(string msg)
+        {
+            Logger.Error(msg);
+        }
 
+        public static void LogPerformace(string msg,Stopwatch timer)
+        {
+            if(timer.ElapsedMilliseconds > 1000)
+                LogMessage("Perf:" + msg 
+                    + String.Format("{0:0.00}", (double)timer.ElapsedMilliseconds/1000)
+                    + " sec.");
+            else
+                LogMessage("Perf:" + msg + timer.ElapsedMilliseconds + " ms.");
+        }
 
         public static void LogMessage(string msg)
         {

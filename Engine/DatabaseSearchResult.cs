@@ -1,41 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
 using System.Xml.Serialization;
 
-namespace DatabaseObjectSearcher
+namespace HuntingDog.DogEngine
 {
-
-    public class DependecyResults
-    {
-        public List<Link> DependsOn = new List<Link>();
-        public List<Link> DependantUpon = new List<Link>();
-
-    }
-
-    public class Link
-    {
-        public string Name { get; set; }
-        public string Schema { get; set; }
-        public string Type { get; set; }
-    }
-
    
-    public enum Direction
-    {
-        DependsOn = 1,
-        DependentOn = 2,
-    }
-
-   
-    public class DatabaseDependencyResult
-    {
-        public DatabaseSearchResult Obj { get; set; }      
-        public Direction Direction { get; set; }
-    }
-
     [Flags]
     public enum ObjType:int
     {

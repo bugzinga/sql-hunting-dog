@@ -17,33 +17,12 @@ using System.Text.RegularExpressions;
 
 namespace DatabaseObjectSearcher
 {
-    public class NavigatorServer
-    {
-        public SqlConnectionInfo ConnInfo{get;set;}
-        public string Name{get;set;}
-
-        public DbObjectSearcher DbSearcher { get; private set; }
-
-        public NavigatorServer(SqlConnectionInfo ci, string name)
-        {
-            Name = name;
-            ConnInfo = ci;
-            DbSearcher = new DbObjectSearcher(ci);
-
-            // prefetch all databases from server
-            DbSearcher.BuilDataBaseDictionary();
-        }
-   
-    }
-
-
     public class MSSQLController
     {
         static MSSQLController currentInstance = new MSSQLController();
 
        // private DTE2 _application;
        
-        private Dictionary<string, DbObjectSearcher> searcherDictionary = new Dictionary<string, DbObjectSearcher>();
 
         private EnvDTE.Window toolWindow;
         DatabaseObjectSearcher.ObjectExplorerManager manager = new DatabaseObjectSearcher.ObjectExplorerManager();
@@ -53,49 +32,7 @@ namespace DatabaseObjectSearcher
             get { return currentInstance; }
         }
 
-        public List<NavigatorServer> ServerList { get; private set; }
 
-        //public void LoadExistingServers()
-        //{
-        //    ServerList = new List<NavigatorServer>();
-
-        //    Exception lastEx = null;
-
-        //    foreach (var srvConnectionInfo in ObjectExplorerManager.GetAllServers())
-        //    {
-        //        try
-        //        {
-        //            var nvServer = new NavigatorServer(srvConnectionInfo, srvConnectionInfo.ServerName);
-        //            ServerList.Add(nvServer);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            lastEx = ex;
-        //        }
-        //    }
-
-        //    if (lastEx != null)
-        //        throw lastEx;
-        //} 
-    
-   
-
-        //private INodeInformation[] GetObjectExplorerSelectedNodes()
-        //{
-        //    IObjectExplorerService objExplorer = ServiceCache.GetObjectExplorer();
-        //    int arraySize;
-        //    INodeInformation[] nodes;
-        //    objExplorer.GetSelectedNodes(out arraySize, out nodes);
-        //    return nodes;
-        //}
-
-
-        public void SelectSMOObject(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
-        {
-           
-            manager.SelectSMOObjectInObjectExplorer(objectToSelect, connection); 
-            
-        }
 
         public EnvDTE.Window SearchWindow
         {

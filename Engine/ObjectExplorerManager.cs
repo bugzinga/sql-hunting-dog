@@ -105,17 +105,21 @@ namespace DatabaseObjectSearcher
             }
         }
 
-
+        private IObjectExplorerService _oe;
         // return all existing servers in hierarchy
         public  List<SqlConnectionInfo> GetAllServers()
         {
             List<SqlConnectionInfo> servers = new List<SqlConnectionInfo>();
 
-            IObjectExplorerService objExplorer = ServiceCache.GetObjectExplorer();
-          
-            Type t = objExplorer.GetType();
+            if(_oe==null)
+            {
+                _oe = ServiceCache.GetObjectExplorer();
+               
+            }
+
+            Type t = _oe.GetType();
             FieldInfo getHierarchyMethod = t.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
-            var connHT = (Hashtable)getHierarchyMethod.GetValue(objExplorer);
+            var connHT = (Hashtable)getHierarchyMethod.GetValue(_oe);
 
             foreach (IExplorerHierarchy srvHerarchy in connHT.Values)
             {

@@ -525,9 +525,8 @@
 
         <Grid  Grid.Row="1" x:Name="splitterGrid">
             <Grid.RowDefinitions>
-                <RowDefinition  Height="5*"></RowDefinition>
-                <RowDefinition Height="8"></RowDefinition>
-                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition  ></RowDefinition>
+             
             </Grid.RowDefinitions>
 
 
@@ -682,14 +681,10 @@
 
             </ListView>
 
-            <GridSplitter Grid.Row="1" Width="Auto" Height="8"  Foreground="{StaticResource blueBrush}"  ResizeDirection="Rows"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+            <!--<GridSplitter  Visibility="Collapsed" Grid.Row="1" Width="Auto" Height="8"  Foreground="{StaticResource blueBrush}"  ResizeDirection="Rows"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>-->
 
-            <Grid Name="propetiesGrid" Grid.Row="2">
-                <!--<Grid.ColumnDefinitions>                  
-                    <ColumnDefinition Width="*" MinWidth="40"></ColumnDefinition>
-                    <ColumnDefinition Width="80"></ColumnDefinition>
-                    <ColumnDefinition Width="30"></ColumnDefinition>
-                </Grid.ColumnDefinitions>-->
+            <!--<Grid Name="propetiesGrid" Grid.Row="2" Visibility="Collapsed">
+             
                 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -756,7 +751,7 @@
                 </ListView.ItemTemplate>
             </ListView>   
                 
-            </Grid>
+            </Grid>-->
                 
           
       

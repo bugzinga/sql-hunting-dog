@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace HuntingDog.DogEngine
 {
@@ -40,6 +42,37 @@ namespace HuntingDog.DogEngine
         public bool IsForeignKey { get; set; }
     }
 
+    public interface IServerStorage
+    {
+        string Name { get; }
+        void Initialise(SqlConnectionInfo connectionInfo);
+        List<IDatabaseDictionary> DatabaseList { get; }
+        void RefreshDatabaseList();
+    }
+
+    public interface IDatabaseLoader
+    {
+        SqlConnectionInfo Connection { get; }
+        string Name { get; }
+        void Initialise(SqlConnectionInfo connectionInfo);    
+        List<string> DatabaseList { get; }
+        void RefreshDatabaseList();
+        void RefreshDatabase(string name);
+
+    }
+
+    public interface IDatabaseDictionary
+    {
+        List<DatabaseSearchResult> Find(string searchCriteria, int limit);
+        void Initialise(string databaseName);
+        string DatabaseName { get; }
+        bool IsLoaded { get; }
+        void Clear();
+        void Add(Database d, ScriptSchemaObjectBase obj, SqlConnectionInfo connectionInfo);
+        void MarkAsLoaded();
+    }
+
+
     public interface IStudioController
     {
         void ConnectNewServer();
@@ -51,7 +84,9 @@ namespace HuntingDog.DogEngine
 
         // fire when new server is connected/disconected
         void Initialise();
-        event Action OnServersChanged;
+        event Action<List<string> > OnServersAdded;
+        event Action<List<string> > OnServersRemoved;
+
         List<string> ListServers();
 
         List<string> ListDatabase(string serverName);
