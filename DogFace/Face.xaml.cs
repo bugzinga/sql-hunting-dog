@@ -245,45 +245,56 @@ namespace HuntingDog.DogFace
         
         private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsConnectNewServerSellected)
+            try
             {
-                StudioController.ConnectNewServer();
-                
-                return;
-            }
-
-            var sel = cbServer.SelectedItem as Item;
-            if (sel != null)
-            {
-
-                cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
-
-                _databaseChangedByUser = false;
-                // changed server - try to restore database user worked with last time
-                var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
-                //cbDatabase.SelectedValue= databaseName;
-              
-
-                // if we failed to select database (for example it deos not exsit any more - select first one...)
-                /*if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
+                if (IsConnectNewServerSellected)
                 {
-                    cbDatabase.SelectedIndex = 0;
-                }*/
+                    StudioController.ConnectNewServer();
 
-                _databaseChangedByUser = true;
+                    return;
+                }
 
-                _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
+                var sel = cbServer.SelectedItem as Item;
+                if (sel != null)
+                {
 
-                cbDatabase.Focus();
-                //cbDatabase.IsDropDownOpen = true;
-            }
-            else
-            {
+                    cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
+
+                    _databaseChangedByUser = false;
+                    // changed server - try to restore database user worked with last time
+                    var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
+                    //cbDatabase.SelectedValue= databaseName;
+
+
+                    // if we failed to select database (for example it deos not exsit any more - select first one...)
+                    /*if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
+                    {
+                        cbDatabase.SelectedIndex = 0;
+                    }*/
+
+                    _databaseChangedByUser = true;
+
+                    _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
+
+                    cbDatabase.Focus();
+                    //cbDatabase.IsDropDownOpen = true;
+                }
+                else
+                {
+
+
+                    ClearSearchText();
+                }
+
                
-              
-                ClearSearchText();
-            }
 
+            }
+            catch (Exception ex)
+            {
+                
+                MyLogger.LogError("Server Selection:" + ex.Message,ex);
+            }
+          
             // keep track of last selected database on this server - need to restore it back!
             //DoSearch();
         }
@@ -375,27 +386,40 @@ namespace HuntingDog.DogFace
 
         void DoSearch()
         {
-            if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && SelectedDatabase!=null)
+            try
             {
-                var sp = new SearchAsyncParam();
-                sp.SequenceNumber = ++_requestSequenceNumber;
-                sp.Srv = SelectedServer;
-                sp.Text = txtSearch.Text;
-                sp.Database = SelectedDatabase;
-                _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
+                if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && SelectedDatabase!=null)
+                {
+                    var sp = new SearchAsyncParam();
+                    sp.SequenceNumber = ++_requestSequenceNumber;
+                    sp.Srv = SelectedServer;
+                    sp.Text = txtSearch.Text;
+                    sp.Database = SelectedDatabase;
+                    _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
 
-                _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
+                    _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
             
+                }
+                else
+                {
+                    ClearSearchResult();
+                }  
             }
-            else
+            catch(Exception ex)
             {
-                ClearSearchResult();
+                MyLogger.LogError("Face - Do Seacrh:" + ex.Message,ex);
             }
+          
         }
 
         void ClearSearchText()
         {
-            txtSearch.Text = string.Empty;
+            txtSearch.Text = string.Empty;          
+        }
+
+        private void throw1()
+        {
+            throw new Exception("aaaa");
         }
 
          void ClearSearchResult()

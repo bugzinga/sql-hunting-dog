@@ -28,7 +28,7 @@ namespace HuntingDog
             fileTarget.FileName = "${basedir}/Logs/HuntingDogLog.txt";
             //fileTarget.FileName = @"c:\HuntingDogLog.txt";
             
-            fileTarget.Layout = "${message}";
+            fileTarget.Layout = "${message} ${exception:format=tostring}";
 
 
             LoggingRule rule2 = new LoggingRule("*", LogLevel.Trace, fileTarget);

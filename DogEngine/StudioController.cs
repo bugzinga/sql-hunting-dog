@@ -192,17 +192,34 @@ namespace HuntingDog.DogEngine
         }
 
      
+        private DatabaseLoader GetServerByName(string name)
+        {
+            string lowerName = name.ToLower();
+
+            string key =  Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
+
+            return key!=null?Servers[key]:null;
+        }
 
         void manager_OnNewServerConnected(string serverName)
         {
-            if (!Servers.ContainsKey(serverName))
+
+
+            if (GetServerByName(serverName)==null)
             {
                 lock (this)
                 {
                     ReloadServerList();
                 }
+
+                // do not beleive server name provided by Object Explorer - it can have different case
+                var newServer = GetServerByName(serverName);
                 if (OnServersAdded != null)
-                    OnServersAdded(new List<string>(){serverName});
+                    OnServersAdded(new List<string>() { newServer.Name });
+            }
+            else
+            {
+                MyLogger.LogError("Controller:new server connected event (but already connected):" + serverName);
             }
         }
 
@@ -213,19 +230,45 @@ namespace HuntingDog.DogEngine
 
         public List<string> ListDatabase(string serverName)
         {
-            return Servers[serverName].DatabaseList;
+            if (Servers.ContainsKey(serverName))
+                return Servers[serverName].DatabaseList;
+            else
+            {
+                MyLogger.LogError("Controller: requested unknown server " + serverName + ".");
+                foreach (var srv in Servers)
+                {
+                    MyLogger.LogError("Controller:available server:" + srv.Key);
+                }
+
+                return new List<string>();
+            }
         }
 
         void IStudioController.RefreshServer(string serverName)
         {
-            var server = Servers[serverName];
-            server.RefreshDatabaseList();
+            if (Servers.ContainsKey(serverName))
+            {
+                var server = Servers[serverName];
+                server.RefreshDatabaseList();     
+            }
+            else
+            {
+                MyLogger.LogError("Controller: Refresh server. Unknown server name " + serverName + ".");
+            }
+           
         }
 
         void IStudioController.RefreshDatabase(string serverName, string dbName)
         {
-            var server = Servers[serverName];
-            server.RefreshDatabase(dbName);
+            if (Servers.ContainsKey(serverName))
+            {
+                var server = Servers[serverName];
+                server.RefreshDatabase(dbName);
+            }
+            else
+            {
+                MyLogger.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
+            }
         }
 
 
