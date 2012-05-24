@@ -482,9 +482,9 @@
 
           
                 
-                <Button Grid.Column="2" Grid.Row="1" Visibility="Collapsed" x:Name="btnRefresh" Click="Refresh_Click"  Margin="0,0,3,3"  VerticalAlignment="Center"
+                <Button Grid.Column="2" Grid.Row="1" Visibility="Visible" x:Name="btnRefresh" Click="RefreshDatabaseList_Click"  Margin="0,0,3,3"  VerticalAlignment="Center"
                    Focusable="False" 
-                         BorderBrush="#506AA4B6" ToolTip="Refresh database objects"
+                         BorderBrush="#506AA4B6" ToolTip="Reload Database List"
                         
                            BorderThickness="1" Background="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                         >

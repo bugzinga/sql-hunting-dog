@@ -83,7 +83,7 @@ namespace HuntingDog.DogEngine
         {
             var timer= new Stopwatch();
             timer.Start();
-
+            
             Database d = null;
             if(_server.Databases.Contains(databaseDictionary.DatabaseName))
             {
@@ -135,6 +135,11 @@ namespace HuntingDog.DogEngine
         {
             var d = _server.Databases[name];
             RefresDatabase(d);
+
+            // remove hashed objects
+             IDatabaseDictionary dbDictionary = DictionaryList.FirstOrDefault(x=>x.DatabaseName == name);
+             if (dbDictionary != null)
+                  DictionaryList.Remove(dbDictionary);
         }
 
         private void RefresDatabase(Database d)
@@ -148,22 +153,22 @@ namespace HuntingDog.DogEngine
 
             try
             {
-                d.Tables.Refresh();
+                d.Tables.Refresh(true);
             }
             catch { }
 
             try
             {
-                d.StoredProcedures.Refresh();
+                d.StoredProcedures.Refresh(true);
             }
             catch
             {
 
             }
 
-            try { d.Views.Refresh(); }
+            try { d.Views.Refresh(true); }
             catch { }
-            try { d.UserDefinedFunctions.Refresh(); }
+            try { d.UserDefinedFunctions.Refresh(true); }
             catch { }
 
         }

@@ -68,35 +68,44 @@ namespace HuntingDog.DogFace
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
-            MyLogger.LogMessage("XAML Loaded...");
-
-            var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
-            //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
-
-            _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
-            StudioController.Initialise();
-            StudioController.OnServersAdded += new Action<List<string>>(StudioController_OnServersAdded);
-            StudioController.OnServersRemoved += new Action<List<string>>(StudioController_OnServersRemoved);
-            StudioController.ShowYourself += new Action(StudioController_ShowYourself);
-            ReloadServers();
-
-            _userPref = UserPreferencesStorage.Load();
-            string lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
-            string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
-
-            if(string.IsNullOrEmpty(lastSearch))
-                  txtSearch.Text = "HAHAHAH";
-            else
-                txtSearch.Text = lastSearch;
-
-            //cbServer.SelectedValue = lastSrvName;
-            //cbServer.SelectedItem = 
-
-            // select first server
-            if (cbServer.SelectedIndex==-1 && cbServer.Items.Count>1)
+            try
             {
-                cbServer.SelectedIndex = 0;
-            }    
+                MyLogger.LogMessage("XAML Loaded...");
+
+                var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
+                //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
+
+                _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
+                StudioController.Initialise();
+                StudioController.OnServersAdded += new Action<List<string>>(StudioController_OnServersAdded);
+                StudioController.OnServersRemoved += new Action<List<string>>(StudioController_OnServersRemoved);
+                StudioController.ShowYourself += new Action(StudioController_ShowYourself);
+                ReloadServers();
+
+                _userPref = UserPreferencesStorage.Load();
+                string lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
+                string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
+
+                if (string.IsNullOrEmpty(lastSearch))
+                    txtSearch.Text = "HAHAHAH";
+                else
+                    txtSearch.Text = lastSearch;
+
+                //cbServer.SelectedValue = lastSrvName;
+                //cbServer.SelectedItem = 
+
+                // select first server
+                if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
+                {
+                    cbServer.SelectedIndex = 0;
+                }    
+
+            }
+            catch(Exception ex)
+            {
+                MyLogger.LogError("Fatal error loading main control:" + ex.Message,ex);
+            }
+          
           
         }
 
@@ -198,6 +207,7 @@ namespace HuntingDog.DogFace
         {
             MyLogger.LogMessage("Reloading Servers- intitated by user");
             var servers = StudioController.ListServers();
+            _serverList.Clear();
 
             foreach (var item in ItemFactory.BuildServer(servers))
             {
@@ -223,37 +233,49 @@ namespace HuntingDog.DogFace
                 txtStatusTest.Text = text; });
         }
 
-        // Reload all servers ad read all business object for fast search and access
-        private void Async_ReloadServers(object arg)
+
+
+        // Reload database list
+        private void Async_ReloadDatabaseList(object arg)
         {
-            foreach (var server in (List<string>)arg)
+            if (arg is string)
             {
-                SetStatus("Refreshing " + server + "...",true);
-
+                string server = (string) arg;
                 StudioController.RefreshServer(server);
-            
 
-                SetStatus("Completed " + server);
-
-                MyLogger.LogMessage("Refreshing Servers "+server+"- completed.");
+                InvokeInUI(delegate
+                               {
+                                   ReloadDatabaseList();
+                               });
             }
+        }
 
-           
+        // Reload objects in database
+        private void Async_ReloadObjectsFromDatabase(object arg)
+        {
+            var pair = (KeyValuePair<string, string>)arg ;
+
+            string server = pair.Key;
+            string database = pair.Value;
+
+            SetStatus("Reloading " + database+"...", true);
+
+            StudioController.RefreshDatabase(server,database);
+
+            InvokeInUI(delegate
+                           { DoSearch(); });
+
+            SetStatus("Completed reloading " + database);
+
         }
 
 
-        
-        private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        void ReloadDatabaseList()
         {
-            try
+            
+             try
             {
-                if (IsConnectNewServerSellected)
-                {
-                    StudioController.ConnectNewServer();
-
-                    return;
-                }
-
+              
                 var sel = cbServer.SelectedItem as Item;
                 if (sel != null)
                 {
@@ -263,7 +285,18 @@ namespace HuntingDog.DogFace
                     _databaseChangedByUser = false;
                     // changed server - try to restore database user worked with last time
                     var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
-                    //cbDatabase.SelectedValue= databaseName;
+                    if (databaseName != null && cbDatabase.Items!=null)
+                    {
+                        foreach (Item item in cbDatabase.ItemsSource)
+                        {
+                            if (item.Name == databaseName)
+                            {
+                                cbDatabase.SelectedValue = item;
+                                break;
+                            }
+                        }
+
+                    }
 
 
                     // if we failed to select database (for example it deos not exsit any more - select first one...)
@@ -277,6 +310,7 @@ namespace HuntingDog.DogFace
                     _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
                     cbDatabase.Focus();
+                    ClearSearchText();
                     //cbDatabase.IsDropDownOpen = true;
                 }
                 else
@@ -295,9 +329,16 @@ namespace HuntingDog.DogFace
                 MyLogger.LogError("Server Selection:" + ex.Message,ex);
             }
           
-            // keep track of last selected database on this server - need to restore it back!
-            //DoSearch();
-        }
+
+       }
+
+
+        private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+                ReloadDatabaseList();
+                // keep track of last selected database on this server - need to restore it back!
+                //DoSearch();
+            }
 
         bool _databaseChangedByUser = true;
 
@@ -1117,8 +1158,19 @@ namespace HuntingDog.DogFace
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            if(SelectedServer!=null)
-                _processor.AddRequest(Async_ReloadServers, new List<string>{ SelectedServer}, (int)ERquestType.Server, true);
+            if (SelectedServer != null)
+            {
+                if(SelectedDatabase!=null)
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<string,string>(SelectedServer, SelectedDatabase),
+                                          (int) ERquestType.Server, true);
+            }
+        }
+
+
+        private void RefreshDatabaseList_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedServer != null)
+                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer , (int)ERquestType.Server, true);
         }
 
         private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
@@ -1357,6 +1409,7 @@ namespace HuntingDog.DogFace
         //{
         //    borderItems.BorderBrush = Brushes.Transparent;
         //}
+
      
     }
 

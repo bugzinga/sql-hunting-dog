@@ -95,6 +95,7 @@ namespace HuntingDog.DogEngine
          System.Threading.AutoResetEvent _stopThread = new AutoResetEvent(false);
         void IStudioController.Initialise()
         {
+
             Servers = new Dictionary<string,DatabaseLoader>();
 
             manager.Init();

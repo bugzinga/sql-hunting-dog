@@ -77,7 +77,7 @@ namespace DatabaseObjectSearcher
                         // this could mean that new server was added
                         var res = " server " + n.Name + n.Connection.ServerName;
                         if (OnNewServerConnected != null)
-                            OnNewServerConnected(n.Name);
+                            OnNewServerConnected(n.Connection.ServerName);
                     }
                 } 
 
@@ -109,29 +109,38 @@ namespace DatabaseObjectSearcher
         // return all existing servers in hierarchy
         public  List<SqlConnectionInfo> GetAllServers()
         {
-            List<SqlConnectionInfo> servers = new List<SqlConnectionInfo>();
-
-            if(_oe==null)
+            try
             {
-                _oe = ServiceCache.GetObjectExplorer();
-               
-            }
+                List<SqlConnectionInfo> servers = new List<SqlConnectionInfo>();
 
-            Type t = _oe.GetType();
-            FieldInfo getHierarchyMethod = t.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
-            var connHT = (Hashtable)getHierarchyMethod.GetValue(_oe);
+                if (_oe == null)
+                {
+                    _oe = ServiceCache.GetObjectExplorer();
 
-            foreach (IExplorerHierarchy srvHerarchy in connHT.Values)
-            {
+                }
+
+                Type t = _oe.GetType();
+                FieldInfo getHierarchyMethod = t.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
+                var connHT = (Hashtable)getHierarchyMethod.GetValue(_oe);
+
+                foreach (IExplorerHierarchy srvHerarchy in connHT.Values)
+                {
                     IServiceProvider provider = srvHerarchy.Root as IServiceProvider;
                     if (provider != null)
                     {
                         INodeInformation containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
                         servers.Add(containedItem.Connection as SqlConnectionInfo);
-                    }                
-            }
+                    }
+                }
 
-            return servers;
+                return servers;
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("ObjectExplorer manager failed:" + ex.Message,ex);
+                throw;
+            }
+          
         }
 
 

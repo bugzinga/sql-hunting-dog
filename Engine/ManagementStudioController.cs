@@ -139,7 +139,7 @@ namespace DatabaseObjectSearcher
                 {
            
                     sp.Refresh();
-
+                   
                     string originalSP = sp.TextBody;
    
 
@@ -251,6 +251,7 @@ namespace DatabaseObjectSearcher
                 lock (sp)
                 {
                     sp.Refresh();
+                    sp.Parameters.Refresh();
                     string parameterList = "";
                     foreach (StoredProcedureParameter par in sp.Parameters)
                     {
@@ -379,6 +380,7 @@ namespace DatabaseObjectSearcher
                 lock (tbl)
                 {
                     tbl.Refresh();
+                    tbl.Columns.Refresh();
                     select = string.Format("{0}\r\n SELECT TOP 200 * FROM [{1}].[{2}]",
                        UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name);
 
