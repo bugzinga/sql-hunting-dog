@@ -59,10 +59,10 @@ namespace DatabaseObjectSearcher
                 OutputWindow outputWindow = (OutputWindow)applicationObject.Windows.Item(Constants.vsWindowKindOutput).Object;
 
 
-                IObjectExplorerService objectExplorer = ServiceCache.GetObjectExplorer();
-                var provider = (IObjectExplorerEventProvider)objectExplorer.GetService(typeof(IObjectExplorerEventProvider));
+                //IObjectExplorerService objectExplorer = ServiceCache.GetObjectExplorer();
+                //var provider = (IObjectExplorerEventProvider)objectExplorer.GetService(typeof(IObjectExplorerEventProvider));
 
-                provider.SelectionChanged += new NodesChangedEventHandler(provider_SelectionChanged);
+                //provider.SelectionChanged += new NodesChangedEventHandler(provider_SelectionChanged);
 
                 _outputWindowPane = outputWindow.OutputWindowPanes.Add("DTE Event Information - C# Event Watcher");
 

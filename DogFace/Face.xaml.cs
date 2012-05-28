@@ -75,6 +75,8 @@ namespace HuntingDog.DogFace
                 var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
                 //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
+                _userPref = UserPreferencesStorage.Load();
+
                 _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
                 StudioController.OnServersAdded += new Action<List<string>>(StudioController_OnServersAdded);
@@ -82,7 +84,7 @@ namespace HuntingDog.DogFace
                 StudioController.ShowYourself += new Action(StudioController_ShowYourself);
                 ReloadServers();
 
-                _userPref = UserPreferencesStorage.Load();
+               
                 string lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
                 string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
 
@@ -121,12 +123,14 @@ namespace HuntingDog.DogFace
         {
             MyLogger.LogMessage("Face: server added." + (listAdded.Count>0 ? listAdded[0] : ""));
 
-            foreach (var item in ItemFactory.BuildServer(listAdded))
+            InvokeInUI(delegate
             {
-                _serverList.Add(item);
-            }
+                foreach (var item in ItemFactory.BuildServer(listAdded))
+                {
+                    _serverList.Add(item);
+                }
 
-            InvokeInUI(delegate {
+           
 
                 if (_serverList.Count == 1)
                 {

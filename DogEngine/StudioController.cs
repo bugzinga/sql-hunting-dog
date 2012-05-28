@@ -499,7 +499,7 @@ namespace HuntingDog.DogEngine
 
         public void ConnectNewServer()
         {
-            ManagementStudioController.ConnectNew();
+           
            
         }
     }

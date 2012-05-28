@@ -311,11 +311,6 @@ namespace DatabaseObjectSearcher
         }
 
 
-        public static void ConnectNew()
-        {
-            ServiceCache.GetObjectExplorer().NewConnection();
-            //MSSQLController.Current.SearchWindow.Activate();
-        }
 
         public void Open2()
         {

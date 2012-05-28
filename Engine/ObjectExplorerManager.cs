@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using HuntingDog;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
@@ -32,16 +33,122 @@ namespace DatabaseObjectSearcher
         //    return r;
         //}
 
+        private static IObjectExplorerService _objExplorer = null;
+        public IObjectExplorerService GetObjectExplorer()
+        {
+            if(_objExplorer==null)
+                _objExplorer = (IObjectExplorerService)ServiceCache.ServiceProvider.GetService(typeof(IObjectExplorerService));
+            return _objExplorer;
+        }
 
+        private static bool? _is2008R2 = null;
+        public static bool Is2008R2
+        {
+            get
+            {
+                if(_is2008R2==null)
+                {
+                    _is2008R2 = true;
+                    try
+                    {
+                        var eventProvider = Assembly.Load("SqlWorkbench.Interfaces").GetType("Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer.IObjectExplorerEventProvider");
+                        if(eventProvider!=null)
+                            _is2008R2 = false;
+                    }
+                    catch (Exception)
+                    {
+                        // if exception happned then we decide that it is 2008
+                    }
+                }
+
+                return _is2008R2.Value;
+    
+            }
+        }
+
+
+        void SetNON2008R2ObjectExplorerEventProvider()
+        {
+            // the old way of doing things
+            //IObjectExplorerEventProvider objectExplorer = (IObjectExplorerEventProvider)Common.ObjectExplorerService.GetService(typeof(IObjectExplorerEventProvider));
+            //objectExplorer.SelectionChanged += new NodesChangedEventHandler(objectExplorer_SelectionChanged);
+            var t = Assembly.Load("SqlWorkbench.Interfaces").GetType("Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer.IObjectExplorerEventProvider");
+
+
+            MethodInfo mi = this.GetType().GetMethod("Provider_SelectionChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            // get the IObjectExplorerEventProvider from the ObjectExplorerService
+            object objectExplorer = GetObjectExplorer().GetService(t);
+            EventInfo ei = t.GetEvent("SelectionChanged", System.Reflection.BindingFlags.Public | BindingFlags.Instance);
+            // use this overload CreateDelegate(Type type, object firstArgument, MethodInfo method);
+            // the 2nd param is "this" because the method to handle the event is in it.
+            Delegate del = Delegate.CreateDelegate(ei.EventHandlerType, this, mi);
+            ei.AddEventHandler(objectExplorer, del);
+        }
+
+        void Set2008R2ObjectExplorerEventProvider()
+        {
+            // the old way of doing things
+            //Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService objectExplorer = Common.ObjectExplorerService as Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService;
+            //int nodeCount;
+            //INodeInformation[] nodes;
+            //objectExplorer.GetSelectedNodes(out nodeCount, out nodes);
+            //Microsoft.SqlServer.Management.SqlStudio.Explorer.ContextService contextService = (Microsoft.SqlServer.Management.SqlStudio.Explorer.ContextService)objectExplorer.Container.Components[1];
+            //// or ContextService contextService = (ContextService)objectExplorer.Site.Container.Components[1];
+            //INavigationContextProvider provider = contextService.ObjectExplorerContext;
+            //provider.CurrentContextChanged += new NodesChangedEventHandler(ObjectExplorer_SelectionChanged);
+
+            System.Type t = Assembly.Load("Microsoft.SqlServer.Management.SqlStudio.Explorer").GetType("Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService");
+            MethodInfo mi = this.GetType().GetMethod("Provider_SelectionChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            int nodeCount;
+            INodeInformation[] nodes;
+            object objectExplorer = GetObjectExplorer();
+            // hack to load the OE in R2
+            (objectExplorer as IObjectExplorerService).GetSelectedNodes(out nodeCount, out nodes);
+
+            PropertyInfo piContainer = t.GetProperty("Container", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            object objectExplorerContainer = piContainer.GetValue(objectExplorer, null);
+            PropertyInfo piContextService = objectExplorerContainer.GetType().GetProperty("Components", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            //object[] indexArgs = { 1 };
+            ComponentCollection objectExplorerComponents = piContextService.GetValue(objectExplorerContainer, null) as ComponentCollection;
+            object contextService = null;
+
+            foreach (Component component in objectExplorerComponents)
+            {
+                if (component.GetType().FullName.Contains("ContextService"))
+                {
+                    contextService = component;
+                    break;
+                }
+            }
+            if (contextService == null)
+                throw new Exception("Can't find ObjectExplorer ContextService.");
+
+            PropertyInfo piObjectExplorerContext = contextService.GetType().GetProperty("ObjectExplorerContext", System.Reflection.BindingFlags.Public | BindingFlags.Instance);
+            object objectExplorerContext = piObjectExplorerContext.GetValue(contextService, null);
+
+            EventInfo ei = objectExplorerContext.GetType().GetEvent("CurrentContextChanged", System.Reflection.BindingFlags.Public | BindingFlags.Instance);
+
+            Delegate del = Delegate.CreateDelegate(ei.EventHandlerType, this, mi);
+            ei.AddEventHandler(objectExplorerContext, del);
+        }
 
         public void Init()
         {
             try
             {
-                IObjectExplorerService objectExplorer = ServiceCache.GetObjectExplorer();
-                var provider = (IObjectExplorerEventProvider)objectExplorer.GetService(typeof(IObjectExplorerEventProvider));
 
-                provider.SelectionChanged += new NodesChangedEventHandler(provider_SelectionChanged);
+                if (!Is2008R2)
+                    SetNON2008R2ObjectExplorerEventProvider();
+                else
+                    Set2008R2ObjectExplorerEventProvider();
+                // old way
+                //var provider = (IObjectExplorerEventProvider)objectExplorer.GetService(typeof(IObjectExplorerEventProvider));
+                //provider.SelectionChanged += new NodesChangedEventHandler(provider_SelectionChanged);
+                //ContextService cs = (ContextService)objExplorerService.Container.Components[0];
+                //cs.ObjectExplorerContext.CurrentContextChanged += new NodesChangedEventHandler(Provider_SelectionChanged);
+
+
             }
             catch (Exception ex)
             {
@@ -65,13 +172,13 @@ namespace DatabaseObjectSearcher
         public event Action<string> OnNewServerConnected;
         public event Action OnServerDisconnected;
 
-        void provider_SelectionChanged(object sender, NodesChangedEventArgs args)
+        void Provider_SelectionChanged(object sender, NodesChangedEventArgs args)
         {
             try
             {
                 foreach (var n in args.ChangedNodes)
                 {
-                    if (n.Parent == null)
+                    if (n!=null && n.Parent == null)
                     {
                         MyLogger.LogMessage("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
                         // this could mean that new server was added
@@ -105,25 +212,80 @@ namespace DatabaseObjectSearcher
             }
         }
 
-        private IObjectExplorerService _oe;
-        // return all existing servers in hierarchy
+
+        private object GetTreeControl_for2008R2Only()
+        {
+            Type t = GetObjectExplorer().GetType();
+            PropertyInfo treeProperty = t.GetProperty("Tree", BindingFlags.Instance | BindingFlags.NonPublic);
+            var objectTreeControl = treeProperty.GetValue(GetObjectExplorer(), null);
+            return objectTreeControl;
+        }
+
+            
+       // ugly reflection hack
+        private IExplorerHierarchy GetHierarchyForConnection(SqlConnectionInfo connection)
+        {
+            IExplorerHierarchy hierarchy = null;
+            if (!Is2008R2)
+            {
+
+                Type t = GetObjectExplorer().GetType();
+                var getHierarchyMethod = t.GetMethod("GetHierarchy", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                hierarchy = getHierarchyMethod.Invoke(GetObjectExplorer(), new object[] { connection, string.Empty }) as IExplorerHierarchy;
+            }
+            else
+            {
+                var objectTreeControl = GetTreeControl_for2008R2Only();
+                var objTreeRype = objectTreeControl.GetType();
+
+                var getHierarchyMethod = objTreeRype.GetMethod("GetHierarchy", BindingFlags.Instance | BindingFlags.Public);
+
+                hierarchy = getHierarchyMethod.Invoke(objectTreeControl, new object[] { connection, string.Empty }) as IExplorerHierarchy;
+            }
+
+             // VS2008 here we have additional param string.Empty - need Dependecy Injection in order to make it work?
+             return hierarchy;
+         
+        }
+
+        public IEnumerable<IExplorerHierarchy> GetExplorerHierarchies()
+        {
+            if(Is2008R2)
+            {
+
+                var objectTreeControl = GetTreeControl_for2008R2Only();
+                var objTreeRype = objectTreeControl.GetType();
+
+                var hierFieldInfo = objTreeRype.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                var hierDictionary=(IEnumerable<KeyValuePair<string, IExplorerHierarchy>>)hierFieldInfo.GetValue(objectTreeControl);
+
+                foreach (var keyVaklue in hierDictionary)
+                {
+                    yield return keyVaklue.Value;
+                }
+            }
+            else
+            {
+                Type t = GetObjectExplorer().GetType();
+                FieldInfo getHierarchyMethod = t.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
+                var connHT = (Hashtable)getHierarchyMethod.GetValue(GetObjectExplorer());
+
+                foreach (IExplorerHierarchy srvHerarchy in connHT.Values)
+                {
+                    yield return srvHerarchy;
+                }
+            }
+        }
+
         public  List<SqlConnectionInfo> GetAllServers()
         {
             try
             {
                 List<SqlConnectionInfo> servers = new List<SqlConnectionInfo>();
 
-                if (_oe == null)
-                {
-                    _oe = ServiceCache.GetObjectExplorer();
-
-                }
-
-                Type t = _oe.GetType();
-                FieldInfo getHierarchyMethod = t.GetField("hierarchies", BindingFlags.Instance | BindingFlags.NonPublic);
-                var connHT = (Hashtable)getHierarchyMethod.GetValue(_oe);
-
-                foreach (IExplorerHierarchy srvHerarchy in connHT.Values)
+                foreach (IExplorerHierarchy srvHerarchy in GetExplorerHierarchies())
                 {
                     IServiceProvider provider = srvHerarchy.Root as IServiceProvider;
                     if (provider != null)
@@ -357,27 +519,12 @@ namespace DatabaseObjectSearcher
                 INodeInformation containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
                 if (containedItem != null)
                 {
-                    IObjectExplorerService objExplorer = ServiceCache.GetObjectExplorer();
+                    IObjectExplorerService objExplorer =GetObjectExplorer();
+
+
                     objExplorer.SynchronizeTree(containedItem);
                 }
             }
-        }
-
-        // ugly reflection hack
-        private IExplorerHierarchy GetHierarchyForConnection(SqlConnectionInfo connection)
-        {
-            IObjectExplorerService objExplorer = ServiceCache.GetObjectExplorer();
-           
-            Type t = objExplorer.GetType();
-            MethodInfo getHierarchyMethod = t.GetMethod("GetHierarchy", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (getHierarchyMethod != null)
-            {
-                // VS2008 here we have additional param string.Empty - need Dependecy Injection in order to make it work?
-                IExplorerHierarchy hierarchy = getHierarchyMethod.Invoke(objExplorer, new object[] { connection, string.Empty }) as IExplorerHierarchy;
-                return hierarchy;
-            }
-
-            return null;
         }
 
         // another exciting opportunity to use reflection
