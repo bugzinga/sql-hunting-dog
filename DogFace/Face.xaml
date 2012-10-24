@@ -484,7 +484,7 @@
                 
                 <Button Grid.Column="2" Grid.Row="1" Visibility="Visible" x:Name="btnRefresh" Click="RefreshDatabaseList_Click"  Margin="0,0,3,3"  VerticalAlignment="Center"
                    Focusable="False" 
-                         BorderBrush="#506AA4B6" ToolTip="Reload Database List"
+                         BorderBrush="#506AA4B6" ToolTip="Reload Databases and Objects"
                         
                            BorderThickness="1" Background="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                         >

@@ -53,6 +53,7 @@ namespace HuntingDog.DogFace
         enum ERquestType:int
         {
             Server,
+            RefreshSearch,
             Search ,
             Details
         }
@@ -86,12 +87,7 @@ namespace HuntingDog.DogFace
 
                
                 string lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
-                string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
-
-                if (string.IsNullOrEmpty(lastSearch))
-                    txtSearch.Text = "HAHAHAH";
-                else
-                    txtSearch.Text = lastSearch;
+                RestoreLastSearchTextFromUserProfile();
 
                 //cbServer.SelectedValue = lastSrvName;
                 //cbServer.SelectedItem = 
@@ -109,6 +105,16 @@ namespace HuntingDog.DogFace
             }
           
           
+        }
+
+        void RestoreLastSearchTextFromUserProfile()
+        {
+            string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
+
+            if (string.IsNullOrEmpty(lastSearch))
+                txtSearch.Text = "";
+            else
+                txtSearch.Text = lastSearch;
         }
 
 
@@ -267,7 +273,7 @@ namespace HuntingDog.DogFace
             StudioController.RefreshDatabase(server,database);
 
             InvokeInUI(delegate
-                           { DoSearch(); });
+                           { DoSearch(true); });
 
             SetStatus("Completed reloading " + database);
 
@@ -289,6 +295,7 @@ namespace HuntingDog.DogFace
                     _databaseChangedByUser = false;
                     // changed server - try to restore database user worked with last time
                     var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
+                    bool previousDatabaseWasFound = false;
                     if (databaseName != null && cbDatabase.Items!=null)
                     {
                         foreach (Item item in cbDatabase.ItemsSource)
@@ -296,6 +303,9 @@ namespace HuntingDog.DogFace
                             if (item.Name == databaseName)
                             {
                                 cbDatabase.SelectedValue = item;
+
+                             
+                                previousDatabaseWasFound = true;
                                 break;
                             }
                         }
@@ -313,8 +323,20 @@ namespace HuntingDog.DogFace
 
                     _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
-                    cbDatabase.Focus();
-                    ClearSearchText();
+                    
+                    //if(SelectedDatabase==null)
+                    if (previousDatabaseWasFound)
+                    {
+                        // we managed to find our database - restore search text
+                        RestoreLastSearchTextFromUserProfile();
+                        txtSearch.Focus();
+                    }
+                    else
+                    {
+                        ClearSearchText();
+                        cbDatabase.Focus();
+                    }
+
                     //cbDatabase.IsDropDownOpen = true;
                 }
                 else
@@ -407,16 +429,24 @@ namespace HuntingDog.DogFace
             {
                 if (SelectedServer != null && SelectedDatabase != null)
                 {
-                    _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
-                        SelectedDatabase);
+                    StoreSelectedDatabaseInUserProfile();
 
                     txtSearch.Focus();  
 
-                    DoSearch();
+                    DoSearch(false);
                 }
             }
 
 
+        }
+
+        private void StoreSelectedDatabaseInUserProfile()
+        {
+              if (SelectedServer != null && SelectedDatabase != null)
+              {
+                  _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
+                                        SelectedDatabase);
+              }
         }
 
       
@@ -426,10 +456,10 @@ namespace HuntingDog.DogFace
 
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DoSearch();
+            DoSearch(false);
         }
 
-        void DoSearch()
+        void DoSearch(bool forceSearch)
         {
             try
             {
@@ -440,6 +470,7 @@ namespace HuntingDog.DogFace
                     sp.Srv = SelectedServer;
                     sp.Text = txtSearch.Text;
                     sp.Database = SelectedDatabase;
+                    sp.ForceSearch = forceSearch;
                     _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
 
                     _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
@@ -484,6 +515,9 @@ namespace HuntingDog.DogFace
 
         private bool SameAsPreviousSearch(SearchAsyncParam arg)
         {
+            if (arg.ForceSearch)
+                return false;
+
             if (arg.Srv == _lastSrv && arg.Database == _lastDb && _lastText!=null && arg.Text.TrimEnd(' ') == _lastText.TrimEnd(' '))
             {
                 return true;
@@ -516,7 +550,7 @@ namespace HuntingDog.DogFace
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
-            MyLogger.LogMessage("Searching " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
+            //MyLogger.LogMessage("Searching " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
 
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
@@ -668,7 +702,7 @@ namespace HuntingDog.DogFace
             if (item.Entity.IsFunction)
                 return new List<string> { "Modify", "Execute", "Locate",  };
             else if (item.Entity.IsTable)
-                return new List<string> { "Select Data", "Edit Data", "Design Table", "Locate", };
+                return new List<string> { "Select Data", "Edit Data", "Design Table","Script Table", "Locate", };
             else if (item.Entity.IsView)
                 return new List<string> { "Select Data","Modify View", "Locate",  };
 
@@ -699,6 +733,7 @@ namespace HuntingDog.DogFace
                     case "Select Data": StudioController.SelectFromTable(SelectedServer, item.Entity); break;
                     case "Edit Data": StudioController.EditTableData(SelectedServer, item.Entity); break;
                     case "Design Table": StudioController.DesignTable(SelectedServer, item.Entity); break;
+                    case "Script Table": StudioController.ScriptTable(SelectedServer, item.Entity); break;
                 }
             }
             else if(item.Entity.IsView)
@@ -1162,19 +1197,30 @@ namespace HuntingDog.DogFace
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
+            ReloadObjectsFromDatabase();
+        }
+
+        private void ReloadObjectsFromDatabase()
+        {
             if (SelectedServer != null)
             {
-                if(SelectedDatabase!=null)
-                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<string,string>(SelectedServer, SelectedDatabase),
-                                          (int) ERquestType.Server, true);
-            }
+                if (SelectedDatabase != null)
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<string, string>(SelectedServer, SelectedDatabase),
+                                          (int)ERquestType.RefreshSearch, true);
+            } 
         }
 
 
         private void RefreshDatabaseList_Click(object sender, RoutedEventArgs e)
         {
+            StoreSelectedDatabaseInUserProfile();
+            ReloadObjectsFromDatabase();
+
             if (SelectedServer != null)
-                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer , (int)ERquestType.Server, true);
+            {
+                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer, (int) ERquestType.Server, true);          
+            }
+ 
         }
 
         private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
@@ -1423,6 +1469,8 @@ namespace HuntingDog.DogFace
         public string Srv { get; set; }
         public string Text { get; set; }
         public string Database{get;set;}
+
+        public bool ForceSearch { get; set; }
     }
 
     public class WidthConverter : IValueConverter

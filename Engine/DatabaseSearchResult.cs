@@ -50,7 +50,7 @@ namespace HuntingDog.DogEngine
             else 
                 throw new NotImplementedException("Unknown object type " + result.GetType().Name);
 
-            SearchName = (Schema + Name).ToLower();
+            SearchName = SchemaAndName.ToLower();
         }
 
         public void Refresh()

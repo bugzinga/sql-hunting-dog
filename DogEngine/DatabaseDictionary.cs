@@ -129,7 +129,10 @@ namespace HuntingDog.DogEngine
 
         private static SearchCriteria PrepareCriteria(string criteria)
         {
+            // ignore all brackets
+            criteria = criteria.Replace("]", "").Replace("[", "");
             var searchCrit = new SearchCriteria();
+
 
             searchCrit.Schema = GetSchema(criteria);
 

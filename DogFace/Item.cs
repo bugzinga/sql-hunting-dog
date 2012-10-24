@@ -68,6 +68,11 @@ namespace HuntingDog.DogFace
         public string Action3Description { get; set; }
         public string Action3Tooltip { get; set; }
 
+        public Visibility Action4Visibility { get; set; }
+        public ImageSource Action4 { get; set; }
+        public string Action4Description { get; set; }
+        public string Action4Tooltip { get; set; }
+
         public bool IsChecked { get { return (bool)GetValue(IsCheckedProperty); } set { SetValue(IsCheckedProperty, value); } }
         public static readonly DependencyProperty IsCheckedProperty =
             DependencyProperty.Register("IsChecked", typeof(bool), typeof(Item));

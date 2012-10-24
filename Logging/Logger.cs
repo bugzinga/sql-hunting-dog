@@ -67,7 +67,7 @@ namespace HuntingDog
                     + String.Format("{0:0.00}", (double)timer.ElapsedMilliseconds/1000)
                     + " sec.");
             else
-                LogMessage("Perf:" + msg + timer.ElapsedMilliseconds + " ms.");
+                LogMessage("Perf:" + msg +"-" +  timer.ElapsedMilliseconds + " ms.");
         }
 
         public static void LogMessage(string msg)

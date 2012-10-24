@@ -17,6 +17,14 @@ namespace HuntingDog.DogEngine
         public bool IsView { get; set; }
 
         public object InternalObject { get; set; }
+
+        public string ToSafeString()
+        {
+            if (InternalObject == null)
+                return string.Format("Name:{0} but internal object is null.", FullName);
+
+            return FullName;
+        }
     }
 
     public class FuncParameter
@@ -112,6 +120,7 @@ namespace HuntingDog.DogEngine
         void ModifyProcedure(string server, Entity entityObject);
       
         // select * from script
+        void ScriptTable(string server, Entity entityObject);
         void SelectFromTable(string server, Entity entityObject);
         void SelectFromView(string server, Entity entityObject);
 

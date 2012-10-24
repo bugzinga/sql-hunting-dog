@@ -13,6 +13,8 @@ namespace HuntingDog.DogEngine
 
         SqlConnectionInfo _connectionInfo;
         Server _server;
+        public Server Server { get { return _server; } }
+
         public SqlConnectionInfo Connection { get { return _connectionInfo; }  }
         List<IDatabaseDictionary> DictionaryList { get; set; }
 
@@ -44,8 +46,8 @@ namespace HuntingDog.DogEngine
             //server.SetDefaultInitFields(typeof(UserDefinedFunction), "Name");
             _server.SetDefaultInitFields(typeof(Database), "IsSystemObject");
             _server.SetDefaultInitFields(typeof(Database), "IsAccessible");
-            _server.SetDefaultInitFields(typeof(Column), true);
-            _server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
+            //_server.SetDefaultInitFields(typeof(Column), true);
+            //_server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
 
 
          
@@ -76,7 +78,9 @@ namespace HuntingDog.DogEngine
 
         public List<string> DatabaseList
         {
-            get { return (from Database d in _server.Databases select d.Name).ToList(); }
+            get { return (from Database d in _server.Databases
+                          where d.IsSystemObject==false
+                          select d.Name ).ToList(); }
         }
 
         void FillDatabase(IDatabaseDictionary databaseDictionary)
@@ -97,7 +101,9 @@ namespace HuntingDog.DogEngine
 
             databaseDictionary.Clear();
 
-            RefresDatabase(d);
+            // do not need to refresh database RefresDatabase(d);
+
+            MyLogger.LogPerformace("Refreshing database " + databaseDictionary.DatabaseName, timer);
 
             LoadObjects(d, databaseDictionary);
 
@@ -113,19 +119,35 @@ namespace HuntingDog.DogEngine
                 {
                     try
                     {
+                        var timer = new Stopwatch();
+                        timer.Start();
+
                         LoadTables(d,databaseDictionary);
 
+                        MyLogger.LogPerformace("Loading tables " + d.Name, timer);
+
+                        timer.Reset();
+                        timer.Start();
                         LoadStoredProcs(d,databaseDictionary);
 
+                        MyLogger.LogPerformace("Loading procedures " + d.Name, timer);
+
+                        timer.Reset();
+                        timer.Start();
                         LoadViews(d,databaseDictionary);
 
+                        MyLogger.LogPerformace("Loading views " + d.Name, timer);
+                        timer.Reset();
+                        timer.Start();
+
                         LoadFunctions(d,databaseDictionary);
+
+                        MyLogger.LogPerformace("Loading functions " + d.Name, timer);
                     }
                     catch (Exception ex)
                     {
                         // this can get thrown for security reasons - probably need to swallow here
                         MyLogger.LogError("Security Error in database :" + d.Name + "", ex);
-                        var a = d.Name;
                     }
                 }
 
@@ -153,22 +175,22 @@ namespace HuntingDog.DogEngine
 
             try
             {
-                d.Tables.Refresh(true);
+                d.Tables.Refresh();
             }
             catch { }
 
             try
             {
-                d.StoredProcedures.Refresh(true);
+                d.StoredProcedures.Refresh();
             }
             catch
             {
 
             }
 
-            try { d.Views.Refresh(true); }
+            try { d.Views.Refresh(); }
             catch { }
-            try { d.UserDefinedFunctions.Refresh(true); }
+            try { d.UserDefinedFunctions.Refresh(); }
             catch { }
 
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HuntingDog;
 using HuntingDog.DogEngine;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
@@ -56,9 +57,9 @@ namespace DatabaseObjectSearcher
 
                 System.Windows.Forms.SendKeys.Send("{F5}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MyLogger.LogError("SelectFromView failed.", ex);
             }
 
 
@@ -87,9 +88,9 @@ namespace DatabaseObjectSearcher
                 CreateSQLDocumentWithHeader(builder.ToString(), connInfo);
               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MyLogger.LogError("OpenFunctionForModification failed.", ex);
             }
         }
 
@@ -129,6 +130,38 @@ namespace DatabaseObjectSearcher
             w.WalkDependencies(dpTree);
         }
 
+        public static void ModifyView(View vw, SqlConnectionInfo connInfo)
+        {
+            try
+            {
+
+                StringBuilder builder = new StringBuilder(1000);
+                lock (vw)
+                {
+                    vw.Refresh();
+
+                    string originalSP = vw.TextBody;
+                    builder.AppendLine(UseDataBaseGo(vw.Parent));
+
+                    builder.Append(vw.ScriptHeader(true));
+                    // trye to use ScriptHeader(true) to change header. !!!
+                    //var indexOfCreate = sp.TextHeader.IndexOf(CREATE_PROC,0,StringComparison.OrdinalIgnoreCase);
+
+                    // var alterTextHeader = sp.TextHeader.Remove(indexOfCreate, CREATE_PROC.Length);
+                    // builder.Append( alterTextHeader.Insert(indexOfCreate,ALTER_PROC) );
+
+                    builder.Append(originalSP);
+                }
+
+                CreateSQLDocumentWithHeader(builder.ToString(), connInfo);
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("OpenStoredProcedureForModification failed.", ex);
+            }
+        }
+
         public static void OpenStoredProcedureForModification(StoredProcedure sp, SqlConnectionInfo connInfo)
         {
             try
@@ -136,15 +169,10 @@ namespace DatabaseObjectSearcher
                
                 StringBuilder builder = new StringBuilder(1000);
                 lock (sp)
-                {
-           
+                {           
                     sp.Refresh();
                    
                     string originalSP = sp.TextBody;
-   
-
-                  
-
                     builder.AppendLine(UseDataBaseGo(sp.Parent));
 
                     builder.Append(sp.ScriptHeader(true));
@@ -154,15 +182,15 @@ namespace DatabaseObjectSearcher
                    // var alterTextHeader = sp.TextHeader.Remove(indexOfCreate, CREATE_PROC.Length);
                    // builder.Append( alterTextHeader.Insert(indexOfCreate,ALTER_PROC) );
 
-                        builder.Append(originalSP);
+                   builder.Append(originalSP);
                 }
 
                 CreateSQLDocumentWithHeader(builder.ToString(), connInfo);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MyLogger.LogError("OpenStoredProcedureForModification failed.", ex);
             }
 
 
@@ -267,9 +295,9 @@ namespace DatabaseObjectSearcher
                 CreateSQLDocumentWithHeader(execScript, connInfo);
                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MyLogger.LogError("ExecuteStoredProc failed.", ex);
             }
         }
 
@@ -350,6 +378,12 @@ namespace DatabaseObjectSearcher
 
         public static void DesignTable(Table tbl, SqlConnectionInfo connInfo)
         {
+            if(tbl.State == SqlSmoState.Dropped)
+            {
+                MyLogger.LogMessage("trying to design dropped table.");
+                return;
+            }
+
             var mc = new ManagedConn();
             mc.Connection = connInfo;
             ServiceCache.ScriptFactory.DesignTableOrView(Microsoft.SqlServer.Management.UI.VSIntegration.Editors.DocumentType.Table,
@@ -360,9 +394,67 @@ namespace DatabaseObjectSearcher
 
         public static void OpenTable(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
         {
+            if (objectToSelect.State == SqlSmoState.Dropped)
+            {
+                MyLogger.LogMessage("trying to open dropped table.");
+                return;
+            }
+
             ObjectExplorerManager _manager = new ObjectExplorerManager();
             _manager.OpenTable(objectToSelect, connection);
         }
+
+
+        public static void ScriptTable(Table tbl, SqlConnectionInfo connInfo)
+        {
+
+            try
+            {
+
+                // create new document               
+                string select = "";
+                lock (tbl)
+                {
+                    tbl.Refresh();
+                    tbl.Columns.Refresh();
+                    tbl.Indexes.Refresh();
+
+                    select += UseDataBaseGo(tbl.Parent);
+
+                    foreach (var line in tbl.Script())
+                    {
+                        select += "\r\n\t";
+                        select += line;
+                    }
+
+                    if(tbl.Indexes.Count>0)
+                    {
+                        select += "\r\n  \r\n  -- Indexes --\r\n";
+                        foreach (Index indexDef in tbl.Indexes)
+                        {                         
+                            foreach (var line in indexDef.Script())
+                            {
+                                select += line;
+                            }
+                            select += "\r\n \r\n";
+                        }
+                    }
+                   
+
+                }
+
+                CreateSQLDocumentWithHeader(select, connInfo);
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Script Table failed.", ex);
+            }
+
+
+
+        }
+
 
         public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo)
         {
@@ -391,9 +483,9 @@ namespace DatabaseObjectSearcher
 
                 System.Windows.Forms.SendKeys.Send("{F5}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MyLogger.LogError("SelectFromTable failed.",ex);
             }
 
            

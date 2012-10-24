@@ -47,8 +47,10 @@ namespace HuntingDog.DogFace
             var res = new List<Item>();
             foreach (var source in sourceList)
             {
-                var uiEntry = new Item() { Name = source.Name, Entity = source };
+                var uiEntry = new Item() { Name = source.FullName, Entity = source };
                 uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
+                uiEntry.Action4Visibility = System.Windows.Visibility.Collapsed;
+
                 //uiEntry.Action3 = imageProcess;
                 // uiEntry.Action3Description = "  ";
 

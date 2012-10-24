@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Text;
 using HuntingDog;
+using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 //using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
@@ -138,10 +141,11 @@ namespace DatabaseObjectSearcher
             try
             {
 
-                if (!Is2008R2)
+                /*if (!Is2008R2)
                     SetNON2008R2ObjectExplorerEventProvider();
                 else
                     Set2008R2ObjectExplorerEventProvider();
+                 */
                 // old way
                 //var provider = (IObjectExplorerEventProvider)objectExplorer.GetService(typeof(IObjectExplorerEventProvider));
                 //provider.SelectionChanged += new NodesChangedEventHandler(provider_SelectionChanged);
@@ -176,7 +180,12 @@ namespace DatabaseObjectSearcher
         {
             try
             {
-                foreach (var n in args.ChangedNodes)
+                var t = args.GetType();
+                var pi = t.GetProperty("ChangedNodes");
+                var coll = (ICollection)pi.GetValue(args, null);
+
+
+                foreach (INavigationContext n in coll)
                 {
                     if (n!=null && n.Parent == null)
                     {
@@ -314,6 +323,102 @@ namespace DatabaseObjectSearcher
             SelectNode(hierarchy.Root);
         }
 
+        private MethodInfo _editTableMethod = null;
+        public void OpenTable2(NamedSmoObject tbl, SqlConnectionInfo connection,Server server)
+        {
+             string fileName = null;
+            // step1 - get script to edit table - SelectFromTableOrView(Server server, Urn urn, int topNValue)
+
+            // step2 - create a file
+
+            
+             try
+             {
+                 var t =
+                     Type.GetType(
+                         "Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer.OpenTableHelperClass,ObjectExplorer",
+                         true, true);
+                 var miSelectFromTable = t.GetMethod("SelectFromTableOrView", BindingFlags.Static | BindingFlags.Public);
+
+
+                 //signature is: public static string SelectFromTableOrView(Server server, Urn urn, int topNValue)
+                 string script = (string) miSelectFromTable.Invoke(null, new object[] {server, tbl.Urn, 200});
+
+                 fileName = CreateFile(script);
+
+
+
+                 // invoke designer
+                 var mc = new ManagementStudioController.ManagedConn();
+                 mc.Connection = connection;
+                 if (_editTableMethod == null)
+                 {
+
+                     foreach (var mi in
+                         ServiceCache.ScriptFactory.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                         )
+                     {
+                         if (mi.Name == "CreateDesigner" && mi.GetParameters().Length == 5)
+                         {
+                             _editTableMethod = mi;
+                             break;
+                         }
+                     }
+
+                 }
+
+                 if (_editTableMethod != null)
+                 {
+
+                     _editTableMethod.Invoke(ServiceCache.ScriptFactory, 
+                            new object[] {DocumentType.OpenTable,DocumentOptions.ManageConnection, new Urn(tbl.Urn.ToString() + "/Data"), mc,fileName});
+                 }
+                 else
+                 {
+                     MyLogger.LogError("Could not find CreateDesigner method");
+                 }
+
+               
+
+             }
+             catch(Exception ex)
+             {
+                 MyLogger.LogError("Failed OpenTable2",ex);
+             }
+             finally
+             {
+                 if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
+                 {
+                     File.Delete(fileName);
+                 }
+             }
+
+         
+
+        }
+
+
+        public static string CreateFile(string script)
+        {
+            string path = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", new object[] { Path.GetTempFileName(), "dtq" });
+            StringBuilder builder = new StringBuilder();
+            builder.Append("[D035CF15-9EDB-4855-AF42-88E6F6E66540, 2.00]\r\n");
+            builder.Append("Begin Query = \"Query1.dtq\"\r\n");
+            builder.Append("Begin RunProperties =\r\n");
+            builder.AppendFormat("{0}{1}{2}", "SQL = \"", script, "\"\r\n");
+            builder.Append("ParamPrefix = \"@\"\r\n");
+            builder.Append("ParamSuffix = \"\"\r\n");
+            builder.Append("ParamSuffix = \"\\\"\r\n");
+            builder.Append("End\r\n");
+            builder.Append("End\r\n");
+            StreamWriter writer = new StreamWriter(path, false, Encoding.Unicode);
+            writer.Write(builder.ToString());
+            writer.Close();
+            return path;
+        }
+
+
+
 
         internal void OpenTable(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
         {
@@ -326,7 +431,7 @@ namespace DatabaseObjectSearcher
                 }
                 HierarchyTreeNode databasesNode = GetUserDatabasesNode(hierarchy.Root);
 
-                var resultNode = SelectSMOObject(databasesNode, objectToSelect);
+                var resultNode = GetNode(databasesNode, objectToSelect);
 
                 //MSSQLController.Current.SearchWindow.Activate();
 
@@ -346,6 +451,11 @@ namespace DatabaseObjectSearcher
 
         internal void SelectSMOObjectInObjectExplorer(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
         {
+            if (objectToSelect.State == SqlSmoState.Dropped)
+            {
+                MyLogger.LogMessage("Trying to locate dropped object:" + objectToSelect.Name);
+                return;
+            }
             IExplorerHierarchy hierarchy = GetHierarchyForConnection(connection);
             if (hierarchy == null)
             {
@@ -456,6 +566,32 @@ namespace DatabaseObjectSearcher
             Match m = re.Match(namedObject.Urn);
             string schemaQualifiedName = m.Groups[2].Captures[0] + "." + m.Groups[1].Captures[0];
             return schemaQualifiedName; // Named SMO object has a FullQualifiedName property but it is internal
+        }
+
+        private HierarchyTreeNode GetNode(HierarchyTreeNode node, NamedSmoObject objectToSelect)
+        {
+            if (node != null)
+            {
+                //EnumerateChildrenSynchronously(node);
+                bool atFinalLevel;
+                string pattern = BuildMatchingPathExpressionForDepth(objectToSelect, node.FullPath, node.Level + 1, out atFinalLevel);
+
+                foreach (HierarchyTreeNode child in node.Nodes)
+                {
+                    if (string.Compare(child.FullPath, pattern, true) == 0)
+                    {
+                        if (atFinalLevel)
+                        {
+                            return child;// SelectNode(child);
+                        }
+                        else
+                        {
+                            return GetNode(child, objectToSelect);
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         private HierarchyTreeNode SelectSMOObject(HierarchyTreeNode node, NamedSmoObject objectToSelect)

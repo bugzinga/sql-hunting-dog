@@ -38,8 +38,8 @@ namespace HuntingDog.DogEngine
             get { return currentInstance; }
         }
 
-        public event Action<List<string> > OnServersAdded;
-        public event Action<List<string> > OnServersRemoved;
+        public event Action<List<string>> OnServersAdded;
+        public event Action<List<string>> OnServersRemoved;
 
         List<Entity> IStudioController.Find(string serverName, string databaseName, string searchText)
         {
@@ -57,7 +57,7 @@ namespace HuntingDog.DogEngine
                 e.IsTable = found.IsTable;
                 e.IsView = found.IsView;
                 e.FullName = found.SchemaAndName;
-                e.InternalObject = found.Result; 
+                e.InternalObject = found.Result;
                 result.Add(e);
             }
 
@@ -74,35 +74,32 @@ namespace HuntingDog.DogEngine
 
             try
             {
-                //var oControl = 
-                //  bars["Query"].Controls.Add(MsoControl Type.msoControlButton,
-                //  System.Reflection.Missing.Value,
-                //  System.Reflection.Missing.Value,1,true);
-                // Set the caption of the submenuitem
-                //oControl.Caption = "Navigate In Object Explorer";
+                var srv = this.Servers[server];
+                manager.SelectSMOObjectInObjectExplorer(entityObject.InternalObject as ScriptSchemaObjectBase, srv.Connection);
             }
-            catch
+            catch (Exception ex)
             {
+                MyLogger.LogError("Error locating object.", ex);
             }
 
 
 
-            var srv = this.Servers[server];
-            manager.SelectSMOObjectInObjectExplorer(entityObject.InternalObject as ScriptSchemaObjectBase, srv.Connection);
+
         }
 
         System.Threading.Thread _serverCheck;
-         System.Threading.AutoResetEvent _stopThread = new AutoResetEvent(false);
+        System.Threading.AutoResetEvent _stopThread = new AutoResetEvent(false);
+
         void IStudioController.Initialise()
         {
 
-            Servers = new Dictionary<string,DatabaseLoader>();
+            Servers = new Dictionary<string, DatabaseLoader>();
 
             manager.Init();
             manager.OnNewServerConnected += manager_OnNewServerConnected;
-     
 
-           ReloadServerList();
+
+            ReloadServerList();
 
             // run thread - this thread will check connected servers and will report if some servers will be disconnected.
             _serverCheck = new System.Threading.Thread(BackgroundThreadCheckServer);
@@ -110,14 +107,14 @@ namespace HuntingDog.DogEngine
 
         }
 
-        
+
         private void BackgroundThreadCheckServer()
         {
             List<SqlConnectionInfo> oldList = manager.GetAllServers(); ;
-            while(true)
+            while (true)
             {
 
-                if (_stopThread.WaitOne(5 * 1000) == true)
+                if (_stopThread.WaitOne(1 * 1000))
                     break;
 
                 try
@@ -130,9 +127,16 @@ namespace HuntingDog.DogEngine
                             var removed =
                                 oldList.Where(x => !newList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
 
-                            if(removed.Count>0)
+                            var added =
+                               newList.Where(x => !oldList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
+
+                            if (removed.Count > 0 || added.Count>0)
                             {
-                                MyLogger.LogMessage("Detected disconnected server");
+                                if (removed.Count>0)
+                                    MyLogger.LogMessage("Found " + removed.Count.ToString() + " disconnected server");
+
+                                if (removed.Count > 0)
+                                    MyLogger.LogMessage("Found " + added.Count.ToString() + " connected server");
 
                                 var removedNameList = removed.Select(x => x.ServerName).ToList();
                                 foreach (var removedServer in removedNameList)
@@ -141,18 +145,22 @@ namespace HuntingDog.DogEngine
                                     srv.Dispose();
                                 }
 
+                                var addedNameList = added.Select(x => x.ServerName).ToList();
+
                                 ReloadServerList();
 
                                 OnServersRemoved(removedNameList);
 
-                                if(Servers.Count==0)
+                                if (Servers.Count == 0)
                                 {
                                     // no servers left. Clean after yourself
                                     GC.Collect();
                                 }
+
+                                OnServersAdded(addedNameList);
                             }
 
-                          
+
 
                         }
 
@@ -161,52 +169,70 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception e)
                 {
-                    
-                    MyLogger.LogError("Thread server checker ",e);
+
+                    MyLogger.LogError("Thread server checker ", e);
                 }
                 // check all servers
-              
-                
+
+                if (_stopThread.WaitOne(4 * 1000))
+                    break;
             }
         }
 
-        private void  ReloadServerList()
+        private void ReloadServerList()
         {
+            // we need to preserve old servers (and previously cached objects) when new server is added
+            var oldServers = new Dictionary<string, DatabaseLoader>();
+            foreach (var srvKeyValue in Servers)
+            {
+                oldServers.Add(srvKeyValue.Key, srvKeyValue.Value);
+            }
+
             Servers.Clear();
+
+
             // read all servers
             foreach (var srvConnectionInfo in manager.GetAllServers())
             {
                 try
                 {
-                   
-                    var nvServer = new DatabaseLoader();
-                    nvServer.Initialise(srvConnectionInfo);
-                    Servers.Add(srvConnectionInfo.ServerName, nvServer);
+                    string srvName = srvConnectionInfo.ServerName;
+                    if (oldServers.ContainsKey(srvName))
+                    {
+                        Servers.Add(srvName, oldServers[srvName]);
+                    }
+                    else
+                    {
+                        var nvServer = new DatabaseLoader();
+                        nvServer.Initialise(srvConnectionInfo);
+                        Servers.Add(srvName, nvServer);
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     // NEED TO LOG: FATAL ERROR:
-                    MyLogger.LogError("Error reloading server list.",ex);
+                    MyLogger.LogError("Error reloading server list.", ex);
                 }
             }
-          
+
         }
 
-     
+
         private DatabaseLoader GetServerByName(string name)
         {
             string lowerName = name.ToLower();
 
-            string key =  Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
+            string key = Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
 
-            return key!=null?Servers[key]:null;
+            return key != null ? Servers[key] : null;
         }
 
         void manager_OnNewServerConnected(string serverName)
         {
 
 
-            if (GetServerByName(serverName)==null)
+            if (GetServerByName(serverName) == null)
             {
                 lock (this)
                 {
@@ -247,67 +273,108 @@ namespace HuntingDog.DogEngine
 
         void IStudioController.RefreshServer(string serverName)
         {
-            if (Servers.ContainsKey(serverName))
+            try
             {
-                var server = Servers[serverName];
-                server.RefreshDatabaseList();     
+                if (Servers.ContainsKey(serverName))
+                {
+                    var server = Servers[serverName];
+                    server.RefreshDatabaseList();
+                }
+                else
+                {
+                    MyLogger.LogError("Controller: Refresh server. Unknown server name " + serverName + ".");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MyLogger.LogError("Controller: Refresh server. Unknown server name " + serverName + ".");
+
+                MyLogger.LogError("Controller: RefreshServer", ex);
             }
-           
+
+
         }
 
         void IStudioController.RefreshDatabase(string serverName, string dbName)
         {
-            if (Servers.ContainsKey(serverName))
+            try
             {
-                var server = Servers[serverName];
-                server.RefreshDatabase(dbName);
+
+                if (Servers.ContainsKey(serverName))
+                {
+                    var server = Servers[serverName];
+                    server.RefreshDatabase(dbName);
+                }
+                else
+                {
+                    MyLogger.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                MyLogger.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
+
+                MyLogger.LogError("Controller: RefreshDatabase failed. Server:" + serverName + " database:" + dbName, ex);
             }
         }
 
+        private string GetSafeEntityObject(Entity entityObject)
+        {
+            return entityObject != null ? entityObject.ToSafeString() : "NULL entityObject";
+        }
 
-        List<TableColumn> IStudioController.ListViewColumns(Entity entityObjecte)
+        List<TableColumn> IStudioController.ListViewColumns(Entity entityObject)
         {
             var result = new List<TableColumn>();
-
-            var view = entityObjecte.InternalObject as View;
-            view.Columns.Refresh();
-            foreach (Column tc in view.Columns)
+            try
             {
-                result.Add(new TableColumn()
+
+                var view = entityObject.InternalObject as View;
+                view.Columns.Refresh();
+                foreach (Column tc in view.Columns)
                 {
-                    Name = tc.Name,
-                    IsPrimaryKey = tc.InPrimaryKey,
-                    IsForeignKey = tc.IsForeignKey,
-                    Nullable = tc.Nullable,
-                    Type = tc.DataType.Name
-                });
+                    result.Add(new TableColumn()
+                    {
+                        Name = tc.Name,
+                        IsPrimaryKey = tc.InPrimaryKey,
+                        IsForeignKey = tc.IsForeignKey,
+                        Nullable = tc.Nullable,
+                        Type = tc.DataType.Name
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ListViewColumns failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
         }
 
-        List<TableColumn> IStudioController.ListColumns(Entity entityObjecte)
+        List<TableColumn> IStudioController.ListColumns(Entity entityObject)
         {
             var result = new List<TableColumn>();
-
-            var table = entityObjecte.InternalObject as Table;
-            table.Columns.Refresh();
-            foreach (Column tc in table.Columns)
+            try
             {
-                result.Add(new TableColumn(){ 
-                    Name = tc.Name,
-                    IsPrimaryKey = tc.InPrimaryKey, 
-                    IsForeignKey = tc.IsForeignKey,
-                    Nullable = tc.Nullable, 
-                    Type = tc.DataType.Name} );
+
+                var table = entityObject.InternalObject as Table;
+                table.Columns.Refresh();
+                foreach (Column tc in table.Columns)
+                {
+                    result.Add(new TableColumn()
+                                   {
+                                       Name = tc.Name,
+                                       IsPrimaryKey = tc.InPrimaryKey,
+                                       IsForeignKey = tc.IsForeignKey,
+                                       Nullable = tc.Nullable,
+                                       Type = tc.DataType.Name
+                                   });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ListColumns failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -317,15 +384,23 @@ namespace HuntingDog.DogEngine
         {
             var result = new List<FuncParameter>();
 
-            var func = entityObject.InternalObject as UserDefinedFunction;
-            func.Parameters.Refresh();
-            foreach (UserDefinedFunctionParameter tc in func.Parameters)
+            try
             {
-                result.Add(new FuncParameter()
+                var func = entityObject.InternalObject as UserDefinedFunction;
+                func.Parameters.Refresh();
+                foreach (UserDefinedFunctionParameter tc in func.Parameters)
                 {
-                    Name = tc.Name,       
-                    Type = tc.DataType.Name
-                });
+                    result.Add(new FuncParameter()
+                    {
+                        Name = tc.Name,
+                        Type = tc.DataType.Name
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ListFuncParameters failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -335,18 +410,29 @@ namespace HuntingDog.DogEngine
         {
             var result = new List<ProcedureParameter>();
 
-            var procedure = entityObject.InternalObject as StoredProcedure;
-            procedure.Parameters.Refresh();
-            foreach (StoredProcedureParameter tc in procedure.Parameters)
+            try
             {
-                result.Add(new ProcedureParameter()
+
+                var procedure = entityObject.InternalObject as StoredProcedure;
+                procedure.Parameters.Refresh();
+                foreach (StoredProcedureParameter tc in procedure.Parameters)
                 {
-                    Name = tc.Name,
-                    IsOut = tc.IsOutputParameter,
-                    DefaultValue  = tc.DefaultValue,
-                    Type = tc.DataType.Name,
-                });
+                    result.Add(new ProcedureParameter()
+                    {
+                        Name = tc.Name,
+                        IsOut = tc.IsOutputParameter,
+                        DefaultValue = tc.DefaultValue,
+                        Type = tc.DataType.Name,
+                    });
+                }
+
+
             }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ListProcParameters failed. " + GetSafeEntityObject(entityObject), ex);
+            }
+
 
             return result;
         }
@@ -363,14 +449,14 @@ namespace HuntingDog.DogEngine
             throw new NotImplementedException();
         }
 
- 
+
 
         void IStudioController.GenerateCreateScript(string name)
         {
             throw new NotImplementedException();
         }
 
-      
+
 
         public EnvDTE.Window SearchWindow
         {
@@ -379,16 +465,24 @@ namespace HuntingDog.DogEngine
 
         public EnvDTE.Window CreateAddinWindow(AddIn addinInstance)
         {
-            Assembly asm = Assembly.Load("HuntingDog");
-            // Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b9"); // this guid doesn't seem to matter?
-            //toolWindow = CreateToolWindow("DatabaseObjectSearcherUI.ucMainControl", asm.Location, id,  addinInstance);
+            try
+            {
+                Assembly asm = Assembly.Load("HuntingDog");
+                // Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b9"); // this guid doesn't seem to matter?
+                //toolWindow = CreateToolWindow("DatabaseObjectSearcherUI.ucMainControl", asm.Location, id,  addinInstance);
 
-            Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b8"); // this guid doesn't seem to matter?
-            toolWindow = CreateToolWindow("HuntingDog.ucHost", asm.Location, id, addinInstance);
-            return toolWindow;
+                Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b8"); // this guid doesn't seem to matter?
+                toolWindow = CreateToolWindow("HuntingDog.ucHost", asm.Location, id, addinInstance);
+                return toolWindow;
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: CreateAddinWindow failed.", ex);
+                throw;
+            }
         }
 
-     
+
 
         public void ForceShowYourself()
         {
@@ -396,7 +490,7 @@ namespace HuntingDog.DogEngine
                 ShowYourself();
         }
 
-        AddIn _inst; 
+        AddIn _inst;
         private EnvDTE.Window CreateToolWindow(string typeName, string assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
         {
             Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;
@@ -419,7 +513,7 @@ namespace HuntingDog.DogEngine
                     }
                 }
 
-              
+
 
                 //toolWindow.Width = oe.Width;
                 // toolWindow.SetKind((vsWindowType)oe.Kind);
@@ -441,34 +535,65 @@ namespace HuntingDog.DogEngine
 
         public void ModifyFunction(string server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ModifyFunction failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public void ModifyView(string server, Entity entityObject)
         {
-            //var serverInfo = Servers[server];
-            //ManagementStudioController.OpenView(entityObject.InternalObject as View, serverInfo.ConnInfo);
+            var serverInfo = Servers[server];
+            ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection);
         }
 
         public void ModifyProcedure(string server, Entity entityObject)
         {
-               var serverInfo = Servers[server];
-               ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ModifyProcedure failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
-      
+
 
         public void SelectFromView(string server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection); 
+            try
+            {
+
+                var serverInfo = Servers[server];
+                ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection);
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: SelectFromView failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public void ExecuteProcedure(string server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            ManagementStudioController.ExecuteStoredProc(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.ExecuteStoredProc(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public void ExecuteFunction(string server, Entity entityObject)
@@ -477,30 +602,65 @@ namespace HuntingDog.DogEngine
             //ManagementStudioController.e(entityObject.InternalObject as StoredProcedure, serverInfo.ConnInfo);
         }
 
+
+        public void ScriptTable(string server, Entity entityObject)
+        {
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ScriptTable failed." + GetSafeEntityObject(entityObject), ex);
+            }
+        }
+
         public void SelectFromTable(string server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: SelectFromTable failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public void EditTableData(string server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            manager.OpenTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                manager.OpenTable2(entityObject.InternalObject as Table, serverInfo.Connection,serverInfo.Server);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: EditTableData failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public void DesignTable(string server, Entity entityObject)
         {
-               var serverInfo = Servers[server];
-               ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: DesignTable failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
         public event Action ShowYourself;
 
         public void ConnectNewServer()
         {
-           
-           
+
+
         }
     }
 }
