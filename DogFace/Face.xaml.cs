@@ -114,7 +114,14 @@ namespace HuntingDog.DogFace
             if (string.IsNullOrEmpty(lastSearch))
                 txtSearch.Text = "";
             else
+            {
+                // if search text contained same criteria TextChanged event will not be fired therefore search will not occur.
+                // we need to force a search if search text is the same
+                string prevText = txtSearch.Text;
                 txtSearch.Text = lastSearch;
+                if(prevText== txtSearch.Text)
+                    DoSearch(true);
+            }
         }
 
 
@@ -327,6 +334,7 @@ namespace HuntingDog.DogFace
                     //if(SelectedDatabase==null)
                     if (previousDatabaseWasFound)
                     {
+                      
                         // we managed to find our database - restore search text
                         RestoreLastSearchTextFromUserProfile();
                         txtSearch.Focus();
@@ -502,6 +510,7 @@ namespace HuntingDog.DogFace
          {
              itemsControl.ItemsSource = null;
              ClearPreviousSearch();
+             SetStatus("");
          }
 
         volatile int _requestSequenceNumber = 0;
@@ -585,7 +594,12 @@ namespace HuntingDog.DogFace
 
             });
 
-            SetStatus("Finish " + result.Count + " objects ");
+            if (result.Count==0)
+                SetStatus("Found nothing. Try to refresh");
+            else if(result.Count==1)
+                SetStatus("Found exactly one object");
+            else
+                SetStatus("Found " + result.Count + " objects ");
 
    
          }

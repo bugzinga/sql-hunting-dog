@@ -232,12 +232,20 @@ namespace DatabaseObjectSearcher
         {
             return dt.SqlDataType == SqlDataType.Int || dt.SqlDataType == SqlDataType.TinyInt ||
                 dt.SqlDataType == SqlDataType.BigInt || dt.SqlDataType == SqlDataType.Bit ||
-                 dt.SqlDataType == SqlDataType.Float || dt.SqlDataType == SqlDataType.Decimal; 
+                 dt.SqlDataType == SqlDataType.Float || dt.SqlDataType == SqlDataType.Decimal || 
+                  dt.SqlDataType == SqlDataType.SmallInt || dt.SqlDataType == SqlDataType.SmallMoney
+                 ; 
         }
 
         private static bool IsDateTime(DataType dt)
         {
-            return dt.SqlDataType == SqlDataType.DateTime;
+            return dt.SqlDataType == SqlDataType.DateTime || dt.SqlDataType == SqlDataType.DateTime2 ||
+                   dt.SqlDataType == SqlDataType.SmallDateTime;
+        }
+
+        private static bool IsDate(DataType dt)
+        {
+            return dt.SqlDataType == SqlDataType.Date;
         }
 
         private static bool IsString(DataType dt)
@@ -248,23 +256,66 @@ namespace DatabaseObjectSearcher
                  dt.SqlDataType == SqlDataType.Text || dt.SqlDataType == SqlDataType.NText;
         }
 
+        static string MakeParameterType(DataType parType)
+        {
 
-        private static string MakeParameterWithValue(string name, DataType parType)
+            if (parType.SqlDataType == SqlDataType.NVarChar || parType.SqlDataType == SqlDataType.VarChar)
+                return parType.Name + "(" + parType.MaximumLength.ToString() + ")";
+            return parType.Name;
+
+        }
+
+        private static IFormatProvider _us_culture = null;
+        private  static IFormatProvider UsCulture
+        {
+            get
+            {
+                // en-US culture, what I'd ultimately like to see the DateTime in
+                if(_us_culture==null)
+                    _us_culture = new System.Globalization.CultureInfo("en-US",
+                       true);
+                return _us_culture;
+            }
+        }
+
+        private static string MakeParameterWithValue(string name, DataType parType,bool useLikeForString)
         {
             if (IsDateTime(parType))
-                return name + " = '" + DateTime.Now.ToString("dd MMM yyyy") + "' -- " + parType.Name;
+            {
+              
+                return name + " = '" + DateTime.Now.ToString("dd MMM yyyy HH:mm:ss",UsCulture) + "' -- " +
+                       MakeParameterType(parType);
+            }
+            if (IsDate(parType))
+                return name + " = '" + DateTime.Now.ToString("dd MMM yyyy",UsCulture) + "' -- " + MakeParameterType(parType);
             else if (IsNumeric(parType))
-                return name + " = 0" + " -- " + parType.Name;
+                return name + " = 0" + " -- " + MakeParameterType(parType);
+            else if (useLikeForString)
+                return name + " like '%%'" + " -- " + MakeParameterType(parType);
             else
-                return name + " like '%%'" + " -- " + parType.Name;
+                return name + " = ''" + " -- " + MakeParameterType(parType);
         }
+       
 
         private static string MakeParameter(StoredProcedureParameter par)
         {
             if (!string.IsNullOrEmpty(par.DefaultValue))
                 return " -- " + par.Name + " = " + par.DefaultValue + "  -- " + par.DataType.Name + " ,default " + par.DefaultValue;
 
-            return MakeParameterWithValue(par.Name, par.DataType);
+            return MakeParameterWithValue(par.Name, par.DataType,false);
+        }
+
+
+        private static string MakeParameterForFunction(UserDefinedFunctionParameter parType)
+        {
+            if (IsDateTime(parType.DataType))
+                return "'"+ DateTime.Now.ToString("dd MMM yyyy HH:mm:SS") + "'";
+           if (IsDate(parType.DataType))
+               return "'" + DateTime.Now.ToString("dd MMM yyyy") + "'";
+           if (IsNumeric(parType.DataType))
+                return "0";
+            
+            return  "''";
         }
 
         public static void ExecuteStoredProc(StoredProcedure sp,  SqlConnectionInfo connInfo)
@@ -281,9 +332,13 @@ namespace DatabaseObjectSearcher
                     sp.Refresh();
                     sp.Parameters.Refresh();
                     string parameterList = "";
-                    foreach (StoredProcedureParameter par in sp.Parameters)
+                    for(int i = 0; i<sp.Parameters.Count;i++)
                     {
-                        parameterList += "\t\t " + MakeParameter(par) +  Environment.NewLine;
+                        // make a proper padding and add a comma if it not first line
+                        parameterList += "\t\t" + (i > 0 ? "," : "");
+             
+                        parameterList += MakeParameter(sp.Parameters[i]) + Environment.NewLine;
+                        
                     }
 
                     if (sp.Parameters.Count > 0)
@@ -300,6 +355,55 @@ namespace DatabaseObjectSearcher
                 MyLogger.LogError("ExecuteStoredProc failed.", ex);
             }
         }
+
+
+        public static void ExecuteFunction(UserDefinedFunction func, SqlConnectionInfo connInfo)
+        {
+            try
+            {
+
+                string execScript = "";
+               
+                var builder = new StringBuilder(1000);
+                lock (func)
+                {
+
+                    func.Refresh();
+                    func.Parameters.Refresh();
+
+
+                    string execTemplate = func.FunctionType == UserDefinedFunctionType.Scalar ? "SELECT " : "SELECT * FROM ";
+                  
+                    execScript = string.Format("{0}\r\n {1} [{2}].[{3}]",
+                                 UseDataBaseGo(func.Parent), execTemplate, func.Schema, func.Name);
+
+                    string parameterList = "";
+                    if(func.Parameters.Count>0)
+                    {
+                       
+                        for(int i = 0; i<func.Parameters.Count;i++)
+                        {
+                            if(i>0)
+                                parameterList += " , ";
+
+                            parameterList += MakeParameterForFunction(func.Parameters[0]);
+                        }                      
+
+                    }
+                    execScript += " ( " + parameterList + " ) ";
+
+            
+                }
+
+                CreateSQLDocumentWithHeader(execScript, connInfo);
+
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("ExecuteFunctionfailed.", ex);
+            }
+        }
+
 
         public class ManagedConn : IManagedConnection
         {
@@ -473,7 +577,7 @@ namespace DatabaseObjectSearcher
 
                     string where = Environment.NewLine + "\t\t\t-- WHERE ";
                     foreach (Column p in tbl.Columns)
-                        where += Environment.NewLine + "\t\t\t\t-- " + MakeParameterWithValue(p.Name, p.DataType);
+                        where += Environment.NewLine + "\t\t\t\t-- " + MakeParameterWithValue(p.Name, p.DataType,true);
 
                     if (tbl.Columns.Count > 0)
                         select += where;

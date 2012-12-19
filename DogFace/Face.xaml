@@ -72,7 +72,7 @@
                 <Border Name="Border" SnapsToDevicePixels="true">
                     <StackPanel Orientation="Horizontal">
                         <Image VerticalAlignment="Center" Margin="2" Width="18" Height="18"  Source="{Binding Image}" />
-                        <TextBlock GotFocus="TextBlock_GotFocus" VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap" Opacity="0.6" TextTrimming="CharacterEllipsis">
+                        <TextBlock GotFocus="TextBlock_GotFocus" VerticalAlignment="Center" Margin="1,0,0,0" Text="{Binding Name}" TextWrapping="NoWrap" Opacity="0.6" TextTrimming="CharacterEllipsis">
                          
                         </TextBlock>
                     </StackPanel>
@@ -184,7 +184,7 @@
                                                       ContentTemplate = "{StaticResource DisplayImageWithText}"
                                                       ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
                                                       
-                                                      Margin="0,0,13,0"
+                                                      Margin="0,0,16,0"
                                                       HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                                                       VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                                       SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" 

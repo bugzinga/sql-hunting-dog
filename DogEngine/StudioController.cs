@@ -26,7 +26,7 @@ namespace HuntingDog.DogEngine
         DatabaseObjectSearcher.ObjectExplorerManager manager = new DatabaseObjectSearcher.ObjectExplorerManager();
         public Dictionary<string, DatabaseLoader> Servers { get; private set; }
 
-        public int SearchLimit = 2000;
+        public int SearchLimit = 10000;
 
         private StudioController()
         {
@@ -501,7 +501,7 @@ namespace HuntingDog.DogEngine
             {
                 object controlObject = null;
                 Assembly asm = Assembly.GetExecutingAssembly();
-                EnvDTE.Window toolWindow = win2.CreateToolWindow2(addinInstance, assemblyLocation, typeName, "Hunting Dog", "{" + uiTypeGuid.ToString() + "}", ref controlObject);
+                EnvDTE.Window toolWindow = win2.CreateToolWindow2(addinInstance, assemblyLocation, typeName, "Hunting Dog (Ctrl+D)", "{" + uiTypeGuid.ToString() + "}", ref controlObject);
 
                 EnvDTE.Window oe = null;
                 foreach (EnvDTE.Window w1 in addinInstance.DTE.Windows)
@@ -598,8 +598,15 @@ namespace HuntingDog.DogEngine
 
         public void ExecuteFunction(string server, Entity entityObject)
         {
-            //var serverInfo = Servers[server];
-            //ManagementStudioController.e(entityObject.InternalObject as StoredProcedure, serverInfo.ConnInfo);
+            try
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.ExecuteFunction(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
+            }
+            catch (Exception ex)
+            {
+                MyLogger.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+            }
         }
 
 
