@@ -98,7 +98,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Royale" />
     <Reference Include="SqlPackageBase">
-      <HintPath>Dependencies\SqlPackageBase.dll</HintPath>
+      <HintPath>..\Dependencies\2012\SqlPackageBase.dll</HintPath>
     </Reference>
     <Reference Include="SqlWorkbench.Interfaces, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
