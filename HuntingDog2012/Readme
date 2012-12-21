@@ -1,0 +1,24 @@
+
+This folder in Windows Registry contains the information in what directories
+to look for add-in definitions:
+
+	HKEY_CURRENT_USER\Software\Microsoft\SQL Server Management Studio\11.0_Config\AutomationOptions\LookInFolders
+
+That is what you can probably see there:
+
+	%VSAPPDATA%\Addins
+	%VSCOMMONAPPDATA%\Addins
+	%VSMYDOCUMENTS%\Addins
+	C:\ProgramData\Application Data\Microsoft\MSEnvShared\Addins
+	C:\Users\maximn\AppData\Roaming\Microsoft\MSEnvShared\Addins
+
+To make the "Hunting Dog" plugin working with SSMS 2012 you need to copy
+"HuntingDog.AddIn" file to one of those directories, e.g. to this place:
+
+	C:\ProgramData\Application Data\Microsoft\MSEnvShared\Addins
+
+"<Assembly>" parameter of "HuntingDog.AllIn" should point to the location of
+dll's required for the correct plugin work. Change it with regard to your
+local settings (the location of "Hunting Dog" build/assemblies):
+
+	Assembly>D:\Temp\bitbucket\hunting-dog\HuntingDog2012\bin\Debug\HuntingDog.dll</Assembly>

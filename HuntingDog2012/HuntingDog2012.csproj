@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Readme" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="stdole">
