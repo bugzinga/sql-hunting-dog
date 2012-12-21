@@ -166,6 +166,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="DogFace\Resources\add.png" />
+    <None Include="Readme" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DogFace\Resources\arrow_down_blue.png" />
