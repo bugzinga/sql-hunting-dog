@@ -66,7 +66,7 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic.Compatibility" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -77,13 +77,15 @@
       <HintPath>..\..\..\..\Program Files\Alex\Hunting Dog\test1\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>Dependencies\NLog.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Royale" />
-    <Reference Include="SqlWorkbench.Interfaces">
-      <HintPath>Dependencies\SqlWorkbench.Interfaces.dll</HintPath>
+    <Reference Include="SqlWorkbench.Interfaces, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2008\SqlWorkbench.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -440,11 +442,7 @@
     <Content Include="DogFace\Images\harddisk.png" />
     <Resource Include="DogFace\Images\server.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DogFace\Images\NewFolder1\" />
-    <Folder Include="User Interface\Controls\" />
-    <Folder Include="User Interface\List View\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
