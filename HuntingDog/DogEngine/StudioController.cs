@@ -1,47 +1,63 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.SqlServer.Management.UI.VSIntegration;
-using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
-
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
+using System.Linq;
 using System.Reflection;
-using System.Windows;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 using System.Threading;
 using DatabaseObjectSearcher;
-using System.Linq;
-
+using EnvDTE;
+using EnvDTE80;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.UI.VSIntegration;
 
 namespace HuntingDog.DogEngine
 {
-
     public class StudioController : IStudioController
     {
+        private static StudioController currentInstance = new StudioController();
+
+        private AddIn _inst;
 
         private EnvDTE.Window toolWindow;
-        DatabaseObjectSearcher.ObjectExplorerManager manager = new DatabaseObjectSearcher.ObjectExplorerManager();
-        public Dictionary<string, DatabaseLoader> Servers { get; private set; }
 
-        public int SearchLimit = 10000;
+        private DatabaseObjectSearcher.ObjectExplorerManager manager = new DatabaseObjectSearcher.ObjectExplorerManager();
+
+        public Int32 SearchLimit = 10000;
+
+        public static StudioController Current
+        {
+            get
+            {
+                return currentInstance;
+            }
+        }
+
+        public Dictionary<String, DatabaseLoader> Servers
+        {
+            get;
+            private set;
+        }
+
+        public EnvDTE.Window SearchWindow
+        {
+            get
+            {
+                return toolWindow;
+            }
+        }
 
         private StudioController()
         {
         }
 
-        static StudioController currentInstance = new StudioController();
-        public static StudioController Current
-        {
-            get { return currentInstance; }
-        }
+        public event Action ShowYourself;
 
-        public event Action<List<string>> OnServersAdded;
-        public event Action<List<string>> OnServersRemoved;
+        public event Action<List<String>> OnServersAdded;
 
-        List<Entity> IStudioController.Find(string serverName, string databaseName, string searchText)
+        public event Action<List<String>> OnServersRemoved;
+
+        List<Entity> IStudioController.Find(String serverName, String databaseName, String searchText)
         {
             var server = Servers[serverName];
             var listFound = server.Find(searchText, databaseName, SearchLimit);
@@ -64,12 +80,15 @@ namespace HuntingDog.DogEngine
             return result;
         }
 
-        void IStudioController.NavigateObject(string server, Entity entityObject)
+        void IStudioController.NavigateObject(String server, Entity entityObject)
         {
-            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars)_inst.DTE.CommandBars;
+            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) _inst.DTE.CommandBars;
+
             foreach (var b in bars)
             {
-                int i = 1;
+                // TODO: Commented to avoid a compilation warning.
+                //       What was the purpose of this line?
+                //Int32 i = 1;
             }
 
             try
@@ -81,10 +100,6 @@ namespace HuntingDog.DogEngine
             {
                 MyLogger.LogError("Error locating object.", ex);
             }
-
-
-
-
         }
 
         System.Threading.Thread _serverCheck;
@@ -92,53 +107,54 @@ namespace HuntingDog.DogEngine
 
         void IStudioController.Initialise()
         {
-
-            Servers = new Dictionary<string, DatabaseLoader>();
+            Servers = new Dictionary<String, DatabaseLoader>();
 
             manager.Init();
             manager.OnNewServerConnected += manager_OnNewServerConnected;
-
 
             ReloadServerList();
 
             // run thread - this thread will check connected servers and will report if some servers will be disconnected.
             _serverCheck = new System.Threading.Thread(BackgroundThreadCheckServer);
             _serverCheck.Start();
-
         }
-
 
         private void BackgroundThreadCheckServer()
         {
-            List<SqlConnectionInfo> oldList = manager.GetAllServers(); ;
+            List<SqlConnectionInfo> oldList = manager.GetAllServers();
+
             while (true)
             {
-
                 if (_stopThread.WaitOne(1 * 1000))
+                {
                     break;
+                }
 
                 try
                 {
                     lock (this)
                     {
                         var newList = manager.GetAllServers();
+
                         if (oldList != null)
                         {
-                            var removed =
-                                oldList.Where(x => !newList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
+                            var removed = oldList.Where(x => !newList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
+                            var added = newList.Where(x => !oldList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
 
-                            var added =
-                               newList.Where(x => !oldList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
-
-                            if (removed.Count > 0 || added.Count>0)
+                            if ((removed.Count > 0) || (added.Count > 0))
                             {
-                                if (removed.Count>0)
+                                if (removed.Count > 0)
+                                {
                                     MyLogger.LogMessage("Found " + removed.Count.ToString() + " disconnected server");
+                                }
 
                                 if (removed.Count > 0)
+                                {
                                     MyLogger.LogMessage("Found " + added.Count.ToString() + " connected server");
+                                }
 
                                 var removedNameList = removed.Select(x => x.ServerName).ToList();
+
                                 foreach (var removedServer in removedNameList)
                                 {
                                     var srv = Servers[removedServer];
@@ -159,9 +175,6 @@ namespace HuntingDog.DogEngine
 
                                 OnServersAdded(addedNameList);
                             }
-
-
-
                         }
 
                         oldList = newList;
@@ -169,13 +182,15 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception e)
                 {
-
                     MyLogger.LogError("Thread server checker ", e);
                 }
+                
                 // check all servers
 
                 if (_stopThread.WaitOne(4 * 1000))
+                {
                     break;
+                }
             }
         }
 
@@ -190,13 +205,13 @@ namespace HuntingDog.DogEngine
 
             Servers.Clear();
 
-
             // read all servers
             foreach (var srvConnectionInfo in manager.GetAllServers())
             {
                 try
                 {
-                    string srvName = srvConnectionInfo.ServerName;
+                    String srvName = srvConnectionInfo.ServerName;
+
                     if (oldServers.ContainsKey(srvName))
                     {
                         Servers.Add(srvName, oldServers[srvName]);
@@ -207,7 +222,6 @@ namespace HuntingDog.DogEngine
                         nvServer.Initialise(srvConnectionInfo);
                         Servers.Add(srvName, nvServer);
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -215,23 +229,20 @@ namespace HuntingDog.DogEngine
                     MyLogger.LogError("Error reloading server list.", ex);
                 }
             }
-
         }
 
-
-        private DatabaseLoader GetServerByName(string name)
+        private DatabaseLoader GetServerByName(String name)
         {
-            string lowerName = name.ToLower();
+            String lowerName = name.ToLower();
+            String key = Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
 
-            string key = Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
-
-            return key != null ? Servers[key] : null;
+            return (key != null)
+                ? Servers[key]
+                : null;
         }
 
-        void manager_OnNewServerConnected(string serverName)
+        void manager_OnNewServerConnected(String serverName)
         {
-
-
             if (GetServerByName(serverName) == null)
             {
                 lock (this)
@@ -242,7 +253,9 @@ namespace HuntingDog.DogEngine
                 // do not beleive server name provided by Object Explorer - it can have different case
                 var newServer = GetServerByName(serverName);
                 if (OnServersAdded != null)
-                    OnServersAdded(new List<string>() { newServer.Name });
+                {
+                    OnServersAdded(new List<String>() { newServer.Name });
+                }
             }
             else
             {
@@ -250,28 +263,31 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        List<string> IStudioController.ListServers()
+        List<String> IStudioController.ListServers()
         {
             return Servers.Keys.ToList();
         }
 
-        public List<string> ListDatabase(string serverName)
+        public List<String> ListDatabase(String serverName)
         {
             if (Servers.ContainsKey(serverName))
+            {
                 return Servers[serverName].DatabaseList;
+            }
             else
             {
                 MyLogger.LogError("Controller: requested unknown server " + serverName + ".");
+
                 foreach (var srv in Servers)
                 {
                     MyLogger.LogError("Controller:available server:" + srv.Key);
                 }
 
-                return new List<string>();
+                return new List<String>();
             }
         }
 
-        void IStudioController.RefreshServer(string serverName)
+        void IStudioController.RefreshServer(String serverName)
         {
             try
             {
@@ -287,18 +303,14 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-
                 MyLogger.LogError("Controller: RefreshServer", ex);
             }
-
-
         }
 
-        void IStudioController.RefreshDatabase(string serverName, string dbName)
+        void IStudioController.RefreshDatabase(String serverName, String dbName)
         {
             try
             {
-
                 if (Servers.ContainsKey(serverName))
                 {
                     var server = Servers[serverName];
@@ -308,28 +320,29 @@ namespace HuntingDog.DogEngine
                 {
                     MyLogger.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
                 }
-
             }
             catch (Exception ex)
             {
-
                 MyLogger.LogError("Controller: RefreshDatabase failed. Server:" + serverName + " database:" + dbName, ex);
             }
         }
 
-        private string GetSafeEntityObject(Entity entityObject)
+        private String GetSafeEntityObject(Entity entityObject)
         {
-            return entityObject != null ? entityObject.ToSafeString() : "NULL entityObject";
+            return (entityObject != null)
+                ? entityObject.ToSafeString()
+                : "NULL entityObject";
         }
 
         List<TableColumn> IStudioController.ListViewColumns(Entity entityObject)
         {
             var result = new List<TableColumn>();
+
             try
             {
-
                 var view = entityObject.InternalObject as View;
                 view.Columns.Refresh();
+
                 foreach (Column tc in view.Columns)
                 {
                     result.Add(new TableColumn()
@@ -341,7 +354,6 @@ namespace HuntingDog.DogEngine
                         Type = tc.DataType.Name
                     });
                 }
-
             }
             catch (Exception ex)
             {
@@ -354,11 +366,12 @@ namespace HuntingDog.DogEngine
         List<TableColumn> IStudioController.ListColumns(Entity entityObject)
         {
             var result = new List<TableColumn>();
+
             try
             {
-
                 var table = entityObject.InternalObject as Table;
                 table.Columns.Refresh();
+
                 foreach (Column tc in table.Columns)
                 {
                     result.Add(new TableColumn()
@@ -370,7 +383,6 @@ namespace HuntingDog.DogEngine
                                        Type = tc.DataType.Name
                                    });
                 }
-
             }
             catch (Exception ex)
             {
@@ -388,6 +400,7 @@ namespace HuntingDog.DogEngine
             {
                 var func = entityObject.InternalObject as UserDefinedFunction;
                 func.Parameters.Refresh();
+
                 foreach (UserDefinedFunctionParameter tc in func.Parameters)
                 {
                     result.Add(new FuncParameter()
@@ -412,9 +425,9 @@ namespace HuntingDog.DogEngine
 
             try
             {
-
                 var procedure = entityObject.InternalObject as StoredProcedure;
                 procedure.Parameters.Refresh();
+
                 foreach (StoredProcedureParameter tc in procedure.Parameters)
                 {
                     result.Add(new ProcedureParameter()
@@ -433,11 +446,8 @@ namespace HuntingDog.DogEngine
                 MyLogger.LogError("Controller: ListProcParameters failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
-
             return result;
         }
-
-
 
         List<Entity> IStudioController.GetInvokedBy(Entity entityObject)
         {
@@ -449,18 +459,9 @@ namespace HuntingDog.DogEngine
             throw new NotImplementedException();
         }
 
-
-
-        void IStudioController.GenerateCreateScript(string name)
+        void IStudioController.GenerateCreateScript(String name)
         {
             throw new NotImplementedException();
-        }
-
-
-
-        public EnvDTE.Window SearchWindow
-        {
-            get { return toolWindow; }
         }
 
         public EnvDTE.Window CreateAddinWindow(AddIn addinInstance)
@@ -468,11 +469,13 @@ namespace HuntingDog.DogEngine
             try
             {
                 Assembly asm = Assembly.Load("HuntingDog");
+
                 // Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b9"); // this guid doesn't seem to matter?
                 //toolWindow = CreateToolWindow("DatabaseObjectSearcherUI.ucMainControl", asm.Location, id,  addinInstance);
 
                 Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b8"); // this guid doesn't seem to matter?
                 toolWindow = CreateToolWindow("HuntingDog.ucHost", asm.Location, id, addinInstance);
+
                 return toolWindow;
             }
             catch (Exception ex)
@@ -482,38 +485,36 @@ namespace HuntingDog.DogEngine
             }
         }
 
-
-
         public void ForceShowYourself()
         {
             if (ShowYourself != null)
+            {
                 ShowYourself();
+            }
         }
 
-        AddIn _inst;
-        private EnvDTE.Window CreateToolWindow(string typeName, string assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
+        private EnvDTE.Window CreateToolWindow(String typeName, String assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
         {
             Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;
 
             _inst = addinInstance;
+
             //Windows2 win2 = applicationObject.Windows as Windows2;
             if (win2 != null)
             {
-                object controlObject = null;
+                Object controlObject = null;
                 Assembly asm = Assembly.GetExecutingAssembly();
                 EnvDTE.Window toolWindow = win2.CreateToolWindow2(addinInstance, assemblyLocation, typeName, "Hunting Dog (Ctrl+D)", "{" + uiTypeGuid.ToString() + "}", ref controlObject);
 
                 EnvDTE.Window oe = null;
+
                 foreach (EnvDTE.Window w1 in addinInstance.DTE.Windows)
                 {
                     if (w1.Caption == "Object Explorer")
                     {
                         oe = w1;
-
                     }
                 }
-
-
 
                 //toolWindow.Width = oe.Width;
                 // toolWindow.SetKind((vsWindowType)oe.Kind);
@@ -524,22 +525,21 @@ namespace HuntingDog.DogEngine
                 //addinInstance.DTE.MainWindow.LinkedWindows.Add(frame);
                 //frame.Activate();
 
-
                 toolWindow.SetTabPicture(HuntingDog.Properties.Resources.footprint.GetHbitmap());
                 toolWindow.Visible = true;
+
                 return toolWindow;
             }
+
             return null;
         }
 
-
-        public void ModifyFunction(string server, Entity entityObject)
+        public void ModifyFunction(String server, Entity entityObject)
         {
             try
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
-
             }
             catch (Exception ex)
             {
@@ -547,13 +547,13 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void ModifyView(string server, Entity entityObject)
+        public void ModifyView(String server, Entity entityObject)
         {
             var serverInfo = Servers[server];
             ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection);
         }
 
-        public void ModifyProcedure(string server, Entity entityObject)
+        public void ModifyProcedure(String server, Entity entityObject)
         {
             try
             {
@@ -566,13 +566,10 @@ namespace HuntingDog.DogEngine
             }
         }
 
-
-
-        public void SelectFromView(string server, Entity entityObject)
+        public void SelectFromView(String server, Entity entityObject)
         {
             try
             {
-
                 var serverInfo = Servers[server];
                 ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection);
 
@@ -583,7 +580,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void ExecuteProcedure(string server, Entity entityObject)
+        public void ExecuteProcedure(String server, Entity entityObject)
         {
             try
             {
@@ -596,7 +593,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void ExecuteFunction(string server, Entity entityObject)
+        public void ExecuteFunction(String server, Entity entityObject)
         {
             try
             {
@@ -609,8 +606,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
-
-        public void ScriptTable(string server, Entity entityObject)
+        public void ScriptTable(String server, Entity entityObject)
         {
             try
             {
@@ -623,7 +619,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void SelectFromTable(string server, Entity entityObject)
+        public void SelectFromTable(String server, Entity entityObject)
         {
             try
             {
@@ -636,12 +632,12 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void EditTableData(string server, Entity entityObject)
+        public void EditTableData(String server, Entity entityObject)
         {
             try
             {
                 var serverInfo = Servers[server];
-                manager.OpenTable2(entityObject.InternalObject as Table, serverInfo.Connection,serverInfo.Server);
+                manager.OpenTable2(entityObject.InternalObject as Table, serverInfo.Connection, serverInfo.Server);
             }
             catch (Exception ex)
             {
@@ -649,7 +645,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public void DesignTable(string server, Entity entityObject)
+        public void DesignTable(String server, Entity entityObject)
         {
             try
             {
@@ -662,12 +658,8 @@ namespace HuntingDog.DogEngine
             }
         }
 
-        public event Action ShowYourself;
-
         public void ConnectNewServer()
         {
-
-
         }
     }
 }
