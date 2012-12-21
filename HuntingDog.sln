@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog", "HuntingDog\HuntingDog.csproj", "{8D0B85B0-0B3A-4FCC-9FC9-F0C1F0F20062}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2012", "HuntingDog2012\HuntingDog2012.csproj", "{54C786E5-FD14-4036-92AE-E9F25B71534B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2012Example", "HuntingDog2012Example\HuntingDog2012Example.csproj", "{54C786E5-FD14-4036-92AE-E9F25B71534B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
