@@ -17,31 +17,36 @@ namespace HuntingDog
             logger = LogManager.GetLogger(type.FullName);
         }
 
-        public void LogError(String msg, Exception ex)
+        public void Error(String msg, Exception ex)
         {
             logger.ErrorException(msg, ex);
         }
 
-        public void LogError(String msg)
+        public void Error(String msg)
         {
             logger.Error(msg);
         }
 
-        public void LogPerformace(String msg, Stopwatch timer)
+        public void Performance(String msg, Stopwatch timer)
         {
+            String value;
+            String postfix;
+
             if (timer.ElapsedMilliseconds > 1000)
             {
-                LogMessage("Perf: " + msg
-                    + String.Format("{0:0.00}", (Double) timer.ElapsedMilliseconds / 1000)
-                    + " sec");
+                value = String.Format("{0:0.00}", (Double) timer.ElapsedMilliseconds / 1000);
+                postfix = "sec";
             }
             else
             {
-                LogMessage("Perf: " + msg + " - " + timer.ElapsedMilliseconds + " ms");
+                value = timer.ElapsedMilliseconds.ToString();
+                postfix = "ms";
             }
+
+            Message(String.Format("Performance: {0} - {1} {2}", msg, value, postfix));
         }
 
-        public void LogMessage(String msg)
+        public void Message(String msg)
         {
             logger.Info(msg);
         }

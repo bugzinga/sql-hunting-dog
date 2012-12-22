@@ -36,7 +36,7 @@ namespace HuntingDog.DogEngine
 
             if (!IsLoaded)
             {
-                log.LogError("Trying to search not loaded database. DB name:" + DatabaseName);
+                log.Error("Trying to search not loaded database. DB name:" + DatabaseName);
                 return result;
             }
 

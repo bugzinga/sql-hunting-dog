@@ -85,7 +85,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("SelectFromView failed.", ex);
+                log.Error("SelectFromView failed.", ex);
             }
         }
 
@@ -112,7 +112,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("OpenFunctionForModification failed.", ex);
+                log.Error("OpenFunctionForModification failed.", ex);
             }
         }
 
@@ -168,7 +168,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("OpenStoredProcedureForModification failed.", ex);
+                log.Error("OpenStoredProcedureForModification failed.", ex);
             }
         }
 
@@ -200,7 +200,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("OpenStoredProcedureForModification failed.", ex);
+                log.Error("OpenStoredProcedureForModification failed.", ex);
             }
         }
 
@@ -353,7 +353,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("ExecuteStoredProc failed.", ex);
+                log.Error("ExecuteStoredProc failed.", ex);
             }
         }
 
@@ -401,7 +401,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("ExecuteFunctionfailed.", ex);
+                log.Error("ExecuteFunctionfailed.", ex);
             }
         }
 
@@ -469,7 +469,7 @@ namespace DatabaseObjectSearcher
         {
             if (tbl.State == SqlSmoState.Dropped)
             {
-                log.LogMessage("trying to design dropped table.");
+                log.Message("trying to design dropped table.");
                 return;
             }
 
@@ -484,7 +484,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                log.LogMessage("trying to open dropped table.");
+                log.Message("trying to open dropped table.");
                 return;
             }
 
@@ -533,7 +533,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("Script Table failed.", ex);
+                log.Error("Script Table failed.", ex);
             }
         }
 
@@ -569,7 +569,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("SelectFromTable failed.", ex);
+                log.Error("SelectFromTable failed.", ex);
             }
         }
 

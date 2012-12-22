@@ -59,7 +59,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                log.LogError("Could not save user preferences:" + ex.Message, ex);
+                log.Error("Could not save user preferences:" + ex.Message, ex);
             }
         }
 
@@ -101,7 +101,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                log.LogMessage("Could not load user preferences:" + ex.Message);
+                log.Message("Could not load user preferences:" + ex.Message);
             }
 
             return new UserPreferencesStorage();

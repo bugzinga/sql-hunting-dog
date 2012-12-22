@@ -114,7 +114,7 @@ namespace HuntingDog.DogEngine
             }
             else
             {
-                log.LogError("Database name could not be found :" + databaseDictionary.DatabaseName + ". Loader failed.");
+                log.Error("Database name could not be found :" + databaseDictionary.DatabaseName + ". Loader failed.");
                 return;
             }
 
@@ -122,13 +122,13 @@ namespace HuntingDog.DogEngine
 
             // do not need to refresh database RefresDatabase(d);
 
-            log.LogPerformace("Refreshing database " + databaseDictionary.DatabaseName, timer);
+            log.Performance("Refreshing database " + databaseDictionary.DatabaseName, timer);
 
             LoadObjects(d, databaseDictionary);
 
             databaseDictionary.MarkAsLoaded();
 
-            log.LogPerformace("Loading database " + databaseDictionary.DatabaseName, timer);
+            log.Performance("Loading database " + databaseDictionary.DatabaseName, timer);
         }
 
         void LoadObjects(Database d, IDatabaseDictionary databaseDictionary)
@@ -142,30 +142,30 @@ namespace HuntingDog.DogEngine
 
                     LoadTables(d, databaseDictionary);
 
-                    log.LogPerformace("Loading tables " + d.Name, timer);
+                    log.Performance("Loading tables " + d.Name, timer);
 
                     timer.Reset();
                     timer.Start();
                     LoadStoredProcs(d, databaseDictionary);
 
-                    log.LogPerformace("Loading procedures " + d.Name, timer);
+                    log.Performance("Loading procedures " + d.Name, timer);
 
                     timer.Reset();
                     timer.Start();
                     LoadViews(d, databaseDictionary);
 
-                    log.LogPerformace("Loading views " + d.Name, timer);
+                    log.Performance("Loading views " + d.Name, timer);
                     timer.Reset();
                     timer.Start();
 
                     LoadFunctions(d, databaseDictionary);
 
-                    log.LogPerformace("Loading functions " + d.Name, timer);
+                    log.Performance("Loading functions " + d.Name, timer);
                 }
                 catch (Exception ex)
                 {
                     // this can get thrown for security reasons - probably need to swallow here
-                    log.LogError("Security Error in database :" + d.Name + "", ex);
+                    log.Error("Security Error in database :" + d.Name + "", ex);
                 }
             }
         }
@@ -240,7 +240,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    log.LogError("Error loading view:" + f.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading view:" + f.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    log.LogError("Error loading view:" + v.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading view:" + v.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -276,7 +276,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    log.LogError("Error loading procedure:" + p.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading procedure:" + p.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -294,7 +294,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    log.LogError("Error loading table:" + t.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading table:" + t.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }

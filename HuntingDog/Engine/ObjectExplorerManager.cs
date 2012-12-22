@@ -157,7 +157,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
                 // NEED TO LOG
-                log.LogError("Error Initializing object explorer (subscribing selection changed event) " + ex.Message, ex);
+                log.Error("Error Initializing object explorer (subscribing selection changed event) " + ex.Message, ex);
             }
 
             try
@@ -169,7 +169,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
 
-                log.LogError("Error Initializing object explorer  (subscribing command event)" + ex.Message, ex);
+                log.Error("Error Initializing object explorer  (subscribing command event)" + ex.Message, ex);
             }
         }
 
@@ -189,7 +189,7 @@ namespace DatabaseObjectSearcher
                 {
                     if (n!=null && n.Parent == null)
                     {
-                        log.LogMessage("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
+                        log.Message("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
                         // this could mean that new server was added
                         var res = " server " + n.Name + n.Connection.ServerName;
                         if (OnNewServerConnected != null)
@@ -200,7 +200,7 @@ namespace DatabaseObjectSearcher
             }
             catch(Exception ex)
             {
-                log.LogError("Error processing OnSelectionChanged event: " + ex.Message, ex);
+                log.Error("Error processing OnSelectionChanged event: " + ex.Message, ex);
             }
        
            
@@ -210,12 +210,12 @@ namespace DatabaseObjectSearcher
 
         public void AfterExecute(string Guid, int ID, object CustomIn, object CustomOut)
         {
-            log.LogMessage("After execute command:" + ID + " guid:" + Guid);
+            log.Message("After execute command:" + ID + " guid:" + Guid);
 
             // this could mean that server was removed
             if (ID == 516)
             {
-                log.LogMessage("Server disconnected..!");
+                log.Message("Server disconnected..!");
                 if (OnServerDisconnected != null)
                     OnServerDisconnected();
             }
@@ -308,7 +308,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                log.LogError("ObjectExplorer manager failed:" + ex.Message,ex);
+                log.Error("ObjectExplorer manager failed:" + ex.Message,ex);
                 throw;
             }
           
@@ -377,7 +377,7 @@ namespace DatabaseObjectSearcher
                  }
                  else
                  {
-                     log.LogError("Could not find CreateDesigner method");
+                     log.Error("Could not find CreateDesigner method");
                  }
 
                
@@ -385,7 +385,7 @@ namespace DatabaseObjectSearcher
              }
              catch(Exception ex)
              {
-                 log.LogError("Failed OpenTable2",ex);
+                 log.Error("Failed OpenTable2",ex);
              }
              finally
              {
@@ -447,7 +447,7 @@ namespace DatabaseObjectSearcher
             }
             catch(Exception ex)
             {
-                log.LogError("Error opening table: " + objectToSelect.Name ,ex);
+                log.Error("Error opening table: " + objectToSelect.Name ,ex);
             }
 
         
@@ -458,7 +458,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                log.LogMessage("Trying to locate dropped object:" + objectToSelect.Name);
+                log.Message("Trying to locate dropped object:" + objectToSelect.Name);
                 return;
             }
             IExplorerHierarchy hierarchy = GetHierarchyForConnection(connection);
