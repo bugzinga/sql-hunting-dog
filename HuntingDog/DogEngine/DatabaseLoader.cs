@@ -8,7 +8,7 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace HuntingDog.DogEngine
 {
-    public class DatabaseLoader : IDatabaseLoader, IDisposable
+    public class DatabaseLoader : IDatabaseLoader
     {
         private SqlConnectionInfo connectionInfo;
 
@@ -42,16 +42,6 @@ namespace HuntingDog.DogEngine
             {
                 return connectionInfo.ServerName;
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(Boolean disposing)
-        {
         }
 
         public void Initialise(SqlConnectionInfo connectionInfo)

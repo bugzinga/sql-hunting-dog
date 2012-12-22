@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -158,7 +159,6 @@ namespace HuntingDog.DogEngine
                                 foreach (var removedServer in removedNameList)
                                 {
                                     var srv = Servers[removedServer];
-                                    srv.Dispose();
                                 }
 
                                 var addedNameList = added.Select(x => x.ServerName).ToList();
@@ -493,6 +493,7 @@ namespace HuntingDog.DogEngine
             }
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2122")]
         private EnvDTE.Window CreateToolWindow(String typeName, String assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
         {
             Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;

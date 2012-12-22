@@ -1,9 +1,9 @@
 ﻿
 using System;
+
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace HuntingDog
 {
@@ -20,12 +20,15 @@ namespace HuntingDog
         #endregion
 
         #region Methods
+        
+        [SuppressMessage("Microsoft.Security", "CA2122")]
         public static stdole.StdPicture GetIPictureDisp(Image image)
         {
             return (stdole.StdPicture)GetIPictureDispFromPicture(image);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Security", "CA2122")]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static Image GetImage(object pictureDisp)
         {
             return GetPictureFromIPictureDisp(pictureDisp);

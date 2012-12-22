@@ -116,7 +116,16 @@ namespace HuntingDog.DogEngine
 
         public void Dispose()
         {
-            dictionary.Clear();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(Boolean disposing)
+        {
+            if (disposing)
+            {
+                dictionary.Clear();
+            }
         }
 
         public void Clear()

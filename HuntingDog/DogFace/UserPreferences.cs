@@ -64,25 +64,28 @@ namespace HuntingDog.DogFace
 
                 if (isoStore.GetFileNames(_settingFileName).Length > 0)
                 {
-                    var iStream = new IsolatedStorageFileStream(_settingFileName, FileMode.Open, isoStore);
+                    var newPref = new UserPreferencesStorage();
 
-                    using (var reader = new StreamReader(iStream))
+                    using (var iStream = new IsolatedStorageFileStream(_settingFileName, FileMode.Open, isoStore))
                     {
-                        var newPref = new UserPreferencesStorage();
-
-                        while (true)
+                        using (var reader = new StreamReader(iStream))
                         {
-                            var lineKey = reader.ReadLine();
-                            var lineValue = reader.ReadLine();
+                            while (true)
+                            {
+                                var lineKey = reader.ReadLine();
+                                var lineValue = reader.ReadLine();
 
-                            if ((lineKey == null) || (lineValue == null))
-                                break;
+                                if ((lineKey == null) || (lineValue == null))
+                                {
+                                    break;
+                                }
 
-                            newPref.Add(new Entry() { Key = lineKey, Value = lineValue });
+                                newPref.Add(new Entry() { Key = lineKey, Value = lineValue });
+                            }
                         }
-
-                        return newPref;
                     }
+
+                    return newPref;
 
                     //return Serializator.Load<UserPreferencesStorage>(fullName);
                 }

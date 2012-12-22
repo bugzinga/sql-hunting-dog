@@ -50,8 +50,10 @@ namespace HuntingDog.DogEngine
 
             foreach (var name in Loader.DatabaseList)
             {
-                var dic = new DatabaseDictionary();
-                dic.Initialise(name);
+                // TODO: What is the goal of creating a dictionary
+                //       losing the reference to it then?
+                //var dic = new DatabaseDictionary();
+                //dic.Initialise(name);
             }
         }
 
