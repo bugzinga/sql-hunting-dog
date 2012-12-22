@@ -1,36 +1,32 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System;
+using System.Collections.Generic;
 
 namespace HuntingDog
 {
     public static class LogFactory
     {
+        private const String DefaultLogFileName = "${basedir}/Logs/HuntingDog.log";
+
+        private const String DefaultLogLayout = "[${logger}] ${message} ${exception:format=tostring}";
+
         private static readonly Dictionary<Type, Log> loggers = new Dictionary<Type, Log>();
 
         static LogFactory()
         {
-            //LogManager.ThrowExceptions = true;
+            var config = new LoggingConfiguration();
 
-            // Step 1. Create configuration object 
-            LoggingConfiguration config = new LoggingConfiguration();
+            var target = new FileTarget();
+            target.FileName = DefaultLogFileName;
+            target.Layout = DefaultLogLayout;
+            config.AddTarget("file", target);
 
-            FileTarget fileTarget = new FileTarget();
-            config.AddTarget("file", fileTarget);
+            var rule = new LoggingRule("*", LogLevel.Trace, target);
+            config.LoggingRules.Add(rule);
 
-            // Step 3. Set target properties 
-            fileTarget.FileName = "${basedir}/Logs/HuntingDog.log";
-
-            fileTarget.Layout = "[${logger}] ${message} ${exception:format=tostring}";
-
-            LoggingRule rule2 = new LoggingRule("*", LogLevel.Trace, fileTarget);
-            config.LoggingRules.Add(rule2);
-
-            // Step 5. Activate the configuration
             LogManager.Configuration = config;
         }
 
