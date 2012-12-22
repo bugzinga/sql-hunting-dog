@@ -1,10 +1,7 @@
 ﻿
+using NLog;
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 namespace HuntingDog
 {
@@ -17,38 +14,38 @@ namespace HuntingDog
             logger = LogManager.GetLogger(type.FullName);
         }
 
-        public void Error(String msg, Exception ex)
+        public void Message(String message)
         {
-            logger.ErrorException(msg, ex);
+            logger.Info(message);
         }
 
-        public void Error(String msg)
+        public void Error(String message, Exception exception)
         {
-            logger.Error(msg);
+            logger.ErrorException(message, exception);
         }
 
-        public void Performance(String msg, Stopwatch timer)
+        public void Error(String message)
         {
-            String value;
+            logger.Error(message);
+        }
+
+        public void Performance(String operation, Stopwatch timer)
+        {
+            String time;
             String postfix;
 
             if (timer.ElapsedMilliseconds > 1000)
             {
-                value = String.Format("{0:0.00}", (Double) timer.ElapsedMilliseconds / 1000);
+                time = String.Format("{0:0.00}", (Double) timer.ElapsedMilliseconds / 1000);
                 postfix = "sec";
             }
             else
             {
-                value = timer.ElapsedMilliseconds.ToString();
+                time = timer.ElapsedMilliseconds.ToString();
                 postfix = "ms";
             }
 
-            Message(String.Format("Performance: {0} - {1} {2}", msg, value, postfix));
-        }
-
-        public void Message(String msg)
-        {
-            logger.Info(msg);
+            Message(String.Format("Performance: {0} - {1} {2}", operation, time, postfix));
         }
     }
 }
