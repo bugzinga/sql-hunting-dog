@@ -158,6 +158,9 @@
     <Compile Include="..\HuntingDog\DogFace\UserPreferences.cs">
       <Link>DogFace\UserPreferences.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\WidthConverter.cs">
+      <Link>DogFace\WidthConverter.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\WpfUtil.cs">
       <Link>DogFace\WpfUtil.cs</Link>
     </Compile>
@@ -195,6 +198,9 @@
     <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
       <Link>Engine\ObjectExplorerManager.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\Engine\Server Hit\DatabaseHit.cs">
+      <Link>Engine\Server Hit\DatabaseHit.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Engine\Server Hit\Serializator.cs">
       <Link>Engine\Server Hit\Serializator.cs</Link>
     </Compile>
@@ -203,6 +209,9 @@
     </Compile>
     <Compile Include="..\HuntingDog\Engine\Server Hit\SmartDictionary.cs">
       <Link>Engine\Server Hit\SmartDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\Server Hit\TotalHit.cs">
+      <Link>Engine\Server Hit\TotalHit.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\ServerDictionary.cs">
       <Link>Engine\ServerDictionary.cs</Link>

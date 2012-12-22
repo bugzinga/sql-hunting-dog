@@ -20,7 +20,6 @@ namespace HuntingDog
         #endregion
 
         #region Methods
-        [CLSCompliant(false)]
         public static stdole.StdPicture GetIPictureDisp(Image image)
         {
             return (stdole.StdPicture)GetIPictureDispFromPicture(image);
@@ -32,7 +31,6 @@ namespace HuntingDog
             return GetPictureFromIPictureDisp(pictureDisp);
         }
 
-        [CLSCompliant(false)]
         public static stdole.StdPicture GetIPictureDispMask(Image image, Color mask, Color unmask, params Color[] toMask)
         {
             return GetIPictureDisp(GetMask(image, mask, unmask, toMask));

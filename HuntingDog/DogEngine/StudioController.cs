@@ -13,11 +13,11 @@ using Microsoft.SqlServer.Management.UI.VSIntegration;
 
 namespace HuntingDog.DogEngine
 {
-    public class StudioController : IStudioController
+    public sealed class StudioController : IStudioController
     {
         private static StudioController currentInstance = new StudioController();
 
-        private AddIn _inst;
+        private AddIn inst;
 
         private EnvDTE.Window toolWindow;
 
@@ -82,7 +82,7 @@ namespace HuntingDog.DogEngine
 
         void IStudioController.NavigateObject(String server, Entity entityObject)
         {
-            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) _inst.DTE.CommandBars;
+            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) inst.DTE.CommandBars;
 
             foreach (var b in bars)
             {
@@ -497,7 +497,7 @@ namespace HuntingDog.DogEngine
         {
             Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;
 
-            _inst = addinInstance;
+            inst = addinInstance;
 
             //Windows2 win2 = applicationObject.Windows as Windows2;
             if (win2 != null)

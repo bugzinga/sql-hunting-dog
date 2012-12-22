@@ -415,10 +415,14 @@ namespace DatabaseObjectSearcher
 
             public SqlOlapConnectionInfoBase Connection { get; set; }
 
-
             public void Dispose()
             {
-             
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(Boolean disposing)
+            {
             }
         }
 
@@ -436,9 +440,10 @@ namespace DatabaseObjectSearcher
             builder.Append("ParamSuffix = \"\\\"\r\n");
             builder.Append("End\r\n");
             builder.Append("End\r\n");
-            System.IO.StreamWriter writer = new System.IO.StreamWriter(str, false, System.Text.Encoding.Unicode);
-            writer.Write(builder.ToString());
-            writer.Close();
+            using (var writer = new System.IO.StreamWriter(str, false, System.Text.Encoding.Unicode))
+            {
+                writer.Write(builder.ToString());
+            }
             return str;
         }
 

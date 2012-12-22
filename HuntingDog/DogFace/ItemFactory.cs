@@ -1,40 +1,46 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media.Imaging;
-using System.Windows.Media;
 
 namespace HuntingDog.DogFace
 {
     public class ItemFactory
     {
         static BitmapImage imageT = new BitmapImage(new Uri(@"Images/table_sql.png", UriKind.Relative));
+
         static BitmapImage imageS = new BitmapImage(new Uri(@"Images/scroll.png", UriKind.Relative));
+
         static BitmapImage imageF = new BitmapImage(new Uri(@"Images/text_formula.png", UriKind.Relative));
+
         static BitmapImage imageV = new BitmapImage(new Uri(@"Images/text_align_center.png", UriKind.Relative));
 
-
         static BitmapImage imageRightBlue = new BitmapImage(new Uri(@"Images/arrow_right_blue.png", UriKind.Relative));
+
         static BitmapImage imageRightGreen = new BitmapImage(new Uri(@"Images/arrow_right_green.png", UriKind.Relative));
+
         static BitmapImage imageRow = new BitmapImage(new Uri(@"Images/row.png", UriKind.Relative));
+
         static BitmapImage imageWrench = new BitmapImage(new Uri(@"Images/wrench.png", UriKind.Relative));
 
         //static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Images/server.png", UriKind.Relative));
         //static BitmapImage imageSer = new BitmapImage(new Uri(@"Images/cpu.png", UriKind.Relative));
 
         static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Art/database.png", UriKind.Relative));
+
         static BitmapImage imageSer = new BitmapImage(new Uri(@"Art/computer.png", UriKind.Relative));
 
         static BitmapImage imageSearch = new BitmapImage(new Uri(@"Art/search.png", UriKind.Relative));
 
         static BitmapImage imageRightArrow = new BitmapImage(new Uri(@"Art/next.png", UriKind.Relative));
+
         static BitmapImage imageEdit = new BitmapImage(new Uri(@"Art/edit.png", UriKind.Relative));
+
         static BitmapImage imageProcess = new BitmapImage(new Uri(@"Art/process.png", UriKind.Relative));
+
         static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"Art/page_edit.png", UriKind.Relative));
 
         static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"Art/forward_blue.png", UriKind.Relative));
-
 
         static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
 
@@ -42,9 +48,8 @@ namespace HuntingDog.DogFace
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {
-
-
             var res = new List<Item>();
+
             foreach (var source in sourceList)
             {
                 var uiEntry = new Item() { Name = source.FullName, Entity = source };
@@ -115,94 +120,90 @@ namespace HuntingDog.DogFace
 
                 uiEntry.Action2 = imageForwardBlue;
 
-
                 res.Add(uiEntry);
             }
-
 
             return res;
         }
 
-    
-
-        public static List<Item> BuildDatabase(IEnumerable<string> sources)
+        public static List<Item> BuildDatabase(IEnumerable<String> sources)
         {
             var res = new List<Item>();
+
             foreach (var dbName in sources)
             {
                 res.Add(new Item() { Name = dbName, Image = imageDb1 });
             }
+
             return res;
         }
 
-        public static List<Item> BuildServer(IEnumerable<string> sources)
+        public static List<Item> BuildServer(IEnumerable<String> sources)
         {
             var res = new List<Item>();
+
             foreach (var srvName in sources)
             {
                 res.Add(new Item() { Name = srvName, Image = imageWorkplace });
             }
 
-            res.Sort((x,y) => string.Compare(x.Name,y.Name));
+            res.Sort((x, y) => String.Compare(x.Name, y.Name));
 
             return res;
         }
 
-     
-
-   
-
-
         public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
         {
             var res = new List<ProcedureParamItem>();
+
             foreach (var par in paramList)
             {
                 var viewParam = new ProcedureParamItem();
                 viewParam.Name = par.Name;
                 viewParam.Type = par.Type;
+
                 if (par.IsOut)
+                {
                     viewParam.Out = "OUT";
+                }
+
                 res.Add(viewParam);
             }
 
             return res;
         }
 
-
         internal static List<TableParamItem> BuildTableColumns(List<DogEngine.TableColumn> columns)
         {
             var res = new List<TableParamItem>();
+
             foreach (var par in columns)
             {
                 var viewParam = new TableParamItem();
                 viewParam.Name = par.Name;
                 viewParam.Type = par.Type;
-
                 viewParam.IsPrimaryKey = par.IsPrimaryKey;
-                viewParam.IsForeignKey = par.IsForeignKey;    
+                viewParam.IsForeignKey = par.IsForeignKey;
                 res.Add(viewParam);
             }
 
             return res;
         }
 
-
-
-
         internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FuncParameter> funcParameters)
         {
             return funcParameters.ConvertAll<FuncParamItem>(x => new FuncParamItem() { Name = x.Name, Type = x.Type });
-                
         }
 
         internal static List<ViewParamItem> BuildViewColumns(List<DogEngine.TableColumn> columns)
         {
-            return columns.ConvertAll<ViewParamItem>(x => new ViewParamItem() { 
+            return columns.ConvertAll<ViewParamItem>(x => new ViewParamItem()
+            {
                 Name = x.Name,
-                Type = x.Type, 
-                IsForeignKey = x.IsForeignKey, 
-                IsPrimaryKey = x.IsPrimaryKey });
+                Type = x.Type,
+                IsForeignKey = x.IsForeignKey,
+                IsPrimaryKey = x.IsPrimaryKey
+            });
         }
     }
 }

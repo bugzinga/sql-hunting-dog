@@ -1,20 +1,14 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using DatabaseObjectSearcher;
 using DatabaseObjectSearcherUI;
 using HuntingDog.DogEngine;
 
@@ -25,14 +19,85 @@ namespace HuntingDog.DogFace
     /// </summary>
     public partial class Face : UserControl
     {
+        class SearchAsyncParam
+        {
+            public Int32 SequenceNumber
+            {
+                get;
+                set;
+            }
+
+            public String Srv
+            {
+                get;
+                set;
+            }
+
+            public String Text
+            {
+                get;
+                set;
+            }
+
+            public String Database
+            {
+                get;
+                set;
+            }
+
+            public Boolean ForceSearch
+            {
+                get;
+                set;
+            }
+        }
+
+        enum ERquestType : int
+        {
+            Server,
+            RefreshSearch,
+            Search,
+            Details
+        }
+
         // these keys are used to save/load user preferences
-        public const string UserPref_LastSearchText = "Last Search Text";
-        public const string UserPref_ServerDatabase= "[database]:";
-        public const string UserPref_LastSelectedServer = "Last Selected Server";
+        public const String UserPref_LastSearchText = "Last Search Text";
 
-        BackgroundProcessor _processor = new BackgroundProcessor();
+        public const String UserPref_ServerDatabase = "[database]:";
 
-        static IStudioController _studio;
+        public const String UserPref_LastSelectedServer = "Last Selected Server";
+
+        public const String ConnectNewServerString = "Connect New Server...";
+
+        private static IStudioController _studio;
+
+        private BackgroundProcessor _processor = new BackgroundProcessor();
+
+        private UserPreferencesStorage _userPref;
+
+        private ObservableCollection<Item> _serverList = new ObservableCollection<Item>();
+
+        private Boolean _databaseChangedByUser = true;
+
+        private Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x64, 0x95, 0xed));
+
+        private Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x60, 0x64, 0x95, 0xed));
+
+        public Int64 LastTicks = 0;
+
+        private volatile int _requestSequenceNumber = 0;
+
+        private String _lastSrv;
+
+        private String _lastDb;
+
+        private String _lastText;
+
+        private Boolean _isDragDropStartedFromText = false;
+
+        // small hint - to use anonymous delegates in InvokeUI method
+        public delegate void AnyInvoker();
+
         public IStudioController StudioController
         {
             get
@@ -44,18 +109,61 @@ namespace HuntingDog.DogFace
 
                 return _studio;
             }
+
             set
             {
                 _studio = value;
             }
         }
 
-        enum ERquestType:int
+        private Boolean IsConnectNewServerSellected
         {
-            Server,
-            RefreshSearch,
-            Search ,
-            Details
+            get
+            {
+                return (cbServer.SelectedItem == null)
+                    ? false
+                    : ((cbServer.SelectedItem as Item).Name == ConnectNewServerString);
+            }
+        }
+
+        private String SelectedServer
+        {
+            get
+            {
+                return (cbServer.SelectedItem == null)
+                    ? null
+                    : (cbServer.SelectedItem as Item).Name;
+            }
+        }
+
+        private ListViewItem SelectedListViewItem
+        {
+            get
+            {
+                return (itemsControl.SelectedItem == null)
+                    ? null
+                    : itemsControl.ItemContainerGenerator.ContainerFromItem(itemsControl.SelectedItem) as ListViewItem;
+            }
+        }
+
+        private Item SelectedItem
+        {
+            get
+            {
+                return (itemsControl.SelectedItem == null)
+                    ? null
+                    : itemsControl.SelectedItem as Item;
+            }
+        }
+
+        private String SelectedDatabase
+        {
+            get
+            {
+                return (cbDatabase.SelectedItem == null)
+                    ? null
+                    : (cbDatabase.SelectedItem as Item).Name;
+            }
         }
 
         public Face()
@@ -64,9 +172,7 @@ namespace HuntingDog.DogFace
             InitializeComponent();
         }
 
-        UserPreferencesStorage _userPref;
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(Object sender, RoutedEventArgs e)
         {
 
             try
@@ -80,70 +186,66 @@ namespace HuntingDog.DogFace
 
                 _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
-                StudioController.OnServersAdded += new Action<List<string>>(StudioController_OnServersAdded);
-                StudioController.OnServersRemoved += new Action<List<string>>(StudioController_OnServersRemoved);
+                StudioController.OnServersAdded += new Action<List<String>>(StudioController_OnServersAdded);
+                StudioController.OnServersRemoved += new Action<List<String>>(StudioController_OnServersRemoved);
                 StudioController.ShowYourself += new Action(StudioController_ShowYourself);
                 ReloadServers();
 
-               
-                string lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
+                var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
                 RestoreLastSearchTextFromUserProfile();
 
                 //cbServer.SelectedValue = lastSrvName;
                 //cbServer.SelectedItem = 
 
                 // select first server
-                if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
+                if ((cbServer.SelectedIndex == -1) && (cbServer.Items.Count > 1))
                 {
                     cbServer.SelectedIndex = 0;
-                }    
-
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MyLogger.LogError("Fatal error loading main control:" + ex.Message,ex);
+                MyLogger.LogError("Fatal error loading main control:" + ex.Message, ex);
             }
-          
-          
         }
 
         void RestoreLastSearchTextFromUserProfile()
         {
-            string lastSearch = _userPref.GetByName(UserPref_LastSearchText);
+            var lastSearch = _userPref.GetByName(UserPref_LastSearchText);
 
-            if (string.IsNullOrEmpty(lastSearch))
-                txtSearch.Text = "";
+            if (String.IsNullOrEmpty(lastSearch))
+            {
+                txtSearch.Text = String.Empty;
+            }
             else
             {
                 // if search text contained same criteria TextChanged event will not be fired therefore search will not occur.
                 // we need to force a search if search text is the same
-                string prevText = txtSearch.Text;
+                var prevText = txtSearch.Text;
                 txtSearch.Text = lastSearch;
-                if(prevText== txtSearch.Text)
+
+                if (prevText == txtSearch.Text)
+                {
                     DoSearch(true);
+                }
             }
         }
 
-
-    
         void StudioController_ShowYourself()
         {
             txtSearch.Focus();
-          
         }
 
-        void StudioController_OnServersAdded(List<string> listAdded)
+        void StudioController_OnServersAdded(List<String> listAdded)
         {
-            MyLogger.LogMessage("Face: server added." + (listAdded.Count>0 ? listAdded[0] : ""));
+            MyLogger.LogMessage("Face: server added." + (listAdded.Count > 0 ? listAdded[0] : String.Empty));
 
-            InvokeInUI(delegate
+            InvokeInUI(() =>
             {
                 foreach (var item in ItemFactory.BuildServer(listAdded))
                 {
                     _serverList.Add(item);
                 }
-
-           
 
                 if (_serverList.Count == 1)
                 {
@@ -151,78 +253,69 @@ namespace HuntingDog.DogFace
                     MyLogger.LogMessage("Face: first server is selected.");
                 }
             });
-          
-
         }
 
-
-        void StudioController_OnServersRemoved(List<string> removedList)
+        void StudioController_OnServersRemoved(List<String> removedList)
         {
             MyLogger.LogMessage("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
 
-          
-            InvokeInUI(delegate {
+            InvokeInUI(() =>
+            {
 
                 foreach (var s in _serverList.ToList())
                 {
                     if (removedList.Contains(s.Name))
-                        _serverList.Remove(s);
-                }
-                
-                if(SelectedServer==null)
                     {
-                        // move selection to first available server                
-                        if (_serverList.Count > 0)
-                        {
-                            MyLogger.LogMessage("Face: Selected Server was removed. Move focus to first server in list");
-                            cbServer.SelectedIndex = 0;
-                        }
-                        else
-                        {
-                            MyLogger.LogMessage("Face: Selected Server was removed. Server list is empty.Clear everything");
-                            cbDatabase.ItemsSource = null;
-                        }
-                
+                        _serverList.Remove(s);
                     }
-            });
- 
+                }
 
+                if (SelectedServer == null)
+                {
+                    // move selection to first available server                
+                    if (_serverList.Count > 0)
+                    {
+                        MyLogger.LogMessage("Face: Selected Server was removed. Move focus to first server in list");
+                        cbServer.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        MyLogger.LogMessage("Face: Selected Server was removed. Server list is empty.Clear everything");
+                        cbDatabase.ItemsSource = null;
+                    }
+                }
+            });
         }
-     
 
         void StudioController_OnServersChanged()
         {
             MyLogger.LogMessage("Face: server list changed.");
-            InvokeInUI(delegate
-                           {
-                               ReloadServers();
 
-                               if (cbServer.SelectedIndex == -1 && cbServer.Items.Count > 1)
-                                   cbServer.SelectedIndex = 0;
-                               else if(cbServer.Items.Count ==0)
-                               {
-                                   cbDatabase.ItemsSource = null;
-                                 
-                               }
+            InvokeInUI(() =>
+            {
+                ReloadServers();
 
-
-                           });
+                if ((cbServer.SelectedIndex == -1) && (cbServer.Items.Count > 1))
+                {
+                    cbServer.SelectedIndex = 0;
+                }
+                else if (cbServer.Items.Count == 0)
+                {
+                    cbDatabase.ItemsSource = null;
+                }
+            });
         }
 
         void _processor_RequestFailed(BackgroundProcessor.Request arg1, Exception arg2)
         {
             SetStatus("Error:" + arg2.Message);
             // notify user about an error
-            MyLogger.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType,arg2);
+            MyLogger.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType, arg2);
         }
 
-        public const string ConnectNewServerString = "Connect New Server...";
-
-
-        private ObservableCollection<Item> _serverList = new ObservableCollection<Item>(); 
         public void ReloadServers()
         {
-            MyLogger.LogMessage("Reloading Servers- intitated by user");
+            MyLogger.LogMessage("Reloading Servers - intitiated by user");
             var servers = StudioController.ListServers();
             _serverList.Clear();
 
@@ -230,95 +323,98 @@ namespace HuntingDog.DogFace
             {
                 _serverList.Add(item);
             }
+
             //srv.Add(new Item() { Name = ConnectNewServerString });
             MyLogger.LogMessage("Reloading Servers - loaded:" + _serverList.Count + " servers.");
             cbServer.ItemsSource = _serverList;
 
             if (_serverList.Count == 1)
+            {
                 cbServer.SelectedIndex = 0;
-               // _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
+            }
+
+            // _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
         }
 
-        private void SetStatus(string text)
+        private void SetStatus(String text)
         {
             SetStatus(text, false);
         }
-        private void SetStatus(string text,bool showImage)
+
+        private void SetStatus(String text, Boolean showImage)
         {
-            InvokeInUI(delegate {
-                imgWorking.Visibility = showImage ? Visibility.Visible : Visibility.Hidden;
-                txtStatusTest.Text = text; });
+            InvokeInUI(() =>
+            {
+                imgWorking.Visibility = showImage
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
+                txtStatusTest.Text = text;
+            });
         }
 
-
-
         // Reload database list
-        private void Async_ReloadDatabaseList(object arg)
+        private void Async_ReloadDatabaseList(Object arg)
         {
-            if (arg is string)
+            if (arg is String)
             {
-                string server = (string) arg;
+                var server = (String) arg;
                 StudioController.RefreshServer(server);
 
-                InvokeInUI(delegate
-                               {
-                                   ReloadDatabaseList();
-                               });
+                InvokeInUI(() =>
+                {
+                    ReloadDatabaseList();
+                });
             }
         }
 
         // Reload objects in database
-        private void Async_ReloadObjectsFromDatabase(object arg)
+        private void Async_ReloadObjectsFromDatabase(Object arg)
         {
-            var pair = (KeyValuePair<string, string>)arg ;
+            var pair = (KeyValuePair<String, String>) arg;
 
-            string server = pair.Key;
-            string database = pair.Value;
+            var server = pair.Key;
+            var database = pair.Value;
 
-            SetStatus("Reloading " + database+"...", true);
+            SetStatus("Reloading " + database + "...", true);
 
-            StudioController.RefreshDatabase(server,database);
+            StudioController.RefreshDatabase(server, database);
 
-            InvokeInUI(delegate
-                           { DoSearch(true); });
+            InvokeInUI(() =>
+            {
+                DoSearch(true);
+            });
 
             SetStatus("Completed reloading " + database);
-
         }
-
 
         void ReloadDatabaseList()
         {
-            
-             try
+            try
             {
-              
                 var sel = cbServer.SelectedItem as Item;
+
                 if (sel != null)
                 {
-
                     cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
 
                     _databaseChangedByUser = false;
+
                     // changed server - try to restore database user worked with last time
                     var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
-                    bool previousDatabaseWasFound = false;
-                    if (databaseName != null && cbDatabase.Items!=null)
+                    var previousDatabaseWasFound = false;
+
+                    if ((databaseName != null) && (cbDatabase.Items != null))
                     {
                         foreach (Item item in cbDatabase.ItemsSource)
                         {
                             if (item.Name == databaseName)
                             {
                                 cbDatabase.SelectedValue = item;
-
-                             
                                 previousDatabaseWasFound = true;
                                 break;
                             }
                         }
-
                     }
-
 
                     // if we failed to select database (for example it deos not exsit any more - select first one...)
                     /*if(cbDatabase.SelectedIndex == -1 && cbDatabase.Items.Count>0)
@@ -327,14 +423,11 @@ namespace HuntingDog.DogFace
                     }*/
 
                     _databaseChangedByUser = true;
-
                     _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
-                    
                     //if(SelectedDatabase==null)
                     if (previousDatabaseWasFound)
                     {
-                      
                         // we managed to find our database - restore search text
                         RestoreLastSearchTextFromUserProfile();
                         txtSearch.Focus();
@@ -349,129 +442,58 @@ namespace HuntingDog.DogFace
                 }
                 else
                 {
-
-
                     ClearSearchText();
                 }
-
-               
-
             }
             catch (Exception ex)
             {
-                
-                MyLogger.LogError("Server Selection:" + ex.Message,ex);
-            }
-          
-
-       }
-
-
-        private void cbServer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-            {
-                ReloadDatabaseList();
-                // keep track of last selected database on this server - need to restore it back!
-                //DoSearch();
-            }
-
-        bool _databaseChangedByUser = true;
-
-        bool IsConnectNewServerSellected
-        {
-            get
-            {
-                if (cbServer.SelectedItem == null)
-                    return false;
-
-                return (cbServer.SelectedItem as Item).Name == ConnectNewServerString;
+                MyLogger.LogError("Server Selection:" + ex.Message, ex);
             }
         }
 
-        string SelectedServer
+        private void cbServer_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            get{
-                if(cbServer.SelectedItem==null)
-                    return null;
+            ReloadDatabaseList();
 
-                return (cbServer.SelectedItem as Item).Name;
-            }
+            // keep track of last selected database on this server - need to restore it back!
+            //DoSearch();
         }
 
-        ListViewItem SelectedListViewItem
+        private void cbDatabase_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            get
-            {
-                if (itemsControl.SelectedItem == null)
-                    return null;
-
-                return itemsControl.ItemContainerGenerator.ContainerFromItem(itemsControl.SelectedItem) as ListViewItem;
-            }
-        }
-
-        Item SelectedItem
-        {
-            get
-            {
-                if(itemsControl.SelectedItem==null)
-                    return null;
-
-                return itemsControl.SelectedItem as Item; 
-            }
-        }
-
-        string SelectedDatabase
-        {
-            get
-            {
-                if (cbDatabase.SelectedItem == null)
-                    return null;
-
-                return (cbDatabase.SelectedItem as Item).Name;
-            }
-        }
-
-        private void cbDatabase_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
             if (_databaseChangedByUser)
             {
-                if (SelectedServer != null && SelectedDatabase != null)
+                if ((SelectedServer != null) && (SelectedDatabase != null))
                 {
                     StoreSelectedDatabaseInUserProfile();
-
-                    txtSearch.Focus();  
-
+                    txtSearch.Focus();
                     DoSearch(false);
                 }
             }
-
-
         }
 
         private void StoreSelectedDatabaseInUserProfile()
         {
-              if (SelectedServer != null && SelectedDatabase != null)
-              {
-                  _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer,
-                                        SelectedDatabase);
-              }
+            if ((SelectedServer != null) && (SelectedDatabase != null))
+            {
+                _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer, SelectedDatabase);
+            }
         }
 
-      
-        bool _isDragDropStartedFromText = false;
+        // TODO: Commented as never used. Check whether the existance of the files
+        //       is actually needed.
+        //bool _isDragDropStartedPropeties = false;
 
-        bool _isDragDropStartedPropeties = false;
-
-        private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtSearch_TextChanged(Object sender, TextChangedEventArgs e)
         {
             DoSearch(false);
         }
 
-        void DoSearch(bool forceSearch)
+        void DoSearch(Boolean forceSearch)
         {
             try
             {
-                if (!string.IsNullOrEmpty(txtSearch.Text) && SelectedServer!=null && SelectedDatabase!=null)
+                if (!String.IsNullOrEmpty(txtSearch.Text) && (SelectedServer != null) && (SelectedDatabase != null))
                 {
                     var sp = new SearchAsyncParam();
                     sp.SequenceNumber = ++_requestSequenceNumber;
@@ -479,55 +501,45 @@ namespace HuntingDog.DogFace
                     sp.Text = txtSearch.Text;
                     sp.Database = SelectedDatabase;
                     sp.ForceSearch = forceSearch;
-                    _processor.AddRequest(Async_PerformSearch, sp, (int)ReqType.Search, true);
-
+                    _processor.AddRequest(Async_PerformSearch, sp, (int) ReqType.Search, true);
                     _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
-            
                 }
                 else
                 {
                     ClearSearchResult();
-                }  
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MyLogger.LogError("Face - Do Seacrh:" + ex.Message,ex);
+                MyLogger.LogError("Face - Do Search:" + ex.Message, ex);
             }
-          
         }
 
         void ClearSearchText()
         {
-            txtSearch.Text = string.Empty;          
+            txtSearch.Text = string.Empty;
         }
 
-        private void throw1()
+        void ClearSearchResult()
         {
-            throw new Exception("aaaa");
+            itemsControl.ItemsSource = null;
+            ClearPreviousSearch();
+            SetStatus(String.Empty);
         }
-
-         void ClearSearchResult()
-         {
-             itemsControl.ItemsSource = null;
-             ClearPreviousSearch();
-             SetStatus("");
-         }
-
-        volatile int _requestSequenceNumber = 0;
-
-        string _lastSrv, _lastDb, _lastText;
 
         private void ClearPreviousSearch()
         {
             _lastText = null;
         }
 
-        private bool SameAsPreviousSearch(SearchAsyncParam arg)
+        private Boolean SameAsPreviousSearch(SearchAsyncParam arg)
         {
             if (arg.ForceSearch)
+            {
                 return false;
+            }
 
-            if (arg.Srv == _lastSrv && arg.Database == _lastDb && _lastText!=null && arg.Text.TrimEnd(' ') == _lastText.TrimEnd(' '))
+            if ((arg.Srv == _lastSrv) && (arg.Database == _lastDb) && (_lastText != null) && (arg.Text.TrimEnd(' ') == _lastText.TrimEnd(' ')))
             {
                 return true;
             }
@@ -535,27 +547,31 @@ namespace HuntingDog.DogFace
             _lastSrv = arg.Srv;
             _lastDb = arg.Database;
             _lastText = arg.Text;
+
             return false;
         }
 
-
-        private void Async_PerformSearch(object arg)
+        private void Async_PerformSearch(Object arg)
         {
             if (arg == null)
+            {
                 return;
+            }
 
-            var par = (SearchAsyncParam)arg;
+            var par = (SearchAsyncParam) arg;
 
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
+            {
                 return;
+            }
 
             if (SameAsPreviousSearch(par))
             {
                 return;
             }
 
-            SetStatus("Searching '" + par.Text + "' in " + par.Database,true);
+            SetStatus("Searching '" + par.Text + "' in " + par.Database, true);
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
@@ -568,13 +584,12 @@ namespace HuntingDog.DogFace
                 return;
             }
 
-            SetStatus("Found " + result.Count + " objects ");
+            SetStatus("Found " + result.Count + " objects");
 
-            InvokeInUI(delegate {
-
+            InvokeInUI(() =>
+            {
                 var items = ItemFactory.BuildFromEntries(result);
                 itemsControl.ItemsSource = items;
-            
                 itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
 
@@ -582,7 +597,8 @@ namespace HuntingDog.DogFace
                 {
                     gridEmptyResult.Visibility = System.Windows.Visibility.Visible;
                     itemsControl.Visibility = System.Windows.Visibility.Collapsed;
-                   // txtEmptyLine1.Text =  par.Text;
+
+                    // txtEmptyLine1.Text =  par.Text;
                     //txtEmptyLine2.Text =  par.Database ;
                     //txtEmptyLine3.Text = par.Srv;
                 }
@@ -591,76 +607,75 @@ namespace HuntingDog.DogFace
                     gridEmptyResult.Visibility = System.Windows.Visibility.Collapsed;
                     itemsControl.Visibility = System.Windows.Visibility.Visible;
                 }
-
             });
 
-            if (result.Count==0)
+            if (result.Count == 0)
+            {
                 SetStatus("Found nothing. Try to refresh");
-            else if(result.Count==1)
+            }
+            else if (result.Count == 1)
+            {
                 SetStatus("Found exactly one object");
+            }
             else
+            {
                 SetStatus("Found " + result.Count + " objects ");
-
-   
-         }
-
-        // small hint - to use anonomys delegates in InvokeUI method
-        public delegate void AnyInvoker();
-        private void InvokeInUI(AnyInvoker invoker)
-        {
-            Dispatcher.Invoke((Delegate)invoker);
+            }
         }
 
-/*
-        private void Async_ShowProperties(object arg)
+        private void InvokeInUI(AnyInvoker invoker)
         {
-            //SystemColors.ControlLightBrushKey
-            var ent = arg as Entity;
-            if (ent == null)
-                return;
+            Dispatcher.Invoke((Delegate) invoker);
+        }
+
+        /*
+                private void Async_ShowProperties(object arg)
+                {
+                    //SystemColors.ControlLightBrushKey
+                    var ent = arg as Entity;
+                    if (ent == null)
+                        return;
         
          
-            SetStatus("Retreveing details...",true);
-            if (ent.IsProcedure)
-            {
-                var procedureParameters = StudioController.ListProcParameters(ent);
+                    SetStatus("Retreveing details...",true);
+                    if (ent.IsProcedure)
+                    {
+                        var procedureParameters = StudioController.ListProcParameters(ent);
 
-                  InvokeInUI(delegate {
-                      txtPropertiesParameter.Text = "Parameter";
-                     listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);  });
-            }
-            else if (ent.IsTable)
-            {
-                var columns = StudioController.ListColumns(ent);
+                          InvokeInUI(delegate {
+                              txtPropertiesParameter.Text = "Parameter";
+                             listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);  });
+                    }
+                    else if (ent.IsTable)
+                    {
+                        var columns = StudioController.ListColumns(ent);
                 
-                 InvokeInUI(delegate {
-                     txtPropertiesParameter.Text = "Column";
-                 listViewProperties.ItemsSource =  ItemFactory.BuildTableColumns(columns);});
-            }
-            else if (ent.IsFunction)
-            {
-                var funcParameters = StudioController.ListFuncParameters(ent);
+                         InvokeInUI(delegate {
+                             txtPropertiesParameter.Text = "Column";
+                         listViewProperties.ItemsSource =  ItemFactory.BuildTableColumns(columns);});
+                    }
+                    else if (ent.IsFunction)
+                    {
+                        var funcParameters = StudioController.ListFuncParameters(ent);
                 
-                  InvokeInUI(delegate {
-                      txtPropertiesParameter.Text = "Parameter";
-                 listViewProperties.ItemsSource =  ItemFactory.BuildProcedureParmeters(funcParameters);});
-            }
-            else if (ent.IsView)
-            {
-                var columns = StudioController.ListViewColumns(ent);
+                          InvokeInUI(delegate {
+                              txtPropertiesParameter.Text = "Parameter";
+                         listViewProperties.ItemsSource =  ItemFactory.BuildProcedureParmeters(funcParameters);});
+                    }
+                    else if (ent.IsView)
+                    {
+                        var columns = StudioController.ListViewColumns(ent);
                 
-                  InvokeInUI(delegate {
-                      txtPropertiesParameter.Text = "Column";
-                 listViewProperties.ItemsSource =  ItemFactory.BuildViewColumns(columns);});
-            }
+                          InvokeInUI(delegate {
+                              txtPropertiesParameter.Text = "Column";
+                         listViewProperties.ItemsSource =  ItemFactory.BuildViewColumns(columns);});
+                    }
 
-            SetStatus("");
+                    SetStatus("");
 
-        }*/
+                }*/
 
-
-
-        private void ItemsControlSelectionChanged1(object sender, SelectionChangedEventArgs e)
+        private void ItemsControlSelectionChanged1(Object sender, SelectionChangedEventArgs e)
         {
             if (e.RemovedItems.Count > 0)
             {
@@ -673,26 +688,26 @@ namespace HuntingDog.DogFace
             //listViewProperties.ItemsSource = null;
             if (itemsControl.SelectedIndex == -1)
             {
-                // clear propertties
+                // clear properties
                 //listViewProperties.ItemsSource = null;
             }
             else
             {
                 var item = (itemsControl.SelectedItem as Item);
-                if(item!=null)
+
+                if (item != null)
                 {
                     // DO NOT SHOW PROPERTIES
                     //_processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true); 
                 }
-             
+
             }
         }
-
- 
 
         public void Stop()
         {
             _userPref.Save();
+
             if (_processor != null)
             {
                 _processor.Stop();
@@ -700,85 +715,109 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void UserControl_Unloaded(Object sender, RoutedEventArgs e)
         {
-
             Stop();
         }
 
-
-        internal IEnumerable<string> BuilsAvailableActions(Item item)
+        internal IEnumerable<String> BuilsAvailableActions(Item item)
         {
-            var res = new List<string>();
+            var res = new List<String>();
 
             if (item.Entity.IsProcedure)
-                return new List<string> { "Modify", "Execute", "Locate",  };
+            {
+                return new List<String> { "Modify", "Execute", "Locate", };
+            }
+
             if (item.Entity.IsFunction)
-                return new List<string> { "Modify", "Execute", "Locate",  };
+            {
+                return new List<String> { "Modify", "Execute", "Locate", };
+            }
             else if (item.Entity.IsTable)
-                return new List<string> { "Select Data", "Edit Data", "Design Table","Script Table", "Locate", };
+            {
+                return new List<String> { "Select Data", "Edit Data", "Design Table", "Script Table", "Locate", };
+            }
             else if (item.Entity.IsView)
-                return new List<string> { "Select Data","Modify View", "Locate",  };
+            {
+                return new List<String> { "Select Data", "Modify View", "Locate", };
+            }
 
             return res;
         }
 
-        void InvokeActionByName(Item item, string actionName)
+        void InvokeActionByName(Item item, String actionName)
         {
-            if(item==null || string.IsNullOrEmpty(actionName))
-                return;
-
-            if(actionName=="Locate")
+            if ((item == null) || String.IsNullOrEmpty(actionName))
             {
-                StudioController.NavigateObject(SelectedServer,item.Entity);
+                return;
+            }
+
+            if (actionName == "Locate")
+            {
+                StudioController.NavigateObject(SelectedServer, item.Entity);
                 return;
             }
 
             if (actionName == "Show Dependencies")
             {
-                // show dependecies in a new window
+                // show dependencies in a new window
             }
-
 
             if (item.Entity.IsTable)
             {
                 switch (actionName)
                 {
-                    case "Select Data": StudioController.SelectFromTable(SelectedServer, item.Entity); break;
-                    case "Edit Data": StudioController.EditTableData(SelectedServer, item.Entity); break;
-                    case "Design Table": StudioController.DesignTable(SelectedServer, item.Entity); break;
-                    case "Script Table": StudioController.ScriptTable(SelectedServer, item.Entity); break;
+                    case "Select Data":
+                        StudioController.SelectFromTable(SelectedServer, item.Entity);
+                        break;
+                    case "Edit Data":
+                        StudioController.EditTableData(SelectedServer, item.Entity);
+                        break;
+                    case "Design Table":
+                        StudioController.DesignTable(SelectedServer, item.Entity);
+                        break;
+                    case "Script Table":
+                        StudioController.ScriptTable(SelectedServer, item.Entity);
+                        break;
                 }
             }
-            else if(item.Entity.IsView)
+            else if (item.Entity.IsView)
             {
                 switch (actionName)
                 {
-                    case "Select Data": StudioController.SelectFromView(SelectedServer, item.Entity); break;  
-                    case "Modify View": StudioController.ModifyView(SelectedServer, item.Entity); break;     
+                    case "Select Data":
+                        StudioController.SelectFromView(SelectedServer, item.Entity);
+                        break;
+                    case "Modify View":
+                        StudioController.ModifyView(SelectedServer, item.Entity);
+                        break;
                 }
             }
             else if (item.Entity.IsProcedure)
             {
                 switch (actionName)
                 {
-                    case "Modify": StudioController.ModifyProcedure(SelectedServer, item.Entity); break;
-                    case "Execute": StudioController.ExecuteProcedure(SelectedServer, item.Entity); break;
-                  
+                    case "Modify":
+                        StudioController.ModifyProcedure(SelectedServer, item.Entity);
+                        break;
+                    case "Execute":
+                        StudioController.ExecuteProcedure(SelectedServer, item.Entity);
+                        break;
+
                 }
             }
             else if (item.Entity.IsFunction)
             {
                 switch (actionName)
                 {
-                    case "Modify": StudioController.ModifyFunction(SelectedServer, item.Entity); break;
-                    case "Execute": StudioController.ExecuteFunction(SelectedServer, item.Entity); break;
-                  
+                    case "Modify":
+                        StudioController.ModifyFunction(SelectedServer, item.Entity);
+                        break;
+                    case "Execute":
+                        StudioController.ExecuteFunction(SelectedServer, item.Entity);
+                        break;
                 }
             }
-
-  
-
         }
 
         void InvokeDefaultOnItem(Item item)
@@ -823,8 +862,6 @@ namespace HuntingDog.DogFace
             {
                 StudioController.ExecuteFunction(SelectedServer, item.Entity);
             }
-
-
         }
 
         void InvokeNavigationOnItem(Item item)
@@ -832,56 +869,44 @@ namespace HuntingDog.DogFace
             StudioController.NavigateObject(SelectedServer, item.Entity);
         }
 
-
-        private void btnNavigationClick(object sender, RoutedEventArgs e)
+        private void btnNavigationClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkElement)sender).Tag;
+            var item = (Item) ((FrameworkElement) sender).Tag;
             InvokeNavigationOnItem(item);
-  
-  
-        
         }
 
-
-        private void btnActionClick(object sender, RoutedEventArgs e)
+        private void btnActionClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkElement)sender).Tag;
+            var item = (Item) ((FrameworkElement) sender).Tag;
             InvokeActionOnItem(item);
-  
         }
 
-        private void btnAdditonalActionClick(object sender, RoutedEventArgs e)
+        private void btnAdditonalActionClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkElement)sender).Tag;
+            var item = (Item) ((FrameworkElement) sender).Tag;
             InvokeAdditionalActionOnItem(item);
-  
         }
 
-
-        private void DefaultAction_Click(object sender, RoutedEventArgs e)
+        private void DefaultAction_Click(Object sender, RoutedEventArgs e)
         {
-            var item = (Item)((FrameworkElement)sender).Tag;
+            var item = (Item) ((FrameworkElement) sender).Tag;
             InvokeDefaultOnItem(item);
         }
- 
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private void txtSearch_KeyDown(Object sender, KeyEventArgs e)
         {
- 
         }
 
-
-        private void txtSearch_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void txtSearch_PreviewKeyDown(Object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Tab || e.Key == Key.Enter || e.Key == Key.Down)
+            if ((e.Key == Key.Tab) || (e.Key == Key.Enter) || (e.Key == Key.Down))
             {
                 if (itemsControl.Items.Count > 0)
                 {
-
                     // move focus to result list view
                     //txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                     MoveFocusItemsControl(false);
-                    
+
                 }
 
                 e.Handled = true;
@@ -893,79 +918,71 @@ namespace HuntingDog.DogFace
             }
         }
 
-
-
-
-        private bool MoveFocusItemsControl(bool isLast)
+        private Boolean MoveFocusItemsControl(Boolean isLast)
         {
             if (itemsControl.Items.Count > 0)
             {
-                var index = isLast ? itemsControl.Items.Count - 1 : 0;
+                var index = isLast
+                    ? (itemsControl.Items.Count - 1)
+                    : 0;
+
                 itemsControl.SelectedIndex = index;
+
                 var it = itemsControl.ItemContainerGenerator.ContainerFromIndex(index) as Control;
+
                 if (it != null)
                 {
                     return it.Focus();
                 }
                 else
                 {
-                    
                     itemsControl.ScrollIntoView(itemsControl.Items[index]);
+
                     var it1 = itemsControl.ItemContainerGenerator.ContainerFromIndex(index) as Control;
+
                     if (it1 != null)
                     {
                         return it1.Focus();
-
                     }
                 }
-
             }
 
             return false;
         }
 
-        
-
-        private void itemsControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void itemsControl_PreviewKeyDown(Object sender, KeyEventArgs e)
         {
             if (!IsItemFocused(itemsControl))
+            {
                 return;
+            }
 
             if (e.Key == Key.Tab)
             {
                 itemsControl.SelectedIndex = -1;
-                            
+
                 // move focus to result text
                 itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
-              
                 e.Handled = true;
             }
-            else if (e.Key == Key.Up && itemsControl.SelectedIndex == 0)
+            else if ((e.Key == Key.Up) && (itemsControl.SelectedIndex == 0))
             {
-              
-                    itemsControl.SelectedIndex = -1;
+                itemsControl.SelectedIndex = -1;
 
-                    // jump to text search box from Result View - 
-                    itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
-
-                    e.Handled = true;
+                // jump to text search box from Result View - 
+                itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
+                e.Handled = true;
             }
-            else if (e.Key == Key.Down && itemsControl.SelectedIndex == itemsControl.Items.Count-1)
+            else if ((e.Key == Key.Down) && (itemsControl.SelectedIndex == (itemsControl.Items.Count - 1)))
             {
-            
                 // last item - do nothing
-                    e.Handled = true;
-
-               
+                e.Handled = true;
             }
-            else if ((e.Key == Key.Enter || e.Key == Key.Space) && itemsControl.SelectedIndex != -1)
-            {           
-                    // open popup control and move focus to teh first item there
-                    OpenContextMenu();
-
-                    e.Handled = true;
- 
-
+            else if (((e.Key == Key.Enter) || (e.Key == Key.Space)) && itemsControl.SelectedIndex != -1)
+            {
+                // open popup control and move focus to teh first item there
+                OpenContextMenu();
+                e.Handled = true;
             }
             else if (e.Key == Key.Right)
             {
@@ -982,36 +999,35 @@ namespace HuntingDog.DogFace
             {
                 //MoveFocusItemsControl(false);
                 e.Handled = true;
-                    
             }
         }
 
-
-        private void cbDatabase_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void cbDatabase_PreviewKeyDown(Object sender, KeyEventArgs e)
         {
-            if ((e.Key == Key.Enter || e.Key == Key.Space) && cbDatabase.IsDropDownOpen == false)
+            if (((e.Key == Key.Enter) || (e.Key == Key.Space)) && !cbDatabase.IsDropDownOpen)
             {
                 cbDatabase.IsDropDownOpen = true;
                 e.Handled = true;
             }
 
-            if (( e.Key == Key.Down || e.Key == Key.Right) && cbDatabase.IsDropDownOpen == false)
+            if (((e.Key == Key.Down) || (e.Key == Key.Right)) && !cbDatabase.IsDropDownOpen)
             {
                 cbDatabase.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                 e.Handled = true;
             }
 
-            if (( e.Key == Key.Up || e.Key == Key.Left) && cbDatabase.IsDropDownOpen == false)
+            if (((e.Key == Key.Up) || (e.Key == Key.Left)) && !cbDatabase.IsDropDownOpen)
             {
                 cbDatabase.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
                 e.Handled = true;
             }
 
-            if (e.Key == Key.Space && cbDatabase.IsDropDownOpen)
+            if ((e.Key == Key.Space) && cbDatabase.IsDropDownOpen)
             {
                 foreach (var item in cbDatabase.Items)
                 {
                     var it = cbDatabase.ItemContainerGenerator.ContainerFromItem(item);
+
                     if ((it as ComboBoxItem).IsHighlighted)
                     {
                         cbDatabase.SelectedItem = item;
@@ -1021,53 +1037,52 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void cbServer_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void cbServer_PreviewKeyDown(Object sender, KeyEventArgs e)
         {
-            if ((e.Key == Key.Enter || e.Key == Key.Space) && !cbServer.IsDropDownOpen)
+            if (((e.Key == Key.Enter) || (e.Key == Key.Space)) && !cbServer.IsDropDownOpen)
             {
                 cbServer.IsDropDownOpen = true;
                 e.Handled = true;
             }
 
-            if ((e.Key == Key.Down ) && !cbServer.IsDropDownOpen)
+            if ((e.Key == Key.Down) && !cbServer.IsDropDownOpen)
             {
                 cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Down));
                 e.Handled = true;
             }
 
-            if ( e.Key == Key.Right && !cbServer.IsDropDownOpen)
+            if ((e.Key == Key.Right) && !cbServer.IsDropDownOpen)
             {
                 cbServer.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                 e.Handled = true;
             }
 
-            if ((e.Key == Key.Up || e.Key == Key.Left) && !cbServer.IsDropDownOpen )
-            {         
+            if (((e.Key == Key.Up) || (e.Key == Key.Left)) && !cbServer.IsDropDownOpen)
+            {
                 e.Handled = true;
             }
 
-            if (e.Key == Key.Space && cbServer.IsDropDownOpen)
+            if ((e.Key == Key.Space) && cbServer.IsDropDownOpen)
             {
                 foreach (var item in cbServer.Items)
                 {
                     var it = cbServer.ItemContainerGenerator.ContainerFromItem(item);
+
                     if ((it as ComboBoxItem).IsHighlighted)
                     {
                         cbServer.SelectedItem = item;
                         cbServer.IsDropDownOpen = false;
                     }
-                }              
+                }
             }
         }
 
-        public long LastTicks = 0;
-
-        private void TextBlock_MouseUp(object sender, MouseEventArgs e)
+        private void TextBlock_MouseUp(Object sender, MouseEventArgs e)
         {
             _isDragDropStartedFromText = false;
         }
 
-        private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
+        private void TextBlock_MouseDown_1(Object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Pressed)
             {
@@ -1076,6 +1091,7 @@ namespace HuntingDog.DogFace
                 {
                     var controlSelected = itemsControl.ItemContainerGenerator.ContainerFromItem(SelectedItem);
                 }
+
                 //OpenPopup();
             }
             else
@@ -1085,49 +1101,52 @@ namespace HuntingDog.DogFace
                 if ((DateTime.Now.Ticks - LastTicks) < 3000000)
                 {
                     if (itemsControl.SelectedItem != null)
+                    {
                         InvokeDefaultOnItem(itemsControl.SelectedItem as Item);
+                    }
 
                 }
+
                 LastTicks = DateTime.Now.Ticks;
             }
         }
 
-        private void PropertiesTextBlock_MouseUp(object sender, MouseEventArgs e)
+        private void PropertiesTextBlock_MouseUp(Object sender, MouseEventArgs e)
         {
-            _isDragDropStartedPropeties = false;
-        }
-        private void PropertiesTextBlock_MouseDown(object sender, MouseEventArgs e)
-        {
-            _isDragDropStartedPropeties = true;           
+            //_isDragDropStartedPropeties = false;
         }
 
-
-        private void TextBlock_MouseMove(object sender, MouseEventArgs e)
+        private void PropertiesTextBlock_MouseDown(Object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedFromText == true)
+            //_isDragDropStartedPropeties = true;           
+        }
+
+        private void TextBlock_MouseMove(Object sender, MouseEventArgs e)
+        {
+            if ((e.LeftButton == MouseButtonState.Pressed) && _isDragDropStartedFromText)
             {
                 _isDragDropStartedFromText = false;
-          
+
                 // Get the dragged ListViewItem
                 FrameworkElement item = sender as FrameworkElement;
+
                 if (item != null)
                 {
                     ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
 
                     // Find the data behind the ListViewItem
-                    Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
-                    if (contact != null && contact.Entity != null)
+                    Item contact = (Item) itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
+
+                    if ((contact != null) && (contact.Entity != null))
                     {
                         // Initialize the drag & drop operation
-
                         DragDrop.DoDragDrop(listViewItem, contact.Entity.FullName, DragDropEffects.Copy);
                     }
                 }
-               
             }
         }
 
-        private void PropertiesTextBlock_MouseMove(object sender, MouseEventArgs e)
+        private void PropertiesTextBlock_MouseMove(Object sender, MouseEventArgs e)
         {
             /*if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedPropeties == true)
             {
@@ -1137,16 +1156,17 @@ namespace HuntingDog.DogFace
                 {
                     // Get the dragged ListViewItem
                     FrameworkElement item = sender as FrameworkElement;
+
                     if (item != null)
                     {
                         ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
 
                         // Find the data behind the ListViewItem
                         BaseParamItem pr = (BaseParamItem)listViewProperties.ItemContainerGenerator.ItemFromContainer(listViewItem);
+
                         if (pr != null)
                         {
                             // Initialize the drag & drop operation
-
                             DragDrop.DoDragDrop(listViewItem, pr.Name, DragDropEffects.Copy);
                         }
                     }
@@ -1155,61 +1175,52 @@ namespace HuntingDog.DogFace
                 {
                     // LOG
                 }
-
             }*/
         }
 
-     
-
-
-        Brush _borderBrush = new SolidColorBrush(Color.FromRgb(0x64,0x95,0xed));
-        Brush _blurBrush = new SolidColorBrush(Color.FromArgb(0x60, 0x64, 0x95, 0xed));
-
-       
-        private void cbDatabase_GotFocus(object sender, RoutedEventArgs e)
+        private void cbDatabase_GotFocus(Object sender, RoutedEventArgs e)
         {
             //borderDatabase.BorderBrush = _borderBrush;
             cbDatabase.BorderBrush = _borderBrush;
         }
 
-        private void cbDatabase_LostFocus(object sender, RoutedEventArgs e)
+        private void cbDatabase_LostFocus(Object sender, RoutedEventArgs e)
         {
             //borderDatabase.BorderBrush = Brushes.Transparent;
             //cbDatabase.BorderBrush = _blurBrush;
         }
 
-        private void cbServer_GotFocus(object sender, RoutedEventArgs e)
+        private void cbServer_GotFocus(Object sender, RoutedEventArgs e)
         {
             //borderServer.BorderBrush = _borderBrush;
             //cbServer.BorderBrush = _borderBrush;
         }
 
-        private void cbServer_LostFocus(object sender, RoutedEventArgs e)
+        private void cbServer_LostFocus(Object sender, RoutedEventArgs e)
         {
             //borderServer.BorderBrush = Brushes.Transparent;
             //cbServer.BorderBrush = _blurBrush;
         }
 
-        private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
+        private void txtSearch_GotFocus(Object sender, RoutedEventArgs e)
         {
             borderText.BorderBrush = _borderBrush;
             imgSearch.Opacity = 1;
             txtSearch.SelectAll();
-           
         }
 
-        private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
+        private void txtSearch_LostFocus(Object sender, RoutedEventArgs e)
         {
             imgSearch.Opacity = 0.5;
             borderText.BorderBrush = _blurBrush;
         }
 
-        private void borderText_MouseDown(object sender, MouseButtonEventArgs e)
+        private void borderText_MouseDown(Object sender, MouseButtonEventArgs e)
         {
             txtSearch.Focus();
         }
 
-        private void Refresh_Click(object sender, RoutedEventArgs e)
+        private void Refresh_Click(Object sender, RoutedEventArgs e)
         {
             ReloadObjectsFromDatabase();
         }
@@ -1219,27 +1230,25 @@ namespace HuntingDog.DogFace
             if (SelectedServer != null)
             {
                 if (SelectedDatabase != null)
-                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<string, string>(SelectedServer, SelectedDatabase),
-                                          (int)ERquestType.RefreshSearch, true);
-            } 
+                {
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<String, String>(SelectedServer, SelectedDatabase), (Int32) ERquestType.RefreshSearch, true);
+                }
+            }
         }
 
-
-        private void RefreshDatabaseList_Click(object sender, RoutedEventArgs e)
+        private void RefreshDatabaseList_Click(Object sender, RoutedEventArgs e)
         {
             StoreSelectedDatabaseInUserProfile();
             ReloadObjectsFromDatabase();
 
             if (SelectedServer != null)
             {
-                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer, (int) ERquestType.Server, true);          
+                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer, (Int32) ERquestType.Server, true);
             }
- 
         }
 
         private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         //private void itemsControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -1247,23 +1256,25 @@ namespace HuntingDog.DogFace
         //    OpenPopup();
         //}
 
-        ContextMenu GetCtxMenuFromItem(Item si) 
+        ContextMenu GetCtxMenuFromItem(Item si)
         {
             if (si == null)
+            {
                 return null;
+            }
 
             var cont = itemsControl.ItemContainerGenerator.ContainerFromItem(si);
+
             if (cont != null)
             {
-                
                 return (cont as ListViewItem).ContextMenu;
             }
 
             return null;
         }
 
-        private void ListViewContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {            
+        private void ListViewContextMenuClosing(Object sender, ContextMenuEventArgs e)
+        {
         }
 
         private void UnsubscribeToAction(ContextMenu ctx)
@@ -1271,6 +1282,7 @@ namespace HuntingDog.DogFace
             foreach (var item in ctx.Items)
             {
                 var menuItem = ctx.ItemContainerGenerator.ContainerFromItem(item) as MenuItem;
+
                 if (menuItem != null)
                 {
                     menuItem.Click -= menuItem_Click;
@@ -1278,105 +1290,103 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void ListViewContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void ListViewContextMenuOpening(Object sender, ContextMenuEventArgs e)
         {
             var li = sender as ListViewItem;
-            if(li!=null)
+
+            if (li != null)
             {
                 var ctx = li.ContextMenu;
+
                 // happens only when user does a righ click
-                ctx.Placement = PlacementMode.MousePoint;          
+                ctx.Placement = PlacementMode.MousePoint;
                 ctx.HorizontalOffset = 0;
                 ctx.VerticalOffset = 4;
-
                 ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
-
-               
             }
         }
 
         private void SubscribeToAction(ContextMenu ctx)
         {
-           bool focused = false;
+            var focused = false;
+
             foreach (var item in ctx.Items)
             {
                 var menuItem = ctx.ItemContainerGenerator.ContainerFromItem(item) as MenuItem;
-                if(menuItem!=null)
+
+                if (menuItem != null)
                 {
                     menuItem.Click += menuItem_Click;
+
                     if (!focused)
-                     menuItem.Focus();
+                    {
+                        menuItem.Focus();
+                    }
 
                     focused = true;
                 }
             }
-
-           
-            
         }
 
-        void menuItem_Click(object sender, RoutedEventArgs e)
+        void menuItem_Click(Object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
-            if(menuItem!=null)
+
+            if (menuItem != null)
             {
                 var cmd = menuItem.Header.ToString();
                 InvokeActionByName(SelectedItem, cmd);
-
             }
         }
 
-        void PrepareContextMenu(ContextMenu ctx,Item item)
+        void PrepareContextMenu(ContextMenu ctx, Item item)
         {
-            
         }
 
         void OpenContextMenu()
         {
-
             var ctx = GetCtxMenuFromItem(SelectedItem);
+
             if (ctx != null)
             {
                 ctx.Placement = PlacementMode.Left;
                 ctx.PlacementTarget = SelectedListViewItem;
-                ctx.HorizontalOffset = itemsControl.ActualWidth/2;
-                ctx.VerticalOffset = SelectedListViewItem.ActualHeight/2;
+                ctx.HorizontalOffset = itemsControl.ActualWidth / 2;
+                ctx.VerticalOffset = SelectedListViewItem.ActualHeight / 2;
 
                 //var listViewItem = SelectedListViewItem;
                 //var txt = WpfUtil.FindChild<TextBlock>(SelectedListViewItem);
 
                 //ctx.PlacementTarget = txt;
-                ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
-               
-                
-                ctx.IsOpen = true;
-               // var lv = (popup.Child as Border).Child as ListView;
-              //  lv.ItemsSource = BuilsAvailableActions(SelectedItem);
 
+                ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
+                ctx.IsOpen = true;
+
+                // var lv = (popup.Child as Border).Child as ListView;
+                //  lv.ItemsSource = BuilsAvailableActions(SelectedItem);
             }
         }
 
-        private bool IsItemFocused(ListView lv)
+        private Boolean IsItemFocused(ListView lv)
         {
             var it = GetSelectedItem(lv);
-            if (it != null)
-                return it.IsFocused;
 
-            return false;
+            return (it != null)
+                ? it.IsFocused
+                : false;
         }
-
 
         private Control GetSelectedItem(ListView lv)
         {
             return lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control;
         }
 
-        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        private void ContextMenu_Closed(Object sender, RoutedEventArgs e)
         {
             UnsubscribeToAction(sender as ContextMenu);
         }
 
-        private void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        private void ContextMenu_Opened(Object sender, RoutedEventArgs e)
         {
             SubscribeToAction(sender as ContextMenu);
         }
@@ -1462,8 +1472,6 @@ namespace HuntingDog.DogFace
         //    //        FocusNavigationDirection.Next));
         //}
 
-     
-
         //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
         //{
         //    borderItems.BorderBrush = _borderBrush;
@@ -1473,39 +1481,5 @@ namespace HuntingDog.DogFace
         //{
         //    borderItems.BorderBrush = Brushes.Transparent;
         //}
-
-     
-    }
-
-    class SearchAsyncParam
-    {
-        public int SequenceNumber { get; set; }
-        public string Srv { get; set; }
-        public string Text { get; set; }
-        public string Database{get;set;}
-
-        public bool ForceSearch { get; set; }
-    }
-
-    public class WidthConverter : IValueConverter
-    {
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            double diff = double.Parse(parameter.ToString());
-           // var desiredWidth =  ((double)value - 8);
-            double desiredWidth = ((double)value - diff);
-            //desiredWidth -= 80;
-
-            if (desiredWidth < 100)
-                desiredWidth = 100;
-
-            return desiredWidth;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -1,28 +1,24 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DatabaseObjectSearcher;
 using System.IO;
 using System.IO.IsolatedStorage;
-
+using System.Linq;
 
 namespace HuntingDog.DogFace
 {
-
     [Serializable]
     public class Entry
     {
-            public string Key;
-            public string Value;
-     }
+        public String Key;
 
+        public String Value;
+    }
 
     [Serializable]
-    public class UserPreferencesStorage:List<Entry> 
+    public class UserPreferencesStorage : List<Entry>
     {
-
-        public const string _settingFileName = "HuntingDogPreferences.txt";
+        public const String _settingFileName = "HuntingDogPreferences.txt";
 
         public void Save()
         {
@@ -30,19 +26,21 @@ namespace HuntingDog.DogFace
             {
                 var isoStore = GetIsolatedStorageFile();
 
-                var oStream =new IsolatedStorageFileStream(_settingFileName, FileMode.Create, isoStore);
+                var oStream = new IsolatedStorageFileStream(_settingFileName, FileMode.Create, isoStore);
 
-                using(var writer = new StreamWriter(oStream))
+                using (var writer = new StreamWriter(oStream))
                 {
                     foreach (var entry in this)
                     {
                         writer.WriteLine(entry.Key);
-                        writer.WriteLine(entry.Value);                        
+                        writer.WriteLine(entry.Value);
                     }
+
                     writer.Close();
                 }
 
                 oStream.Close();
+
                 //var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");
 
                 //if (!Directory.Exists(dirName))
@@ -54,10 +52,9 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Could not save user preferences:" + ex.Message,ex);
+                MyLogger.LogError("Could not save user preferences:" + ex.Message, ex);
             }
         }
-
 
         public static UserPreferencesStorage Load()
         {
@@ -65,34 +62,32 @@ namespace HuntingDog.DogFace
             {
                 var isoStore = GetIsolatedStorageFile();
 
-                if(isoStore.GetFileNames(_settingFileName).Length>0)
+                if (isoStore.GetFileNames(_settingFileName).Length > 0)
                 {
-                
-                    var iStream =new IsolatedStorageFileStream(_settingFileName,FileMode.Open, isoStore);
+                    var iStream = new IsolatedStorageFileStream(_settingFileName, FileMode.Open, isoStore);
 
-                    using(var reader = new StreamReader(iStream))
+                    using (var reader = new StreamReader(iStream))
                     {
-
                         var newPref = new UserPreferencesStorage();
 
-                        while(true)
+                        while (true)
                         {
                             var lineKey = reader.ReadLine();
                             var lineValue = reader.ReadLine();
-                            if(lineKey==null || lineValue==null)
+
+                            if ((lineKey == null) || (lineValue == null))
                                 break;
 
-                            newPref.Add(new Entry(){Key = lineKey,Value = lineValue});
+                            newPref.Add(new Entry() { Key = lineKey, Value = lineValue });
                         }
-                     
+
                         return newPref;
                     }
 
-                  
                     //return Serializator.Load<UserPreferencesStorage>(fullName);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MyLogger.LogMessage("Could not load user preferences:" + ex.Message);
             }
@@ -103,29 +98,34 @@ namespace HuntingDog.DogFace
 
         private static IsolatedStorageFile GetIsolatedStorageFile()
         {
-            var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+            var isoStore = IsolatedStorageFile.GetStore((IsolatedStorageScope.User | IsolatedStorageScope.Assembly), null, null);
             return isoStore;
         }
 
-        public string GetByName(string key)
+        public String GetByName(String key)
         {
             var item = this.FirstOrDefault(x => x.Key == key);
+
             if (item == null)
+            {
                 return null;
+            }
 
             return item.Value;
         }
 
-
-        public void StoreByName(string key, string value)
+        public void StoreByName(String key, String value)
         {
             var item = this.FirstOrDefault(x => x.Key == key);
-            if (item == null)
-                Add(new Entry() { Key = key, Value = value });
-            else
-                item.Value = value;
-        }
-     
 
+            if (item == null)
+            {
+                Add(new Entry() { Key = key, Value = value });
+            }
+            else
+            {
+                item.Value = value;
+            }
+        }
     }
 }

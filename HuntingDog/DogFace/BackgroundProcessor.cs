@@ -1,14 +1,13 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
-using System.Linq;
 
 namespace DatabaseObjectSearcherUI
 {
     public interface IRequestCompleted
     {
-        void Completed(object result);
+        void Completed(Object result);
     }
 
     public enum ReqType : int
@@ -21,35 +20,46 @@ namespace DatabaseObjectSearcherUI
         Navigate
     }
 
-
-
     public class BackgroundProcessor
     {
-
         public class Request
         {
-            public DoWork DoWorkFunction { get; set; }
-            public object Argument;
-            public int RequestType;
+            public Object Argument;
+
+            public Int32 RequestType;
+
+            public DoWork DoWorkFunction
+            {
+                get;
+                set;
+            }
         }
 
-        public delegate void DoWork(object arg);
+        public delegate void DoWork(Object arg);
+
+        //public delegate RequestFailedDelegate(Request rec,Exception ex);
+        public event Action<Request, Exception> RequestFailed;
+
         AutoResetEvent _doWork = new AutoResetEvent(false);
+
         AutoResetEvent _stop = new AutoResetEvent(false);
 
         Thread _thread;
 
         List<Request> _requests = new List<Request>();
 
-        public void AddRequest(DoWork workingFunction, object arg, int reqType, bool deleteSameRequests)
+        public void AddRequest(DoWork workingFunction, Object arg, Int32 reqType, Boolean deleteSameRequests)
         {
             lock (this)
             {
                 if (deleteSameRequests)
                 {
                     var sameType = _requests.FindAll(x => x.RequestType == reqType);
+
                     foreach (Request req in sameType)
+                    {
                         _requests.Remove(req);
+                    }
                 }
 
                 var newReq = new Request();
@@ -60,28 +70,22 @@ namespace DatabaseObjectSearcherUI
 
                 _doWork.Set();
             }
-
         }
-
-        //public delegate RequestFailedDelegate(Request rec,Exception ex);
-        public event Action<Request, Exception> RequestFailed;
-
-
-
 
         public void Run()
         {
             while (true)
             {
-
-                int i = WaitHandle.WaitAny(new WaitHandle[] { _stop, _doWork });
+                var i = WaitHandle.WaitAny(new WaitHandle[] { _stop, _doWork });
 
                 // stop event
                 if (i == 0)
+                {
                     break;
+                }
 
+                var processRequest = true;
 
-                bool processRequest = true;
                 while (processRequest)
                 {
                     Request req = GetRequest();
@@ -95,9 +99,10 @@ namespace DatabaseObjectSearcherUI
                         catch (Exception ex)
                         {
                             if (RequestFailed != null)
+                            {
                                 RequestFailed.Invoke(req, ex);
+                            }
                         }
-
                     }
                     else
                     {
@@ -110,6 +115,7 @@ namespace DatabaseObjectSearcherUI
         private Request GetRequest()
         {
             Request req = null;
+
             lock (this)
             {
                 if (_requests.Count > 0)
@@ -118,6 +124,7 @@ namespace DatabaseObjectSearcherUI
                     _requests.RemoveAt(0);
                 }
             }
+
             return req;
         }
 
@@ -132,6 +139,5 @@ namespace DatabaseObjectSearcherUI
             _stop.Set();
             _thread.Join();
         }
-
     }
 }

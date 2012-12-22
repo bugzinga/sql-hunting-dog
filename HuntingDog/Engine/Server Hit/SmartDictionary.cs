@@ -1,56 +1,53 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Reflection;
 
 namespace DatabaseObjectSearcher
 {
     public class SmartDictionary<TKey, TValue> : IXmlSerializable, IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        private Dictionary<TKey, TValue> _internalDic = new Dictionary<TKey, TValue>();
+        private Dictionary<TKey, TValue> internalDic = new Dictionary<TKey, TValue>();
 
         public Dictionary<TKey, TValue> GetDictionary()
         {
-            return _internalDic;
+            return internalDic;
         }
 
         public TValue Get(TKey key)
         {
-            return _internalDic[key];
+            return internalDic[key];
         }
 
         public TValue GetOrCreate(TKey key)
         {
-            // try to find vaue in dictionary
+            // try to find value in dictionary
             TValue value;
-            if (!_internalDic.TryGetValue(key, out value))
+
+            if (!internalDic.TryGetValue(key, out value))
             {
                 // cannot find - create a new one
                 value = Activator.CreateInstance<TValue>();
-                _internalDic[key] = value;
+                internalDic[key] = value;
             }
 
             return value;
         }
 
-        public bool IsExist(TKey key)
+        public Boolean IsExist(TKey key)
         {
-            return _internalDic.ContainsKey(key);
+            return internalDic.ContainsKey(key);
         }
 
-
-        public void Save(string fullName)
+        public void Save(String fullName)
         {
             Serializator.Save(fullName, this);
         }
 
-
-        public static T LoadFrom<T>(string fullName)
+        public static T LoadFrom<T>(String fullName)
         {
-
             return Serializator.Load<T>(fullName);
         }
 
@@ -66,10 +63,8 @@ namespace DatabaseObjectSearcher
             XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
             XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
 
-
             // Start to use the reader.
             reader.Read();
-
 
             // Read the first element i.e. root of this object
             reader.ReadStartElement("PublicFields");
@@ -84,11 +79,12 @@ namespace DatabaseObjectSearcher
 
                 // stop reading fields
                 if (reader.NodeType == XmlNodeType.EndElement)
+                {
                     break;
+                }
             }
 
             reader.ReadEndElement();
-
 
             // Read the first element i.e. root of this object
             reader.ReadStartElement("SmartDictionary");
@@ -96,24 +92,21 @@ namespace DatabaseObjectSearcher
             // Read all elements
             while (reader.NodeType != XmlNodeType.EndElement)
             {
-
                 // Parsing the key and value 
-                TKey key = (TKey)keySerializer.Deserialize(reader);
-                TValue value = (TValue)valueSerializer.Deserialize(reader);
-
+                TKey key = (TKey) keySerializer.Deserialize(reader);
+                TValue value = (TValue) valueSerializer.Deserialize(reader);
 
                 // end reading the item.
                 //reader.ReadEndElement();
                 //reader.MoveToContent();
 
                 // add the item
-                _internalDic.Add(key, value);
+                internalDic.Add(key, value);
             }
 
             // Extremely important to read the node to its end.
             // next call of the reader methods will crash if not called.
             reader.ReadEndElement();
-
         }
 
         public void WriteXml(XmlWriter writer)
@@ -123,6 +116,7 @@ namespace DatabaseObjectSearcher
 
             writer.WriteStartElement("PublicFields");
             var fields = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
             foreach (var f in fields)
             {
                 XmlSerializer fieldSer = new XmlSerializer(f.PropertyType);
@@ -135,7 +129,7 @@ namespace DatabaseObjectSearcher
             writer.WriteStartElement("SmartDictionary");
 
             // store all items from dictionary
-            foreach (var keyValue in _internalDic)
+            foreach (var keyValue in internalDic)
             {
                 // Write item, key and value
                 keySerializer.Serialize(writer, keyValue.Key, null);
@@ -144,7 +138,6 @@ namespace DatabaseObjectSearcher
 
             // close /SmartDictionary tag
             writer.WriteEndElement();
-
         }
 
         #endregion
@@ -153,7 +146,7 @@ namespace DatabaseObjectSearcher
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return _internalDic.GetEnumerator();
+            return internalDic.GetEnumerator();
         }
 
         #endregion
@@ -162,7 +155,7 @@ namespace DatabaseObjectSearcher
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _internalDic.GetEnumerator();
+            return internalDic.GetEnumerator();
         }
 
         #endregion

@@ -435,7 +435,7 @@ namespace DatabaseObjectSearcher
             {
                 commandName = applicationObject.Commands.Item(Guid, ID).Name;
             }
-            catch (System.Exception exception)
+            catch
             {
             }
             _outputWindowPane.OutputString("CommandEvents, AfterExecute\n");
@@ -455,7 +455,7 @@ namespace DatabaseObjectSearcher
             {
                 commandName = applicationObject.Commands.Item(Guid, ID).Name;
             }
-            catch (System.Exception exception)
+            catch
             {
             }
             _outputWindowPane.OutputString("CommandEvents, BeforeExecute\n");

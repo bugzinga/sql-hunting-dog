@@ -46,6 +46,12 @@ namespace HuntingDog.DogEngine
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(Boolean disposing)
+        {
         }
 
         public void Initialise(SqlConnectionInfo connectionInfo)
