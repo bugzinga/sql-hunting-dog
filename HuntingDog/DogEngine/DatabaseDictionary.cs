@@ -12,6 +12,8 @@ namespace HuntingDog.DogEngine
     /// </summary>
     public class DatabaseDictionary : IDatabaseDictionary, IDisposable
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(DatabaseDictionary));
+
         public const String And_Clause = "{AND}";
 
         private readonly Dictionary<String, DatabaseSearchResult> dictionary = new Dictionary<String, DatabaseSearchResult>();
@@ -34,7 +36,7 @@ namespace HuntingDog.DogEngine
 
             if (!IsLoaded)
             {
-                MyLogger.LogError("Trying to search not loaded database. DB name:" + DatabaseName);
+                log.LogError("Trying to search not loaded database. DB name:" + DatabaseName);
                 return result;
             }
 

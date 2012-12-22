@@ -16,6 +16,8 @@ namespace HuntingDog.DogEngine
 {
     public sealed class StudioController : IStudioController
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(StudioController));
+
         private static StudioController currentInstance = new StudioController();
 
         private AddIn inst;
@@ -99,7 +101,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Error locating object.", ex);
+                log.LogError("Error locating object.", ex);
             }
         }
 
@@ -146,12 +148,12 @@ namespace HuntingDog.DogEngine
                             {
                                 if (removed.Count > 0)
                                 {
-                                    MyLogger.LogMessage("Found " + removed.Count.ToString() + " disconnected server");
+                                    log.LogMessage("Found " + removed.Count.ToString() + " disconnected server");
                                 }
 
                                 if (removed.Count > 0)
                                 {
-                                    MyLogger.LogMessage("Found " + added.Count.ToString() + " connected server");
+                                    log.LogMessage("Found " + added.Count.ToString() + " connected server");
                                 }
 
                                 var removedNameList = removed.Select(x => x.ServerName).ToList();
@@ -182,7 +184,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception e)
                 {
-                    MyLogger.LogError("Thread server checker ", e);
+                    log.LogError("Thread server checker ", e);
                 }
                 
                 // check all servers
@@ -226,7 +228,7 @@ namespace HuntingDog.DogEngine
                 catch (Exception ex)
                 {
                     // NEED TO LOG: FATAL ERROR:
-                    MyLogger.LogError("Error reloading server list.", ex);
+                    log.LogError("Error reloading server list.", ex);
                 }
             }
         }
@@ -259,7 +261,7 @@ namespace HuntingDog.DogEngine
             }
             else
             {
-                MyLogger.LogError("Controller:new server connected event (but already connected):" + serverName);
+                log.LogError("Controller:new server connected event (but already connected):" + serverName);
             }
         }
 
@@ -276,11 +278,11 @@ namespace HuntingDog.DogEngine
             }
             else
             {
-                MyLogger.LogError("Controller: requested unknown server " + serverName + ".");
+                log.LogError("Controller: requested unknown server " + serverName + ".");
 
                 foreach (var srv in Servers)
                 {
-                    MyLogger.LogError("Controller:available server:" + srv.Key);
+                    log.LogError("Controller:available server:" + srv.Key);
                 }
 
                 return new List<String>();
@@ -298,12 +300,12 @@ namespace HuntingDog.DogEngine
                 }
                 else
                 {
-                    MyLogger.LogError("Controller: Refresh server. Unknown server name " + serverName + ".");
+                    log.LogError("Controller: Refresh server. Unknown server name " + serverName + ".");
                 }
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: RefreshServer", ex);
+                log.LogError("Controller: RefreshServer", ex);
             }
         }
 
@@ -318,12 +320,12 @@ namespace HuntingDog.DogEngine
                 }
                 else
                 {
-                    MyLogger.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
+                    log.LogError("Controller: Refresh Database. Unknown server name " + serverName + ".");
                 }
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: RefreshDatabase failed. Server:" + serverName + " database:" + dbName, ex);
+                log.LogError("Controller: RefreshDatabase failed. Server:" + serverName + " database:" + dbName, ex);
             }
         }
 
@@ -357,7 +359,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ListViewColumns failed. " + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ListViewColumns failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -386,7 +388,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ListColumns failed. " + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ListColumns failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -413,7 +415,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ListFuncParameters failed. " + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ListFuncParameters failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -443,7 +445,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ListProcParameters failed. " + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ListProcParameters failed. " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -480,7 +482,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: CreateAddinWindow failed.", ex);
+                log.LogError("Controller: CreateAddinWindow failed.", ex);
                 throw;
             }
         }
@@ -544,7 +546,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ModifyFunction failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ModifyFunction failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -563,7 +565,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ModifyProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ModifyProcedure failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -577,7 +579,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: SelectFromView failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: SelectFromView failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -590,7 +592,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -603,7 +605,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -616,7 +618,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: ScriptTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: ScriptTable failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -629,7 +631,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: SelectFromTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: SelectFromTable failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -642,7 +644,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: EditTableData failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: EditTableData failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -655,7 +657,7 @@ namespace HuntingDog.DogEngine
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Controller: DesignTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.LogError("Controller: DesignTable failed." + GetSafeEntityObject(entityObject), ex);
             }
         }
 

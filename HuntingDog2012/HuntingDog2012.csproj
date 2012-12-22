@@ -222,8 +222,11 @@
     <Compile Include="..\HuntingDog\Engine\Utils.cs">
       <Link>Engine\Utils.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Logging\Logger.cs">
-      <Link>Logging\Logger.cs</Link>
+    <Compile Include="..\HuntingDog\Logging\Log.cs">
+      <Link>Logging\Log.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Logging\LogFactory.cs">
+      <Link>Logging\LogFactory.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\User Interface\ucHost.cs">
       <Link>User Interface\ucHost.cs</Link>

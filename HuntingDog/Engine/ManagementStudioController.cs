@@ -20,6 +20,8 @@ namespace DatabaseObjectSearcher
     // can open windows, execute scripts, navigate in object explorer
     public class ManagementStudioController
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(ManagementStudioController));
+
         [SuppressMessage("Microsoft.Design", "CA1063")]
         public class ManagedConn : IManagedConnection
         {
@@ -83,7 +85,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("SelectFromView failed.", ex);
+                log.LogError("SelectFromView failed.", ex);
             }
         }
 
@@ -110,7 +112,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("OpenFunctionForModification failed.", ex);
+                log.LogError("OpenFunctionForModification failed.", ex);
             }
         }
 
@@ -166,7 +168,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("OpenStoredProcedureForModification failed.", ex);
+                log.LogError("OpenStoredProcedureForModification failed.", ex);
             }
         }
 
@@ -198,7 +200,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("OpenStoredProcedureForModification failed.", ex);
+                log.LogError("OpenStoredProcedureForModification failed.", ex);
             }
         }
 
@@ -351,7 +353,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("ExecuteStoredProc failed.", ex);
+                log.LogError("ExecuteStoredProc failed.", ex);
             }
         }
 
@@ -399,7 +401,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("ExecuteFunctionfailed.", ex);
+                log.LogError("ExecuteFunctionfailed.", ex);
             }
         }
 
@@ -467,7 +469,7 @@ namespace DatabaseObjectSearcher
         {
             if (tbl.State == SqlSmoState.Dropped)
             {
-                MyLogger.LogMessage("trying to design dropped table.");
+                log.LogMessage("trying to design dropped table.");
                 return;
             }
 
@@ -482,7 +484,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                MyLogger.LogMessage("trying to open dropped table.");
+                log.LogMessage("trying to open dropped table.");
                 return;
             }
 
@@ -531,7 +533,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Script Table failed.", ex);
+                log.LogError("Script Table failed.", ex);
             }
         }
 
@@ -567,7 +569,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("SelectFromTable failed.", ex);
+                log.LogError("SelectFromTable failed.", ex);
             }
         }
 

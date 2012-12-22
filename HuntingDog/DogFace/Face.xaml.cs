@@ -20,6 +20,8 @@ namespace HuntingDog.DogFace
     [ComVisible(false)]
     public partial class Face : UserControl
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(Face));
+
         class SearchAsyncParam
         {
             public Int32 SequenceNumber
@@ -169,7 +171,7 @@ namespace HuntingDog.DogFace
 
         public Face()
         {
-            MyLogger.LogMessage("XAML Face Constructed.");
+            log.LogMessage("XAML Face Constructed.");
             InitializeComponent();
         }
 
@@ -177,7 +179,7 @@ namespace HuntingDog.DogFace
         {
             try
             {
-                MyLogger.LogMessage("XAML Loaded...");
+                log.LogMessage("XAML Loaded...");
 
                 var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
                 //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
@@ -205,7 +207,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Fatal error loading main control:" + ex.Message, ex);
+                log.LogError("Fatal error loading main control:" + ex.Message, ex);
             }
         }
 
@@ -238,7 +240,7 @@ namespace HuntingDog.DogFace
 
         void StudioController_OnServersAdded(List<String> listAdded)
         {
-            MyLogger.LogMessage("Face: server added." + (listAdded.Count > 0 ? listAdded[0] : String.Empty));
+            log.LogMessage("Face: server added." + (listAdded.Count > 0 ? listAdded[0] : String.Empty));
 
             InvokeInUI(() =>
             {
@@ -250,14 +252,14 @@ namespace HuntingDog.DogFace
                 if (_serverList.Count == 1)
                 {
                     cbServer.SelectedIndex = 0;
-                    MyLogger.LogMessage("Face: first server is selected.");
+                    log.LogMessage("Face: first server is selected.");
                 }
             });
         }
 
         void StudioController_OnServersRemoved(List<String> removedList)
         {
-            MyLogger.LogMessage("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
+            log.LogMessage("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
 
             InvokeInUI(() =>
             {
@@ -275,12 +277,12 @@ namespace HuntingDog.DogFace
                     // move selection to first available server                
                     if (_serverList.Count > 0)
                     {
-                        MyLogger.LogMessage("Face: Selected Server was removed. Move focus to first server in list");
+                        log.LogMessage("Face: Selected Server was removed. Move focus to first server in list");
                         cbServer.SelectedIndex = 0;
                     }
                     else
                     {
-                        MyLogger.LogMessage("Face: Selected Server was removed. Server list is empty.Clear everything");
+                        log.LogMessage("Face: Selected Server was removed. Server list is empty.Clear everything");
                         cbDatabase.ItemsSource = null;
                     }
                 }
@@ -289,7 +291,7 @@ namespace HuntingDog.DogFace
 
         void StudioController_OnServersChanged()
         {
-            MyLogger.LogMessage("Face: server list changed.");
+            log.LogMessage("Face: server list changed.");
 
             InvokeInUI(() =>
             {
@@ -310,12 +312,12 @@ namespace HuntingDog.DogFace
         {
             SetStatus("Error:" + arg2.Message);
             // notify user about an error
-            MyLogger.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType, arg2);
+            log.LogError("Request failed:" + arg1.Argument + " type:" + arg1.RequestType, arg2);
         }
 
         public void ReloadServers()
         {
-            MyLogger.LogMessage("Reloading Servers - intitiated by user");
+            log.LogMessage("Reloading Servers - initiated by user");
             var servers = StudioController.ListServers();
             _serverList.Clear();
 
@@ -325,7 +327,7 @@ namespace HuntingDog.DogFace
             }
 
             //srv.Add(new Item() { Name = ConnectNewServerString });
-            MyLogger.LogMessage("Reloading Servers - loaded:" + _serverList.Count + " servers.");
+            log.LogMessage("Reloading Servers - loaded:" + _serverList.Count + " servers.");
             cbServer.ItemsSource = _serverList;
 
             if (_serverList.Count == 1)
@@ -447,7 +449,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Server Selection:" + ex.Message, ex);
+                log.LogError("Server Selection:" + ex.Message, ex);
             }
         }
 
@@ -511,7 +513,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Face - Do Search:" + ex.Message, ex);
+                log.LogError("Face - Do Search:" + ex.Message, ex);
             }
         }
 
@@ -580,7 +582,7 @@ namespace HuntingDog.DogFace
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
             {
-                MyLogger.LogMessage("Cancelled search request because new request was added. " + par.Text);
+                log.LogMessage("Cancelled search request because new request was added. " + par.Text);
                 return;
             }
 

@@ -23,6 +23,7 @@ namespace DatabaseObjectSearcher
 {
     public class ObjectExplorerManager
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(ObjectExplorerManager));
 
         //public  List<NavigatorServer> GetServers()
         //{
@@ -156,7 +157,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
                 // NEED TO LOG
-                MyLogger.LogError("Error Initializing object explorer (subscribing selection changed event) " + ex.Message, ex);
+                log.LogError("Error Initializing object explorer (subscribing selection changed event) " + ex.Message, ex);
             }
 
             try
@@ -168,7 +169,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
 
-                MyLogger.LogError("Error Initializing object explorer  (subscribing command event)" + ex.Message, ex);
+                log.LogError("Error Initializing object explorer  (subscribing command event)" + ex.Message, ex);
             }
         }
 
@@ -188,7 +189,7 @@ namespace DatabaseObjectSearcher
                 {
                     if (n!=null && n.Parent == null)
                     {
-                        MyLogger.LogMessage("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
+                        log.LogMessage("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
                         // this could mean that new server was added
                         var res = " server " + n.Name + n.Connection.ServerName;
                         if (OnNewServerConnected != null)
@@ -199,7 +200,7 @@ namespace DatabaseObjectSearcher
             }
             catch(Exception ex)
             {
-                MyLogger.LogError("Error processing OnSelectionChanged event: " + ex.Message, ex);
+                log.LogError("Error processing OnSelectionChanged event: " + ex.Message, ex);
             }
        
            
@@ -209,12 +210,12 @@ namespace DatabaseObjectSearcher
 
         public void AfterExecute(string Guid, int ID, object CustomIn, object CustomOut)
         {
-            MyLogger.LogMessage("After execute command:" + ID + " guid:" + Guid);
+            log.LogMessage("After execute command:" + ID + " guid:" + Guid);
 
-            // this coul mean that server was removed
+            // this could mean that server was removed
             if (ID == 516)
             {
-                MyLogger.LogMessage("Server disconnected..!");
+                log.LogMessage("Server disconnected..!");
                 if (OnServerDisconnected != null)
                     OnServerDisconnected();
             }
@@ -307,7 +308,7 @@ namespace DatabaseObjectSearcher
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("ObjectExplorer manager failed:" + ex.Message,ex);
+                log.LogError("ObjectExplorer manager failed:" + ex.Message,ex);
                 throw;
             }
           
@@ -376,7 +377,7 @@ namespace DatabaseObjectSearcher
                  }
                  else
                  {
-                     MyLogger.LogError("Could not find CreateDesigner method");
+                     log.LogError("Could not find CreateDesigner method");
                  }
 
                
@@ -384,7 +385,7 @@ namespace DatabaseObjectSearcher
              }
              catch(Exception ex)
              {
-                 MyLogger.LogError("Failed OpenTable2",ex);
+                 log.LogError("Failed OpenTable2",ex);
              }
              finally
              {
@@ -446,7 +447,7 @@ namespace DatabaseObjectSearcher
             }
             catch(Exception ex)
             {
-                MyLogger.LogError("Error opening table: " + objectToSelect.Name ,ex);
+                log.LogError("Error opening table: " + objectToSelect.Name ,ex);
             }
 
         
@@ -457,7 +458,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                MyLogger.LogMessage("Trying to locate dropped object:" + objectToSelect.Name);
+                log.LogMessage("Trying to locate dropped object:" + objectToSelect.Name);
                 return;
             }
             IExplorerHierarchy hierarchy = GetHierarchyForConnection(connection);

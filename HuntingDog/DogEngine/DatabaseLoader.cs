@@ -11,6 +11,8 @@ namespace HuntingDog.DogEngine
 {
     public class DatabaseLoader : IDatabaseLoader
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(DatabaseLoader));
+
         private SqlConnectionInfo connectionInfo;
 
         private Server server;
@@ -112,7 +114,7 @@ namespace HuntingDog.DogEngine
             }
             else
             {
-                MyLogger.LogError("Database name could not be found :" + databaseDictionary.DatabaseName + ". Loader failed.");
+                log.LogError("Database name could not be found :" + databaseDictionary.DatabaseName + ". Loader failed.");
                 return;
             }
 
@@ -120,13 +122,13 @@ namespace HuntingDog.DogEngine
 
             // do not need to refresh database RefresDatabase(d);
 
-            MyLogger.LogPerformace("Refreshing database " + databaseDictionary.DatabaseName, timer);
+            log.LogPerformace("Refreshing database " + databaseDictionary.DatabaseName, timer);
 
             LoadObjects(d, databaseDictionary);
 
             databaseDictionary.MarkAsLoaded();
 
-            MyLogger.LogPerformace("Loading database " + databaseDictionary.DatabaseName, timer);
+            log.LogPerformace("Loading database " + databaseDictionary.DatabaseName, timer);
         }
 
         void LoadObjects(Database d, IDatabaseDictionary databaseDictionary)
@@ -140,30 +142,30 @@ namespace HuntingDog.DogEngine
 
                     LoadTables(d, databaseDictionary);
 
-                    MyLogger.LogPerformace("Loading tables " + d.Name, timer);
+                    log.LogPerformace("Loading tables " + d.Name, timer);
 
                     timer.Reset();
                     timer.Start();
                     LoadStoredProcs(d, databaseDictionary);
 
-                    MyLogger.LogPerformace("Loading procedures " + d.Name, timer);
+                    log.LogPerformace("Loading procedures " + d.Name, timer);
 
                     timer.Reset();
                     timer.Start();
                     LoadViews(d, databaseDictionary);
 
-                    MyLogger.LogPerformace("Loading views " + d.Name, timer);
+                    log.LogPerformace("Loading views " + d.Name, timer);
                     timer.Reset();
                     timer.Start();
 
                     LoadFunctions(d, databaseDictionary);
 
-                    MyLogger.LogPerformace("Loading functions " + d.Name, timer);
+                    log.LogPerformace("Loading functions " + d.Name, timer);
                 }
                 catch (Exception ex)
                 {
                     // this can get thrown for security reasons - probably need to swallow here
-                    MyLogger.LogError("Security Error in database :" + d.Name + "", ex);
+                    log.LogError("Security Error in database :" + d.Name + "", ex);
                 }
             }
         }
@@ -238,7 +240,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    MyLogger.LogError("Error loading view:" + f.Name + " from db:" + d.Name + "", ex);
+                    log.LogError("Error loading view:" + f.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -256,7 +258,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    MyLogger.LogError("Error loading view:" + v.Name + " from db:" + d.Name + "", ex);
+                    log.LogError("Error loading view:" + v.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -274,7 +276,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    MyLogger.LogError("Error loading procedure:" + p.Name + " from db:" + d.Name + "", ex);
+                    log.LogError("Error loading procedure:" + p.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }
@@ -292,7 +294,7 @@ namespace HuntingDog.DogEngine
                 }
                 catch (Exception ex)
                 {
-                    MyLogger.LogError("Error loading table:" + t.Name + " from db:" + d.Name + "", ex);
+                    log.LogError("Error loading table:" + t.Name + " from db:" + d.Name + "", ex);
                 }
             }
         }

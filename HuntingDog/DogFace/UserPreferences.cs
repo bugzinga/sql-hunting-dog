@@ -21,6 +21,8 @@ namespace HuntingDog.DogFace
     [ComVisible(false)]
     public class UserPreferencesStorage : List<Entry>
     {
+        private static readonly Log log = LogFactory.GetLog(typeof(UserPreferencesStorage));
+
         public const String _settingFileName = "HuntingDogPreferences.txt";
 
         [SuppressMessage("Microsoft.Usage", "CA2202")]
@@ -57,7 +59,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogError("Could not save user preferences:" + ex.Message, ex);
+                log.LogError("Could not save user preferences:" + ex.Message, ex);
             }
         }
 
@@ -99,7 +101,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                MyLogger.LogMessage("Could not load user preferences:" + ex.Message);
+                log.LogMessage("Could not load user preferences:" + ex.Message);
             }
 
             return new UserPreferencesStorage();
