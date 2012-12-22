@@ -1,10 +1,12 @@
 ﻿
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace HuntingDog.DogFace
 {
+    [ComVisible(false)]
     public class HtmlTextBlock : TextBlock
     {
         public static DependencyProperty HtmlProperty = DependencyProperty.Register("Html", typeof(String), typeof(HtmlTextBlock), new UIPropertyMetadata("Html", new PropertyChangedCallback(OnHtmlChanged)));

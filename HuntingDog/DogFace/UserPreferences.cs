@@ -1,9 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace HuntingDog.DogFace
 {
@@ -16,10 +18,13 @@ namespace HuntingDog.DogFace
     }
 
     [Serializable]
+    [ComVisible(false)]
     public class UserPreferencesStorage : List<Entry>
     {
         public const String _settingFileName = "HuntingDogPreferences.txt";
 
+        [SuppressMessage("Microsoft.Usage", "CA2202")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public void Save()
         {
             try
@@ -56,6 +61,8 @@ namespace HuntingDog.DogFace
             }
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA2202")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public static UserPreferencesStorage Load()
         {
             try

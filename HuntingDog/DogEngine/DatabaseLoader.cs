@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -67,6 +68,7 @@ namespace HuntingDog.DogEngine
             //_server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public List<DatabaseSearchResult> Find(String searchText, String databaseName, Int32 limit)
         {
             var dbDictionary = DictionaryList.FirstOrDefault(x => x.DatabaseName == databaseName);

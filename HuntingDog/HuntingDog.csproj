@@ -24,9 +24,11 @@
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <PlatformTarget>x86</PlatformTarget>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,8 +37,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConnectionDlg">
+      <HintPath>..\Dependencies\2008\ConnectionDlg.dll</HintPath>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -44,9 +52,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Controls">
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Data">
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.SqlStudio">
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -78,7 +95,7 @@
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\NLog.dll</HintPath>
+      <HintPath>..\Dependencies\2008\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -122,10 +139,8 @@
     <Compile Include="DogFace\WpfUtil.cs" />
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="DogEngine\DatabaseDictionary.cs" />
-    <Compile Include="Engine\DatabaseObjectSearcher.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\DependecyResults.cs" />
-    <Compile Include="Engine\NavigatorServer.cs" />
     <Compile Include="Engine\Server Hit\DatabaseHit.cs" />
     <Compile Include="Engine\Server Hit\ServerHit.cs" />
     <Compile Include="Engine\Server Hit\TotalHit.cs" />
@@ -134,7 +149,6 @@
     <Compile Include="Engine\ImageTranslator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Engine\IObjectSearcherUI.cs" />
     <Compile Include="Engine\ManagementStudioController.cs" />
     <Compile Include="Engine\MSSQLController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />

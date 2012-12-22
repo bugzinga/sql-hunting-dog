@@ -39,6 +39,7 @@ namespace HuntingDog
             return GetIPictureDisp(GetMask(image, mask, unmask, toMask));
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public static Image GetMask(Image image, Color mask, Color unmask, params Color[] toMask)
         {
             if (image == null)

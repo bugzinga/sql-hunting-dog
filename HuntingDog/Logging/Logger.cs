@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -9,6 +10,7 @@ namespace HuntingDog
 {
     public class MyLogger
     {
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         static MyLogger()
         {
             //LogManager.ThrowExceptions = true;

@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace DatabaseObjectSearcherUI
@@ -20,6 +21,7 @@ namespace DatabaseObjectSearcherUI
         Navigate
     }
 
+    [SuppressMessage("Microsoft.Design", "CA1001")]
     public class BackgroundProcessor
     {
         public class Request

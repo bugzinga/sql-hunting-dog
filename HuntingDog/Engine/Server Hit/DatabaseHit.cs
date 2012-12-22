@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HuntingDog.DogEngine;
+using System.Runtime.InteropServices;
 
 namespace DatabaseObjectSearcher
 {
+    [ComVisible(false)]
     public class DatabaseHit : SmartDictionary<String, Int32>
     {
         public Int32 GetHitValue(String name)

@@ -24,9 +24,10 @@
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <PlatformTarget>x86</PlatformTarget>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <NoWarn>618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,8 +36,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>618</NoWarn>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConnectionDlg">
+      <HintPath>..\Dependencies\2012\ConnectionDlg.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
@@ -61,9 +67,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Controls">
+      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.SqlStudio">
+      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,7 +104,7 @@
     <Reference Include="Microsoft.VisualStudio.Shell.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\NLog.dll</HintPath>
+      <HintPath>..\Dependencies\2012\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -167,9 +179,6 @@
     <Compile Include="..\HuntingDog\Engine\Connect.cs">
       <Link>Engine\Connect.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\DatabaseObjectSearcher.cs">
-      <Link>Engine\DatabaseObjectSearcher.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\DatabaseSearchResult.cs">
       <Link>Engine\DatabaseSearchResult.cs</Link>
     </Compile>
@@ -183,17 +192,11 @@
       <Link>Engine\ImageTranslator.cs</Link>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\IObjectSearcherUI.cs">
-      <Link>Engine\IObjectSearcherUI.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\ManagementStudioController.cs">
       <Link>Engine\ManagementStudioController.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\MSSQLController.cs">
       <Link>Engine\MSSQLController.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\Engine\NavigatorServer.cs">
-      <Link>Engine\NavigatorServer.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
       <Link>Engine\ObjectExplorerManager.cs</Link>
@@ -264,7 +267,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>

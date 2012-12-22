@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using DatabaseObjectSearcherUI;
@@ -17,6 +17,7 @@ namespace HuntingDog.DogFace
     /// <summary>
     /// Interaction logic for Face.xaml
     /// </summary>
+    [ComVisible(false)]
     public partial class Face : UserControl
     {
         class SearchAsyncParam
@@ -174,7 +175,6 @@ namespace HuntingDog.DogFace
 
         private void UserControl_Loaded(Object sender, RoutedEventArgs e)
         {
-
             try
             {
                 MyLogger.LogMessage("XAML Loaded...");

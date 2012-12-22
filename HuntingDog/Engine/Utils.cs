@@ -1,57 +1,72 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace StringUtils
 {
-
     public class Utils
     {
-        public const string OpenTag = "<b>";
-        public const string CloseTag = "</b>";
+        public const String OpenTag = "<b>";
+
+        public const String CloseTag = "</b>";
 
         class Range : IComparable
         {
-            public int StartPos { get; set; }
-            public int EndPos { get; set; }
-
-            public bool IntersectsOrConsequitive(Range another)
+            public Int32 StartPos
             {
-                if (Intersects(another))
-                    return true;
-
-                return (another.EndPos == this.StartPos - 1) || (another.StartPos == this.EndPos + 1);
+                get;
+                set;
             }
 
-            public bool Intersects(Range another)
+            public Int32 EndPos
+            {
+                get;
+                set;
+            }
+
+            public Boolean IntersectsOrConsequitive(Range another)
+            {
+                if (Intersects(another))
+                {
+                    return true;
+                }
+
+                return (another.EndPos == (StartPos - 1)) || (another.StartPos == (EndPos + 1));
+            }
+
+            public Boolean Intersects(Range another)
             {
                 return Intersects(another.StartPos, another.EndPos);
             }
 
-            public bool Intersects(int start, int end)
+            public Boolean Intersects(Int32 start, Int32 end)
             {
-                return !(EndPos < start || StartPos > end);
+                return !((EndPos < start) || (StartPos > end));
             }
 
-            public int CompareTo(object obj)
+            public Int32 CompareTo(Object obj)
             {
-                Range other = (Range)obj;
-                if (other.StartPos == this.StartPos)
-                    return 0;
+                Range other = (Range) obj;
 
-                return this.StartPos < other.StartPos ? -1 : 1;
+                if (other.StartPos == StartPos)
+                {
+                    return 0;
+                }
+
+                return (StartPos < other.StartPos)
+                    ? -1
+                    : 1;
             }
         }
 
         class RangeList
         {
             List<Range> ranges = new List<Range>();
+
             public List<Range> GetSortedRanges()
             {
                 ranges.Sort();
                 return ranges;
-
             }
 
             public void Add(Range newRange)
@@ -60,14 +75,16 @@ namespace StringUtils
                 var mergedIn = Merge(newRange);
 
                 while (mergedIn != null)
+                {
                     mergedIn = Merge(mergedIn);
+                }
             }
 
-            Range Merge(Range newRange)
+            private Range Merge(Range newRange)
             {
                 foreach (var r in ranges)
                 {
-                    if (r != newRange && r.IntersectsOrConsequitive(newRange))
+                    if ((r != newRange) && r.IntersectsOrConsequitive(newRange))
                     {
                         r.StartPos = Math.Min(r.StartPos, newRange.StartPos);
                         r.EndPos = Math.Max(r.EndPos, newRange.EndPos);
@@ -78,36 +95,37 @@ namespace StringUtils
 
                 return null;
             }
-
         }
 
-
-        static public string ReplaceString(string strInput, string[] boldSubstr)
+        public static String ReplaceString(String strInput, String[] boldSubstr)
         {
             var tags = new RangeList();
-
-            string result = strInput;
-
-
+            var result = strInput;
             var lowerInput = strInput.ToLower();
+
             foreach (var bs in boldSubstr)
             {
                 int firstIndex = 0;
+
                 while (true)
                 {
-                    int startIndex = lowerInput.IndexOf(bs,firstIndex, StringComparison.OrdinalIgnoreCase);
+                    int startIndex = lowerInput.IndexOf(bs, firstIndex, StringComparison.OrdinalIgnoreCase);
+
                     if (startIndex != -1)
                     {
-                        tags.Add(new Range() { StartPos = startIndex, EndPos = startIndex + bs.Length - 1 });
+                        tags.Add(new Range() { StartPos = startIndex, EndPos = (startIndex + bs.Length - 1) });
                         firstIndex = startIndex + bs.Length;
                     }
                     else
+                    {
                         break;
+                    }
                 }
             }
 
-            // there could be done some optimisation - in order to merge consequitive ranges and overlapping ranges...
+            // there could be done some optimization - in order to merge consecutive ranges and overlapping ranges...
             int offset = 0;
+
             foreach (var range in tags.GetSortedRanges())
             {
                 result = result.Insert(offset + range.StartPos, OpenTag);
@@ -117,8 +135,6 @@ namespace StringUtils
             }
 
             return result;
-
         }
-
     }
 }

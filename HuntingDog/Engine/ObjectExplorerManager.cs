@@ -1,24 +1,23 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using HuntingDog;
-using Microsoft.SqlServer.Management.Sdk.Sfc;
-using Microsoft.SqlServer.Management.UI.VSIntegration;
-using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 //using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
 using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
-using System.Reflection;
-using System.Windows;
+using Microsoft.SqlServer.Management.UI.VSIntegration;
+using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 //using EnvDTE100;
 //using EnvDTE;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
-using System.Threading;
-using System.Text.RegularExpressions;
-using System.Collections;
 
 namespace DatabaseObjectSearcher
 {
@@ -157,7 +156,7 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
                 // NEED TO LOG
-                MyLogger.LogError("Error Initialising object explorer (subscribing selection changed event) " + ex.Message, ex);
+                MyLogger.LogError("Error Initializing object explorer (subscribing selection changed event) " + ex.Message, ex);
             }
 
             try
@@ -169,11 +168,11 @@ namespace DatabaseObjectSearcher
             catch (Exception ex)
             {
 
-                MyLogger.LogError("Error Initialising object explorer  (subscribing command event)" + ex.Message, ex);
+                MyLogger.LogError("Error Initializing object explorer  (subscribing command event)" + ex.Message, ex);
             }
         }
 
-        public event Action<string> OnNewServerConnected;
+        public event Action<String> OnNewServerConnected;
         public event Action OnServerDisconnected;
 
         void Provider_SelectionChanged(object sender, NodesChangedEventArgs args)
@@ -324,6 +323,8 @@ namespace DatabaseObjectSearcher
         }
 
         private MethodInfo _editTableMethod = null;
+
+        [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public void OpenTable2(NamedSmoObject tbl, SqlConnectionInfo connection,Server server)
         {
              string fileName = null;
@@ -411,9 +412,12 @@ namespace DatabaseObjectSearcher
             builder.Append("ParamSuffix = \"\\\"\r\n");
             builder.Append("End\r\n");
             builder.Append("End\r\n");
-            StreamWriter writer = new StreamWriter(path, false, Encoding.Unicode);
-            writer.Write(builder.ToString());
-            writer.Close();
+
+            using (var writer = new StreamWriter(path, false, Encoding.Unicode))
+            {
+                writer.Write(builder.ToString());
+            }
+
             return path;
         }
 

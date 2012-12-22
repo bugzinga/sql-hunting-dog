@@ -1,10 +1,12 @@
 ﻿
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 
 namespace HuntingDog.DogFace
 {
+    [ComVisible(false)]
     public class BaseParamItem : DependencyObject
     {
         public HuntingDog.DogEngine.ProcedureParameter Entity
@@ -26,6 +28,7 @@ namespace HuntingDog.DogFace
         }
     }
 
+    [ComVisible(false)]
     public class ProcedureParamItem : BaseParamItem
     {
         public String Out
@@ -35,6 +38,7 @@ namespace HuntingDog.DogFace
         }
     }
 
+    [ComVisible(false)]
     public class TableParamItem : BaseParamItem
     {
         public Boolean IsPrimaryKey
@@ -56,6 +60,7 @@ namespace HuntingDog.DogFace
         }
     }
 
+    [ComVisible(false)]
     public class ViewParamItem : BaseParamItem
     {
         public Boolean IsPrimaryKey
@@ -77,10 +82,12 @@ namespace HuntingDog.DogFace
         }
     }
 
+    [ComVisible(false)]
     public class FuncParamItem : BaseParamItem
     {
     }
 
+    [ComVisible(false)]
     public class Item : DependencyObject
     {
         public HuntingDog.DogEngine.Entity Entity
