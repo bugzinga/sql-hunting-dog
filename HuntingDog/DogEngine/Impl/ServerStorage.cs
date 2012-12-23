@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.SqlServer.Management.Common;
 
-namespace HuntingDog.DogEngine
+namespace HuntingDog.DogEngine.Impl
 {
     class ServerStorage : IServerStorage
     {
@@ -36,7 +36,7 @@ namespace HuntingDog.DogEngine
         {
         }
 
-        public void Initialise(SqlConnectionInfo connectionInfo)
+        public void Initialize(SqlConnectionInfo connectionInfo)
         {
             Connection = connectionInfo;
 

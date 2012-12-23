@@ -1,16 +1,16 @@
 
-using System;
-using System.Collections.Generic;
 using DatabaseObjectSearcher;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using System;
+using System.Collections.Generic;
 
-namespace HuntingDog.DogEngine
+namespace HuntingDog.DogEngine.Impl
 {
     /// <summary>
     /// Stores all objects for a database. (tables/views/functions/procedures). Can search using a search criteria.
     /// </summary>
-    public class DatabaseDictionary : IDatabaseDictionary, IDisposable
+    class DatabaseDictionary : IDatabaseDictionary, IDisposable
     {
         private static readonly Log log = LogFactory.GetLog(typeof(DatabaseDictionary));
 

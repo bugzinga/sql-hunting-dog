@@ -7,9 +7,9 @@ using System.Linq;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace HuntingDog.DogEngine
+namespace HuntingDog.DogEngine.Impl
 {
-    public class DatabaseLoader : IDatabaseLoader
+    class DatabaseLoader : IDatabaseLoader
     {
         private static readonly Log log = LogFactory.GetLog(typeof(DatabaseLoader));
 

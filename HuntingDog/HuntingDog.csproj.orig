@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HuntingDog</RootNamespace>
     <AssemblyName>HuntingDog</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -26,7 +26,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <PlatformTarget>x86</PlatformTarget>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
     <NoWarn>
     </NoWarn>
   </PropertyGroup>
@@ -40,7 +40,6 @@
     <NoWarn>
     </NoWarn>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConnectionDlg">
@@ -117,17 +116,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DogEngine\Entity.cs" />
-    <Compile Include="DogEngine\FuncParameter.cs" />
-    <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
-    <Compile Include="DogEngine\IDatabaseDictionary.cs" />
-    <Compile Include="DogEngine\IDatabaseLoader.cs" />
-    <Compile Include="DogEngine\IServerStorage.cs" />
-    <Compile Include="DogEngine\IStudioController.cs" />
-    <Compile Include="DogEngine\Impl\ServerStorage.cs" />
-    <Compile Include="DogEngine\Impl\StudioController.cs" />
-    <Compile Include="DogEngine\ProcedureParameter.cs" />
-    <Compile Include="DogEngine\TableColumn.cs" />
+    <Compile Include="DogEngine\DatabaseLoader.cs" />
+    <Compile Include="DogEngine\Interfaces.cs" />
+    <Compile Include="DogEngine\ServerStorage.cs" />
+    <Compile Include="DogEngine\StudioController.cs" />
     <Compile Include="DogFace\BackgroundProcessor.cs" />
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
@@ -142,7 +134,7 @@
     <Compile Include="DogFace\WidthConverter.cs" />
     <Compile Include="DogFace\WpfUtil.cs" />
     <Compile Include="Engine\Connect.cs" />
-    <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
+    <Compile Include="DogEngine\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\DependecyResults.cs" />
     <Compile Include="Engine\Server Hit\DatabaseHit.cs" />

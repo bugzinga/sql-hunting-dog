@@ -1,0 +1,138 @@
+﻿
+using System;
+using System.Collections.Generic;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+
+namespace HuntingDog.DogEngine
+{
+    public class Entity
+    {
+        public String FullName
+        {
+            get;
+            set;
+        }
+
+        public String Name
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsProcedure
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsTable
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsFunction
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsView
+        {
+            get;
+            set;
+        }
+
+        public Object InternalObject
+        {
+            get;
+            set;
+        }
+
+        public String ToSafeString()
+        {
+            if (InternalObject == null)
+            {
+                return String.Format("Name:{0} but internal object is null.", FullName);
+            }
+
+            return FullName;
+        }
+    }
+
+    public class FuncParameter
+    {
+        public String Name
+        {
+            get;
+            set;
+        }
+
+        public String Type
+        {
+            get;
+            set;
+        }
+    }
+
+    public class ProcedureParameter
+    {
+        public String Name
+        {
+            get;
+            set;
+        }
+
+        public String Type
+        {
+            get;
+            set;
+        }
+
+        public String DefaultValue
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsOut
+        {
+            get;
+            set;
+        }
+    }
+
+    public class TableColumn
+    {
+        public String Name
+        {
+            get;
+            set;
+        }
+
+        public String Type
+        {
+            get;
+            set;
+        }
+
+        public Boolean Nullable
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsPrimaryKey
+        {
+            get;
+            set;
+        }
+
+        public Boolean IsForeignKey
+        {
+            get;
+            set;
+        }
+    }
+}

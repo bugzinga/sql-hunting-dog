@@ -81,6 +81,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.Rmo">
+      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Rmo.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SqlServer.Smo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.Smo.dll</HintPath>
@@ -97,7 +100,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Alex\Hunting Dog\test1\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.10.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2012\Microsoft.VisualStudio.Shell.10.0.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\2012\NLog.dll</HintPath>
@@ -128,11 +134,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
-      <Link>DogEngine\Entity.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\DatabaseDictionary.cs">
+      <Link>DogEngine\DatabaseDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\FuncParameter.cs">
-      <Link>DogEngine\FuncParameter.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\DatabaseLoader.cs">
+      <Link>DogEngine\DatabaseLoader.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\IDatabaseDictionary.cs">
       <Link>DogEngine\IDatabaseDictionary.cs</Link>
@@ -140,17 +146,8 @@
     <Compile Include="..\HuntingDog\DogEngine\IDatabaseLoader.cs">
       <Link>DogEngine\IDatabaseLoader.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseDictionary.cs">
-      <Link>DogEngine\Impl\DatabaseDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseLoader.cs">
-      <Link>DogEngine\Impl\DatabaseLoader.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\Impl\ServerStorage.cs">
-      <Link>DogEngine\Impl\ServerStorage.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\Impl\StudioController.cs">
-      <Link>DogEngine\Impl\StudioController.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\Interfaces.cs">
+      <Link>DogEngine\Interfaces.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\IServerStorage.cs">
       <Link>DogEngine\IServerStorage.cs</Link>
@@ -158,11 +155,11 @@
     <Compile Include="..\HuntingDog\DogEngine\IStudioController.cs">
       <Link>DogEngine\IStudioController.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\ProcedureParameter.cs">
-      <Link>DogEngine\ProcedureParameter.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\ServerStorage.cs">
+      <Link>DogEngine\ServerStorage.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\TableColumn.cs">
-      <Link>DogEngine\TableColumn.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\StudioController.cs">
+      <Link>DogEngine\StudioController.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\BackgroundProcessor.cs">
       <Link>DogFace\BackgroundProcessor.cs</Link>
