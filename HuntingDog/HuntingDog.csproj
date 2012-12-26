@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Controls">
       <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Controls.dll</HintPath>
