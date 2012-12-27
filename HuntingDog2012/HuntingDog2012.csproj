@@ -77,9 +77,9 @@
     <Reference Include="Microsoft.SqlServer.Management.Sdk.SqlStudio">
       <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
+      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
