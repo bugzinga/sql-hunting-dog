@@ -7,44 +7,44 @@ namespace HuntingDog.DogFace
 {
     public class ItemFactory
     {
-        static BitmapImage imageT = new BitmapImage(new Uri(@"Images/table_sql.png", UriKind.Relative));
+        static BitmapImage imageT = new BitmapImage(new Uri(@"../../Resources/Images/table_sql.png", UriKind.Relative));
 
-        static BitmapImage imageS = new BitmapImage(new Uri(@"Images/scroll.png", UriKind.Relative));
+        static BitmapImage imageS = new BitmapImage(new Uri(@"../../Resources/Images/scroll.png", UriKind.Relative));
 
-        static BitmapImage imageF = new BitmapImage(new Uri(@"Images/text_formula.png", UriKind.Relative));
+        static BitmapImage imageF = new BitmapImage(new Uri(@"../../Resources/Images/text_formula.png", UriKind.Relative));
 
-        static BitmapImage imageV = new BitmapImage(new Uri(@"Images/text_align_center.png", UriKind.Relative));
+        static BitmapImage imageV = new BitmapImage(new Uri(@"../../Resources/Images/text_align_center.png", UriKind.Relative));
 
-        static BitmapImage imageRightBlue = new BitmapImage(new Uri(@"Images/arrow_right_blue.png", UriKind.Relative));
+        static BitmapImage imageRightBlue = new BitmapImage(new Uri(@"../../Resources/Images/arrow_right_blue.png", UriKind.Relative));
 
-        static BitmapImage imageRightGreen = new BitmapImage(new Uri(@"Images/arrow_right_green.png", UriKind.Relative));
+        static BitmapImage imageRightGreen = new BitmapImage(new Uri(@"../../Resources/Images/arrow_right_green.png", UriKind.Relative));
 
-        static BitmapImage imageRow = new BitmapImage(new Uri(@"Images/row.png", UriKind.Relative));
+        static BitmapImage imageRow = new BitmapImage(new Uri(@"../../Resources/Images/row.png", UriKind.Relative));
 
-        static BitmapImage imageWrench = new BitmapImage(new Uri(@"Images/wrench.png", UriKind.Relative));
+        static BitmapImage imageWrench = new BitmapImage(new Uri(@"../../Resources/Images/wrench.png", UriKind.Relative));
 
-        //static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Images/server.png", UriKind.Relative));
-        //static BitmapImage imageSer = new BitmapImage(new Uri(@"Images/cpu.png", UriKind.Relative));
+        //static BitmapImage imageDb1 = new BitmapImage(new Uri(@"../../Resources/Images/server.png", UriKind.Relative));
+        //static BitmapImage imageSer = new BitmapImage(new Uri(@"../../Resources/Images/cpu.png", UriKind.Relative));
 
-        static BitmapImage imageDb1 = new BitmapImage(new Uri(@"Art/database.png", UriKind.Relative));
+        static BitmapImage imageDb1 = new BitmapImage(new Uri(@"../../Resources/Art/database.png", UriKind.Relative));
 
-        static BitmapImage imageSer = new BitmapImage(new Uri(@"Art/computer.png", UriKind.Relative));
+        static BitmapImage imageSer = new BitmapImage(new Uri(@"../../Resources/Art/computer.png", UriKind.Relative));
 
-        static BitmapImage imageSearch = new BitmapImage(new Uri(@"Art/search.png", UriKind.Relative));
+        static BitmapImage imageSearch = new BitmapImage(new Uri(@"../../Resources/Art/search.png", UriKind.Relative));
 
-        static BitmapImage imageRightArrow = new BitmapImage(new Uri(@"Art/next.png", UriKind.Relative));
+        static BitmapImage imageRightArrow = new BitmapImage(new Uri(@"../../Resources/Art/next.png", UriKind.Relative));
 
-        static BitmapImage imageEdit = new BitmapImage(new Uri(@"Art/edit.png", UriKind.Relative));
+        static BitmapImage imageEdit = new BitmapImage(new Uri(@"../../Resources/Art/edit.png", UriKind.Relative));
 
-        static BitmapImage imageProcess = new BitmapImage(new Uri(@"Art/process.png", UriKind.Relative));
+        static BitmapImage imageProcess = new BitmapImage(new Uri(@"../../Resources/Art/process.png", UriKind.Relative));
 
-        static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"Art/page_edit.png", UriKind.Relative));
+        static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"../../Resources/Art/page_edit.png", UriKind.Relative));
 
-        static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"Art/forward_blue.png", UriKind.Relative));
+        static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"../../Resources/Art/forward_blue.png", UriKind.Relative));
 
         static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
 
-        static BitmapImage imageWorkplace = new BitmapImage(new Uri(@"Images/workplace2.png", UriKind.Relative));
+        static BitmapImage imageWorkplace = new BitmapImage(new Uri(@"../../Resources/Images/workplace2.png", UriKind.Relative));
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {

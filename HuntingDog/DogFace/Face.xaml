@@ -494,7 +494,7 @@
                      HorizontalAlignment="Stretch" MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" CornerRadius="6" BorderThickness="2" BorderBrush="#506AA4B6">
                     <DockPanel  HorizontalAlignment="Stretch" >
                     
-                        <Image Margin="2,0,0,0" Name="imgSearch" DockPanel.Dock="Left" VerticalAlignment="Center" Source="Art/search.png" Width="20" Height="20" Opacity="0.3" ></Image>
+                        <Image Margin="2,0,0,0" Name="imgSearch" DockPanel.Dock="Left" VerticalAlignment="Center" Source="../../Resources/Art/search.png" Width="20" Height="20" Opacity="0.3" ></Image>
 
                     <TextBox  DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch"
                              PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" BorderThickness="0"
@@ -534,7 +534,7 @@
               
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
                 <StackPanel Orientation="Horizontal" Margin="0">
-                    <Image Width="24" Height="24" Margin="5" Source="Art\warning.png"></Image>
+                    <Image Width="24" Height="24" Margin="5" Source="..\..\Resources\Art\warning.png"></Image>
                     <TextBlock VerticalAlignment="Center" FontSize="16">No results were found</TextBlock>
                 </StackPanel>
 
@@ -759,7 +759,7 @@
         </Grid>
         <!--/Border-->
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Image VerticalAlignment="Center" x:Name="imgWorking" Source="Art\process.png" Width="20" Height="20" Margin="4,0,4,0"></Image>
+            <Image VerticalAlignment="Center" x:Name="imgWorking" Source="..\..\Resources\Art\process.png" Width="20" Height="20" Margin="4,0,4,0"></Image>
             <TextBlock  VerticalAlignment="Center" x:Name="txtStatusTest">status</TextBlock>
             <!--<Button Height="40" Click="Button_Click">Select First</Button>-->
             

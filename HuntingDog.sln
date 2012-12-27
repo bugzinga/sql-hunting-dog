@@ -1,9 +1,24 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog", "HuntingDog\HuntingDog.csproj", "{8D0B85B0-0B3A-4FCC-9FC9-F0C1F0F20062}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2012", "HuntingDog2012\HuntingDog2012.csproj", "{36DCF906-2E95-4590-BBD3-4CF25852F6C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{73617ECF-F02C-4D69-8DA0-F7E33BF560D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Art", "Art", "{4C22589C-A7AE-4442-82F4-87BDC1C83028}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Art\computer.png = Resources\Art\computer.png
+		Resources\Art\database.png = Resources\Art\database.png
+		Resources\Art\edit.png = Resources\Art\edit.png
+		Resources\Art\forward_blue.png = Resources\Art\forward_blue.png
+		Resources\Art\next.png = Resources\Art\next.png
+		Resources\Art\page_edit.png = Resources\Art\page_edit.png
+		Resources\Art\process.png = Resources\Art\process.png
+		Resources\Art\search.png = Resources\Art\search.png
+		Resources\Art\warning.png = Resources\Art\warning.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,5 +37,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4C22589C-A7AE-4442-82F4-87BDC1C83028} = {73617ECF-F02C-4D69-8DA0-F7E33BF560D9}
 	EndGlobalSection
 EndGlobal
