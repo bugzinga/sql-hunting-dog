@@ -42,7 +42,7 @@ namespace HuntingDog.DogFace
 
         static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"../../Resources/Art/forward_blue.png", UriKind.Relative));
 
-        static BitmapImage imageFoot = new BitmapImage(new Uri(@"Resources/footprint.bmp", UriKind.Relative));
+        static BitmapImage imageFoot = new BitmapImage(new Uri(@"../../Resources/Resources/footprint.bmp", UriKind.Relative));
 
         static BitmapImage imageWorkplace = new BitmapImage(new Uri(@"../../Resources/Images/workplace2.png", UriKind.Relative));
 

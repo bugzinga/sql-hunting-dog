@@ -488,7 +488,7 @@
                         
                            BorderThickness="1" Background="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                         >
-                    <Image Source="Resources\refresh.png" Height="18" Width="18"></Image>
+                    <Image Source="..\..\Resources\Resources\refresh.png" Height="18" Width="18"></Image>
                 </Button>
             <Border  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" 
                      HorizontalAlignment="Stretch" MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" CornerRadius="6" BorderThickness="2" BorderBrush="#506AA4B6">
