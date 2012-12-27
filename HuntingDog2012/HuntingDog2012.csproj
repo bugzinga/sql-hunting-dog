@@ -180,6 +180,13 @@
     <Compile Include="..\HuntingDog\DogFace\ItemFactory.cs">
       <Link>DogFace\ItemFactory.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ucHost.cs">
+      <Link>DogFace\ucHost.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ucHost.Designer.cs">
+      <Link>DogFace\ucHost.Designer.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucWpf.xaml.cs">
       <Link>DogFace\ucWpf.xaml.cs</Link>
       <DependentUpon>ucWpf.xaml</DependentUpon>
@@ -245,14 +252,6 @@
     <Compile Include="..\HuntingDog\Logging\LogFactory.cs">
       <Link>Logging\LogFactory.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\User Interface\ucHost.cs">
-      <Link>User Interface\ucHost.cs</Link>
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="..\HuntingDog\User Interface\ucHost.designer.cs">
-      <Link>User Interface\ucHost.designer.cs</Link>
-      <DependentUpon>ucHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -262,12 +261,12 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\HuntingDog\DogFace\ucHost.resx">
+      <Link>DogFace\ucHost.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\HuntingDog\Engine\CommandBar.resx">
       <Link>Engine\CommandBar.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\HuntingDog\User Interface\ucHost.resx">
-      <Link>User Interface\ucHost.resx</Link>
-      <DependentUpon>ucHost.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -289,11 +288,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\HuntingDog\Images\scroll2.png">
-      <Link>Images\scroll2.png</Link>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
