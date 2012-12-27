@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DogEngine\Entity.cs" />
-    <Compile Include="DogEngine\FuncParameter.cs" />
+    <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
     <Compile Include="DogEngine\IDatabaseDictionary.cs" />
     <Compile Include="DogEngine\IDatabaseLoader.cs" />

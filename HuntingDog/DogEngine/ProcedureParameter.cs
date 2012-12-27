@@ -3,20 +3,8 @@ using System;
 
 namespace HuntingDog.DogEngine
 {
-    public class ProcedureParameter
+    public class ProcedureParameter : FunctionParameter
     {
-        public String Name
-        {
-            get;
-            set;
-        }
-
-        public String Type
-        {
-            get;
-            set;
-        }
-
         public String DefaultValue
         {
             get;

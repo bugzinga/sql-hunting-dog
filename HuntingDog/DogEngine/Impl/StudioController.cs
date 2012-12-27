@@ -394,9 +394,9 @@ namespace HuntingDog.DogEngine.Impl
             return result;
         }
 
-        List<FuncParameter> IStudioController.ListFuncParameters(Entity entityObject)
+        List<FunctionParameter> IStudioController.ListFuncParameters(Entity entityObject)
         {
-            var result = new List<FuncParameter>();
+            var result = new List<FunctionParameter>();
 
             try
             {
@@ -405,7 +405,7 @@ namespace HuntingDog.DogEngine.Impl
 
                 foreach (UserDefinedFunctionParameter tc in func.Parameters)
                 {
-                    result.Add(new FuncParameter()
+                    result.Add(new FunctionParameter()
                     {
                         Name = tc.Name,
                         Type = tc.DataType.Name

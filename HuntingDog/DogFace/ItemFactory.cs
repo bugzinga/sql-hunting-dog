@@ -190,7 +190,7 @@ namespace HuntingDog.DogFace
             return res;
         }
 
-        internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FuncParameter> funcParameters)
+        internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FunctionParameter> funcParameters)
         {
             return funcParameters.ConvertAll<FuncParamItem>(x => new FuncParamItem() { Name = x.Name, Type = x.Type });
         }

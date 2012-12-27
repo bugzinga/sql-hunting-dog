@@ -31,7 +31,7 @@ namespace HuntingDog.DogEngine
         List<TableColumn> ListColumns(Entity entityObject);
         List<TableColumn> ListViewColumns(Entity entityObject);
         List<ProcedureParameter> ListProcParameters(Entity entityObject);
-        List<FuncParameter> ListFuncParameters(Entity entityObject);
+        List<FunctionParameter> ListFuncParameters(Entity entityObject);
 
         // dependencies
         List<Entity> GetInvokedBy(Entity entityObjecte);

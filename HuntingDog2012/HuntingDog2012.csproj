@@ -131,8 +131,8 @@
     <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
       <Link>DogEngine\Entity.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\FuncParameter.cs">
-      <Link>DogEngine\FuncParameter.cs</Link>
+    <Compile Include="..\HuntingDog\DogEngine\FunctionParameter.cs">
+      <Link>DogEngine\FunctionParameter.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\IDatabaseDictionary.cs">
       <Link>DogEngine\IDatabaseDictionary.cs</Link>

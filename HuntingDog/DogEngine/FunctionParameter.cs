@@ -3,7 +3,7 @@ using System;
 
 namespace HuntingDog.DogEngine
 {
-    public class FuncParameter
+    public class FunctionParameter
     {
         public String Name
         {
