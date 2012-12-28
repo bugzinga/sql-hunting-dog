@@ -1,6 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Media.Imaging;
 using HuntingDog.DogFace.Items;
 
@@ -8,44 +11,58 @@ namespace HuntingDog.DogFace
 {
     public class ItemFactory
     {
-        static BitmapImage imageT = new BitmapImage(new Uri(@"../../Resources/Images/table_sql.png", UriKind.Relative));
+        static BitmapImage imageT = CreateBitmapImage(HuntingDog.Properties.Resources.table_sql);
 
-        static BitmapImage imageS = new BitmapImage(new Uri(@"../../Resources/Images/scroll.png", UriKind.Relative));
+        static BitmapImage imageS = CreateBitmapImage(HuntingDog.Properties.Resources.scroll);
 
-        static BitmapImage imageF = new BitmapImage(new Uri(@"../../Resources/Images/text_formula.png", UriKind.Relative));
+        static BitmapImage imageF = CreateBitmapImage(HuntingDog.Properties.Resources.text_formula);
 
-        static BitmapImage imageV = new BitmapImage(new Uri(@"../../Resources/Images/text_align_center.png", UriKind.Relative));
+        static BitmapImage imageV = CreateBitmapImage(HuntingDog.Properties.Resources.text_align_center);
 
-        static BitmapImage imageRightBlue = new BitmapImage(new Uri(@"../../Resources/Images/arrow_right_blue.png", UriKind.Relative));
+        static BitmapImage imageRightBlue = CreateBitmapImage(HuntingDog.Properties.Resources.arrow_right_blue);
 
-        static BitmapImage imageRightGreen = new BitmapImage(new Uri(@"../../Resources/Images/arrow_right_green.png", UriKind.Relative));
+        static BitmapImage imageRightGreen = CreateBitmapImage(HuntingDog.Properties.Resources.arrow_right_green);
 
-        static BitmapImage imageRow = new BitmapImage(new Uri(@"../../Resources/Images/row.png", UriKind.Relative));
+        static BitmapImage imageRow = CreateBitmapImage(HuntingDog.Properties.Resources.row);
 
-        static BitmapImage imageWrench = new BitmapImage(new Uri(@"../../Resources/Images/wrench.png", UriKind.Relative));
+        static BitmapImage imageWrench = CreateBitmapImage(HuntingDog.Properties.Resources.wrench);
 
-        //static BitmapImage imageDb1 = new BitmapImage(new Uri(@"../../Resources/Images/server.png", UriKind.Relative));
-        //static BitmapImage imageSer = new BitmapImage(new Uri(@"../../Resources/Images/cpu.png", UriKind.Relative));
+        static BitmapImage imageDb1 = CreateBitmapImage(HuntingDog.Properties.Resources.database);
 
-        static BitmapImage imageDb1 = new BitmapImage(new Uri(@"../../Resources/Art/database.png", UriKind.Relative));
+        static BitmapImage imageSer = CreateBitmapImage(HuntingDog.Properties.Resources.computer);
 
-        static BitmapImage imageSer = new BitmapImage(new Uri(@"../../Resources/Art/computer.png", UriKind.Relative));
+        static BitmapImage imageSearch = CreateBitmapImage(HuntingDog.Properties.Resources.search);
 
-        static BitmapImage imageSearch = new BitmapImage(new Uri(@"../../Resources/Art/search.png", UriKind.Relative));
+        static BitmapImage imageRightArrow = CreateBitmapImage(HuntingDog.Properties.Resources.next);
 
-        static BitmapImage imageRightArrow = new BitmapImage(new Uri(@"../../Resources/Art/next.png", UriKind.Relative));
+        static BitmapImage imageEdit = CreateBitmapImage(HuntingDog.Properties.Resources.edit);
 
-        static BitmapImage imageEdit = new BitmapImage(new Uri(@"../../Resources/Art/edit.png", UriKind.Relative));
+        static BitmapImage imageProcess = CreateBitmapImage(HuntingDog.Properties.Resources.process);
 
-        static BitmapImage imageProcess = new BitmapImage(new Uri(@"../../Resources/Art/process.png", UriKind.Relative));
+        static BitmapImage imagePageEdit = CreateBitmapImage(HuntingDog.Properties.Resources.page_edit);
 
-        static BitmapImage imagePageEdit = new BitmapImage(new Uri(@"../../Resources/Art/page_edit.png", UriKind.Relative));
+        static BitmapImage imageForwardBlue = CreateBitmapImage(HuntingDog.Properties.Resources.forward_blue);
 
-        static BitmapImage imageForwardBlue = new BitmapImage(new Uri(@"../../Resources/Art/forward_blue.png", UriKind.Relative));
+        static BitmapImage imageFoot = CreateBitmapImage(HuntingDog.Properties.Resources.footprint);
 
-        static BitmapImage imageFoot = new BitmapImage(new Uri(@"../../Resources/Resources/footprint.bmp", UriKind.Relative));
+        static BitmapImage imageWorkplace = CreateBitmapImage(HuntingDog.Properties.Resources.workplace2);
 
-        static BitmapImage imageWorkplace = new BitmapImage(new Uri(@"../../Resources/Images/workplace2.png", UriKind.Relative));
+        private static BitmapImage CreateBitmapImage(Bitmap bitmap)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+            }
+
+            return bitmapImage;
+        }
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {

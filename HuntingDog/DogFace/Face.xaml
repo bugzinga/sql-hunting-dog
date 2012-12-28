@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:HuntingDog.DogFace"
+			 xmlns:properties="clr-namespace:HuntingDog.Properties"
              mc:Ignorable="d" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
             xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Royale"
@@ -11,8 +12,10 @@
 
  <UserControl.Resources>
         <ResourceDictionary>
-            
-            <my:WidthConverter x:Key="widthConv"/>
+
+			<my:BitmapConverter x:Key="bitmapConverter" />
+
+			<my:WidthConverter x:Key="widthConv"/>
 
             <SolidColorBrush x:Key="blueDarkBrush" Color="#FF0045BC"/>
             <SolidColorBrush x:Key="blueBrush" Color="#FF6495ED"/>
@@ -488,13 +491,13 @@
                         
                            BorderThickness="1" Background="Transparent" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                         >
-                    <Image Source="..\..\Resources\Resources\refresh.png" Height="18" Width="18"></Image>
+                    <Image Source="{Binding Source={x:Static properties:Resources.refresh}, Converter={StaticResource bitmapConverter}}" Height="18" Width="18"></Image>
                 </Button>
             <Border  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" 
                      HorizontalAlignment="Stretch" MouseDown="borderText_MouseDown" Background="White"  x:Name="borderText"  Margin="3,0,3,3" CornerRadius="6" BorderThickness="2" BorderBrush="#506AA4B6">
                     <DockPanel  HorizontalAlignment="Stretch" >
-                    
-                        <Image Margin="2,0,0,0" Name="imgSearch" DockPanel.Dock="Left" VerticalAlignment="Center" Source="../../Resources/Art/search.png" Width="20" Height="20" Opacity="0.3" ></Image>
+
+					<Image Margin="2,0,0,0" Name="imgSearch" DockPanel.Dock="Left" VerticalAlignment="Center" Source="{Binding Source={x:Static properties:Resources.search}, Converter={StaticResource bitmapConverter}}" Width="20" Height="20" Opacity="0.3" ></Image>
 
                     <TextBox  DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch"
                              PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" BorderThickness="0"
@@ -534,7 +537,7 @@
               
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
                 <StackPanel Orientation="Horizontal" Margin="0">
-                    <Image Width="24" Height="24" Margin="5" Source="..\..\Resources\Art\warning.png"></Image>
+						<Image Width="24" Height="24" Margin="5" Source="{Binding Source={x:Static properties:Resources.warning}, Converter={StaticResource bitmapConverter}}"></Image>
                     <TextBlock VerticalAlignment="Center" FontSize="16">No results were found</TextBlock>
                 </StackPanel>
 
@@ -759,7 +762,7 @@
         </Grid>
         <!--/Border-->
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Image VerticalAlignment="Center" x:Name="imgWorking" Source="..\..\Resources\Art\process.png" Width="20" Height="20" Margin="4,0,4,0"></Image>
+			<Image VerticalAlignment="Center" x:Name="imgWorking" Source="{Binding Source={x:Static properties:Resources.process}, Converter={StaticResource bitmapConverter}}" Width="20" Height="20" Margin="4,0,4,0"></Image>
             <TextBlock  VerticalAlignment="Center" x:Name="txtStatusTest">status</TextBlock>
             <!--<Button Height="40" Click="Button_Click">Select First</Button>-->
             

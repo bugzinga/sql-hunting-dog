@@ -167,6 +167,9 @@
     <Compile Include="..\HuntingDog\DogFace\BackgroundProcessor.cs">
       <Link>DogFace\BackgroundProcessor.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\BitmapConverter.cs">
+      <Link>DogFace\BitmapConverter.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\Face.xaml.cs">
       <Link>DogFace\Face.xaml.cs</Link>
       <DependentUpon>Face.xaml</DependentUpon>
@@ -287,7 +290,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
