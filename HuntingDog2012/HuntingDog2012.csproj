@@ -219,9 +219,6 @@
     <Compile Include="..\HuntingDog\Engine\ManagementStudioController.cs">
       <Link>Engine\ManagementStudioController.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\MSSQLController.cs">
-      <Link>Engine\MSSQLController.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
       <Link>Engine\ObjectExplorerManager.cs</Link>
     </Compile>

@@ -12,28 +12,36 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
+using Thread = System.Threading.Thread;
+
 namespace HuntingDog.DogEngine.Impl
 {
     sealed class StudioController : IStudioController
     {
+        public event Action ShowYourself;
+
+        public event Action<List<String>> OnServersAdded;
+
+        public event Action<List<String>> OnServersRemoved;
+
         private static readonly Log log = LogFactory.GetLog(typeof(StudioController));
 
-        private static StudioController currentInstance = new StudioController();
+        private static readonly String windowId = "{7146B360-D37D-44A1-8D4C-5E7E36EA81D4}";
 
-        private AddIn inst;
+        private AddIn addIn;
 
-        private EnvDTE.Window toolWindow;
+        private ObjectExplorerManager manager = new ObjectExplorerManager();
 
-        private DatabaseObjectSearcher.ObjectExplorerManager manager = new DatabaseObjectSearcher.ObjectExplorerManager();
+        private Int32 searchLimit = 10000;
 
-        public Int32 SearchLimit = 10000;
+        private Thread serverCheck;
 
-        public static StudioController Current
+        private AutoResetEvent stopThread = new AutoResetEvent(false);
+
+        public static StudioController Instance
         {
-            get
-            {
-                return currentInstance;
-            }
+            get;
+            private set;
         }
 
         public Dictionary<String, DatabaseLoader> Servers
@@ -44,26 +52,23 @@ namespace HuntingDog.DogEngine.Impl
 
         public EnvDTE.Window SearchWindow
         {
-            get
-            {
-                return toolWindow;
-            }
+            get;
+            private set;
+        }
+
+        static StudioController()
+        {
+            Instance = new StudioController();
         }
 
         private StudioController()
         {
         }
 
-        public event Action ShowYourself;
-
-        public event Action<List<String>> OnServersAdded;
-
-        public event Action<List<String>> OnServersRemoved;
-
         List<Entity> IStudioController.Find(String serverName, String databaseName, String searchText)
         {
             var server = Servers[serverName];
-            var listFound = server.Find(searchText, databaseName, SearchLimit);
+            var listFound = server.Find(searchText, databaseName, searchLimit);
 
             var result = new List<Entity>();
 
@@ -85,7 +90,7 @@ namespace HuntingDog.DogEngine.Impl
 
         void IStudioController.NavigateObject(String server, Entity entityObject)
         {
-            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) inst.DTE.CommandBars;
+            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) addIn.DTE.CommandBars;
 
             foreach (var b in bars)
             {
@@ -105,9 +110,6 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
-        System.Threading.Thread _serverCheck;
-        System.Threading.AutoResetEvent _stopThread = new AutoResetEvent(false);
-
         void IStudioController.Initialise()
         {
             Servers = new Dictionary<String, DatabaseLoader>();
@@ -118,8 +120,8 @@ namespace HuntingDog.DogEngine.Impl
             ReloadServerList();
 
             // run thread - this thread will check connected servers and will report if some servers will be disconnected.
-            _serverCheck = new System.Threading.Thread(BackgroundThreadCheckServer);
-            _serverCheck.Start();
+            serverCheck = new System.Threading.Thread(BackgroundThreadCheckServer);
+            serverCheck.Start();
         }
 
         private void BackgroundThreadCheckServer()
@@ -128,7 +130,7 @@ namespace HuntingDog.DogEngine.Impl
 
             while (true)
             {
-                if (_stopThread.WaitOne(1 * 1000))
+                if (stopThread.WaitOne(1 * 1000))
                 {
                     break;
                 }
@@ -189,7 +191,7 @@ namespace HuntingDog.DogEngine.Impl
                 
                 // check all servers
 
-                if (_stopThread.WaitOne(4 * 1000))
+                if (stopThread.WaitOne(4 * 1000))
                 {
                     break;
                 }
@@ -252,7 +254,7 @@ namespace HuntingDog.DogEngine.Impl
                     ReloadServerList();
                 }
 
-                // do not beleive server name provided by Object Explorer - it can have different case
+                // do not believe server name provided by Object Explorer - it can have different case
                 var newServer = GetServerByName(serverName);
                 if (OnServersAdded != null)
                 {
@@ -466,23 +468,35 @@ namespace HuntingDog.DogEngine.Impl
             throw new NotImplementedException();
         }
 
-        public EnvDTE.Window CreateAddinWindow(AddIn addinInstance)
+        public EnvDTE.Window CreateAddinWindow(AddIn addIn)
         {
             try
             {
-                Assembly asm = Assembly.Load("HuntingDog");
+                this.addIn = addIn;
 
-                // Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b9"); // this guid doesn't seem to matter?
-                //toolWindow = CreateToolWindow("DatabaseObjectSearcherUI.ucMainControl", asm.Location, id,  addinInstance);
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var className = typeof(HuntingDog.ucHost).FullName;
+                var caption = "Hunting Dog (Ctrl+D)";
+                Object userControl = null;
 
-                Guid id = new Guid("4c410c93-d66b-495a-9de2-99d5bde4a3b8"); // this guid doesn't seem to matter?
-                toolWindow = CreateToolWindow("HuntingDog.ucHost", asm.Location, id, addinInstance);
+                var windows = ServiceCache.ExtensibilityModel.Windows as Windows2;
 
-                return toolWindow;
+                if (windows != null)
+                {
+                    if ((SearchWindow == null) || (windows.Item(windowId) == null))
+                    {
+                        SearchWindow = windows.CreateToolWindow2(addIn, assemblyLocation, className, caption, windowId, ref userControl);
+                        SearchWindow.SetTabPicture(HuntingDog.Properties.Resources.footprint.GetHbitmap());
+                    }
+
+                    SearchWindow.Visible = true;
+                }
+
+                return SearchWindow;
             }
             catch (Exception ex)
             {
-                log.Error("Controller: CreateAddinWindow failed.", ex);
+                log.Error("AddIn window could not be created", ex);
                 throw;
             }
         }
@@ -495,49 +509,7 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2122")]
-        private EnvDTE.Window CreateToolWindow(String typeName, String assemblyLocation, Guid uiTypeGuid, AddIn addinInstance)
-        {
-            Windows2 win2 = ServiceCache.ExtensibilityModel.Windows as Windows2;
-
-            inst = addinInstance;
-
-            //Windows2 win2 = applicationObject.Windows as Windows2;
-            if (win2 != null)
-            {
-                Object controlObject = null;
-                Assembly asm = Assembly.GetExecutingAssembly();
-                EnvDTE.Window toolWindow = win2.CreateToolWindow2(addinInstance, assemblyLocation, typeName, "Hunting Dog (Ctrl+D)", "{" + uiTypeGuid.ToString() + "}", ref controlObject);
-
-                EnvDTE.Window oe = null;
-
-                foreach (EnvDTE.Window w1 in addinInstance.DTE.Windows)
-                {
-                    if (w1.Caption == "Object Explorer")
-                    {
-                        oe = w1;
-                    }
-                }
-
-                //toolWindow.Width = oe.Width;
-                // toolWindow.SetKind((vsWindowType)oe.Kind);
-                // toolWindow.IsFloating = oe.IsFloating;
-                // oe.LinkedWindows.Add(toolWindow);
-                //Window frame = win2.CreateLinkedWindowFrame(toolWindow,oe, vsLinkedWindowType.vsLinkedWindowTypeHorizontal);
-                //frame.SetKind(vsWindowType.vsWindowTypeDocumentOutline);
-                //addinInstance.DTE.MainWindow.LinkedWindows.Add(frame);
-                //frame.Activate();
-
-                toolWindow.SetTabPicture(HuntingDog.Properties.Resources.footprint.GetHbitmap());
-                toolWindow.Visible = true;
-
-                return toolWindow;
-            }
-
-            return null;
-        }
-
-        public void ModifyFunction(String server, Entity entityObject)
+         public void ModifyFunction(String server, Entity entityObject)
         {
             try
             {

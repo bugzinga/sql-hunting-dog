@@ -154,7 +154,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Engine\ManagementStudioController.cs" />
-    <Compile Include="Engine\MSSQLController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />
     <Compile Include="Engine\Server Hit\Serializator.cs" />
     <Compile Include="Engine\Server Hit\SmartDictionary.cs" />

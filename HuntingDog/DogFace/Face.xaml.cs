@@ -107,7 +107,7 @@ namespace HuntingDog.DogFace
             {
                 if (_studio == null)
                 {
-                    _studio = HuntingDog.DogEngine.Impl.StudioController.Current;
+                    _studio = HuntingDog.DogEngine.Impl.StudioController.Instance;
                 }
 
                 return _studio;
