@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using DatabaseObjectSearcherUI;
 using HuntingDog.DogEngine;
+using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {

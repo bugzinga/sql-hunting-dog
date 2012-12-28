@@ -133,8 +133,13 @@
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
     <Compile Include="DogFace\HtmlTextBlock.cs" />
-    <Compile Include="DogFace\Item.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
+    <Compile Include="DogFace\Items\BaseParamItem.cs" />
+    <Compile Include="DogFace\Items\FunctionParamItem.cs" />
+    <Compile Include="DogFace\Items\Item.cs" />
+    <Compile Include="DogFace\Items\ProcedureParamItem.cs" />
+    <Compile Include="DogFace\Items\TableParamItem.cs" />
+    <Compile Include="DogFace\Items\ViewParamItem.cs" />
     <Compile Include="DogFace\ucWpf.xaml.cs">
       <DependentUpon>ucWpf.xaml</DependentUpon>
     </Compile>

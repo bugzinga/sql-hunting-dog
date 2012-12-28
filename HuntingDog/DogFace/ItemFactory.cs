@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
@@ -190,9 +191,9 @@ namespace HuntingDog.DogFace
             return res;
         }
 
-        internal static List<FuncParamItem> BuildProcedureParmeters(List<DogEngine.FunctionParameter> funcParameters)
+        internal static List<FunctionParamItem> BuildProcedureParmeters(List<DogEngine.FunctionParameter> funcParameters)
         {
-            return funcParameters.ConvertAll<FuncParamItem>(x => new FuncParamItem() { Name = x.Name, Type = x.Type });
+            return funcParameters.ConvertAll<FunctionParamItem>(x => new FunctionParamItem() { Name = x.Name, Type = x.Type });
         }
 
         internal static List<ViewParamItem> BuildViewColumns(List<DogEngine.TableColumn> columns)

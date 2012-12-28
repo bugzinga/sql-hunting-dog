@@ -1,93 +1,10 @@
 ﻿
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 
-namespace HuntingDog.DogFace
+namespace HuntingDog.DogFace.Items
 {
-    [ComVisible(false)]
-    public class BaseParamItem : DependencyObject
-    {
-        public HuntingDog.DogEngine.ProcedureParameter Entity
-        {
-            get;
-            set;
-        }
-
-        public String Name
-        {
-            get;
-            set;
-        }
-
-        public String Type
-        {
-            get;
-            set;
-        }
-    }
-
-    [ComVisible(false)]
-    public class ProcedureParamItem : BaseParamItem
-    {
-        public String Out
-        {
-            get;
-            set;
-        }
-    }
-
-    [ComVisible(false)]
-    public class TableParamItem : BaseParamItem
-    {
-        public Boolean IsPrimaryKey
-        {
-            get;
-            set;
-        }
-
-        public Boolean IsForeignKey
-        {
-            get;
-            set;
-        }
-
-        public String defaultValue
-        {
-            get;
-            set;
-        }
-    }
-
-    [ComVisible(false)]
-    public class ViewParamItem : BaseParamItem
-    {
-        public Boolean IsPrimaryKey
-        {
-            get;
-            set;
-        }
-
-        public Boolean IsForeignKey
-        {
-            get;
-            set;
-        }
-
-        public String defaultValue
-        {
-            get;
-            set;
-        }
-    }
-
-    [ComVisible(false)]
-    public class FuncParamItem : BaseParamItem
-    {
-    }
-
-    [ComVisible(false)]
     public class Item : DependencyObject
     {
         public HuntingDog.DogEngine.Entity Entity
