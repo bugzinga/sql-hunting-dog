@@ -141,14 +141,16 @@
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WidthConverter.cs" />
     <Compile Include="DogFace\WpfUtil.cs" />
+    <Compile Include="Engine\ObjectFilter.cs" />
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\DependecyResults.cs" />
+    <Compile Include="Engine\EResultBehaviour.cs" />
+    <Compile Include="Engine\SearchCriteria.cs" />
     <Compile Include="Engine\Server Hit\DatabaseHit.cs" />
     <Compile Include="Engine\Server Hit\ServerHit.cs" />
     <Compile Include="Engine\Server Hit\TotalHit.cs" />
-    <Compile Include="Engine\ServerDictionary.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ImageTranslator.cs">
       <SubType>Component</SubType>

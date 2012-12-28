@@ -209,6 +209,9 @@
     <Compile Include="..\HuntingDog\Engine\DependecyResults.cs">
       <Link>Engine\DependecyResults.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\Engine\EResultBehaviour.cs">
+      <Link>Engine\EResultBehaviour.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Engine\EventWatcher.cs">
       <Link>Engine\EventWatcher.cs</Link>
     </Compile>
@@ -221,6 +224,12 @@
     </Compile>
     <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
       <Link>Engine\ObjectExplorerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\ObjectFilter.cs">
+      <Link>Engine\ObjectFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\SearchCriteria.cs">
+      <Link>Engine\SearchCriteria.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\Server Hit\DatabaseHit.cs">
       <Link>Engine\Server Hit\DatabaseHit.cs</Link>
@@ -236,9 +245,6 @@
     </Compile>
     <Compile Include="..\HuntingDog\Engine\Server Hit\TotalHit.cs">
       <Link>Engine\Server Hit\TotalHit.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\Engine\ServerDictionary.cs">
-      <Link>Engine\ServerDictionary.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\Utils.cs">
       <Link>Engine\Utils.cs</Link>
