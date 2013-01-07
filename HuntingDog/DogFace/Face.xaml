@@ -498,6 +498,9 @@
 
                     <TextBox  DockPanel.Dock="Right" VerticalAlignment="Center" GotFocus="txtSearch_GotFocus" LostFocus="txtSearch_LostFocus" x:Name="txtSearch"
                              PreviewKeyDown="txtSearch_PreviewKeyDown" KeyDown="txtSearch_KeyDown" BorderThickness="0"
+                              PreviewMouseLeftButtonDown="txtSearch_SelectivelyIgnoreMouseButton"
+                              MouseDoubleClick="txtSearch_SelectSearchText"
+                              
                            Margin="0,2,5,2"  FontSize="16"
                                 
                              TextChanged="txtSearch_TextChanged">

@@ -1211,6 +1211,46 @@ namespace HuntingDog.DogFace
             txtSearch.SelectAll();
         }
 
+
+        private void txtSearch_SelectSearchText(object sender, RoutedEventArgs e)
+        {
+
+            TextBox tb = (sender as TextBox);
+
+            if (tb != null)
+            {
+
+                tb.SelectAll();
+
+            }
+
+        }
+
+
+
+        private void txtSearch_SelectivelyIgnoreMouseButton(object sender,
+
+            MouseButtonEventArgs e)
+        {
+
+            TextBox tb = (sender as TextBox);
+
+            if (tb != null)
+            {
+
+                if (!tb.IsKeyboardFocusWithin)
+                {
+
+                    e.Handled = true;
+
+                    tb.Focus();
+
+                }
+
+            }
+
+        }
+
         private void txtSearch_LostFocus(Object sender, RoutedEventArgs e)
         {
             imgSearch.Opacity = 0.5;
