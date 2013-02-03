@@ -3,15 +3,15 @@ using System;
 
 namespace HuntingDog.DogEngine
 {
-    public class ProcedureParameter : FunctionParameter
+    public class FunctionParameter
     {
-        public String DefaultValue
+        public String Name
         {
             get;
             set;
         }
 
-        public Boolean IsOut
+        public String Type
         {
             get;
             set;

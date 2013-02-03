@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Controls">
       <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Controls.dll</HintPath>
@@ -61,22 +61,22 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.SqlStudio">
       <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Smo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.Smo.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.Smo.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.SqlEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencesSQLFull2008\Microsoft.SqlServer.SqlEnum.dll</HintPath>
+      <HintPath>..\Dependencies\2008\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DogEngine\Entity.cs" />
-    <Compile Include="DogEngine\FuncParameter.cs" />
+    <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
     <Compile Include="DogEngine\IDatabaseDictionary.cs" />
     <Compile Include="DogEngine\IDatabaseLoader.cs" />
@@ -129,32 +129,39 @@
     <Compile Include="DogEngine\ProcedureParameter.cs" />
     <Compile Include="DogEngine\TableColumn.cs" />
     <Compile Include="DogFace\BackgroundProcessor.cs" />
+    <Compile Include="DogFace\BitmapConverter.cs" />
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
     <Compile Include="DogFace\HtmlTextBlock.cs" />
-    <Compile Include="DogFace\Item.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
+    <Compile Include="DogFace\Items\BaseParamItem.cs" />
+    <Compile Include="DogFace\Items\FunctionParamItem.cs" />
+    <Compile Include="DogFace\Items\Item.cs" />
+    <Compile Include="DogFace\Items\ProcedureParamItem.cs" />
+    <Compile Include="DogFace\Items\TableParamItem.cs" />
+    <Compile Include="DogFace\Items\ViewParamItem.cs" />
     <Compile Include="DogFace\ucWpf.xaml.cs">
       <DependentUpon>ucWpf.xaml</DependentUpon>
     </Compile>
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WidthConverter.cs" />
     <Compile Include="DogFace\WpfUtil.cs" />
+    <Compile Include="Engine\ObjectFilter.cs" />
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\DependecyResults.cs" />
+    <Compile Include="Engine\EResultBehaviour.cs" />
+    <Compile Include="Engine\SearchCriteria.cs" />
     <Compile Include="Engine\Server Hit\DatabaseHit.cs" />
     <Compile Include="Engine\Server Hit\ServerHit.cs" />
     <Compile Include="Engine\Server Hit\TotalHit.cs" />
-    <Compile Include="Engine\ServerDictionary.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ImageTranslator.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Engine\ManagementStudioController.cs" />
-    <Compile Include="Engine\MSSQLController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />
     <Compile Include="Engine\Server Hit\Serializator.cs" />
     <Compile Include="Engine\Server Hit\SmartDictionary.cs" />
@@ -167,10 +174,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User Interface\ucHost.cs">
+    <Compile Include="DogFace\ucHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="User Interface\ucHost.Designer.cs">
+    <Compile Include="DogFace\ucHost.Designer.cs">
       <DependentUpon>ucHost.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -180,93 +187,17 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="User Interface\ucHost.resx">
+    <EmbeddedResource Include="DogFace\ucHost.resx">
       <DependentUpon>ucHost.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="DogFace\Resources\add.png" />
     <None Include="Readme" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_down_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_down_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_left_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_left_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_right_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_right_blue1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_right_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_right_green1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_up_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\arrow_up_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\chart.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\data.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\data_into.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\delete2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Resources\refresh.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Resources\row.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Resources\scroll.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\scroll_information.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\scroll2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\selection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\signpost.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Resources\table.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\table_sql.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\text_align_center.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Resources\text_formula.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="EnvDTE">
@@ -298,105 +229,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DogFace\Resources\media_play_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\gear.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\server.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\diskdrive.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\cpu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\zoom_in.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\view.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\key1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\navigate_left.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\navigate_right.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\wrench.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\cube_green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\cube_molecule.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\server_add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\Icon1.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\Icon2.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\green.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\greenair.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\spider1.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\plane1.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\doggy.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DogFace\Resources\footprint.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\link.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\firewall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\atom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\key1_add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\navigate_plus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\id_card.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\book_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\tree.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\tree16x16.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\key11.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DogFace\Resources\key_grey.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="DogFace\Face.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -406,60 +238,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\scroll2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Images\table.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Images\row.png" />
-    <Resource Include="DogFace\Images\scroll.png" />
-    <Resource Include="DogFace\Images\table_sql.png" />
-    <Resource Include="DogFace\Images\text_formula.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DogFace\Images\add.png" />
-    <Resource Include="DogFace\Images\arrow_right_blue.png" />
-    <Resource Include="DogFace\Images\arrow_right_green.png" />
-    <Resource Include="DogFace\Images\cpu.png" />
-    <Resource Include="DogFace\Images\data.png" />
-    <Resource Include="DogFace\Images\delete2.png" />
-    <Resource Include="DogFace\Images\gear.png" />
-    <Resource Include="DogFace\Images\key1.png" />
-    <Resource Include="DogFace\Images\key_grey.png" />
-    <Resource Include="DogFace\Images\link.png" />
-    <Resource Include="DogFace\Images\media_play_green.png" />
-    <Resource Include="DogFace\Images\refresh.png" />
-    <Resource Include="DogFace\Images\text_align_center.png" />
-    <Resource Include="DogFace\Images\wrench.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DogFace\Art\accept.png" />
-    <Content Include="DogFace\Art\calendar_blank.png" />
-    <Content Include="DogFace\Art\chart.png" />
-    <Content Include="DogFace\Art\clock.png" />
-    <Content Include="DogFace\Images\workplace.png" />
-    <Resource Include="DogFace\Images\workplace2.png" />
-    <Resource Include="DogFace\Images\workstation1.png" />
-    <Resource Include="DogFace\Art\computer.png" />
-    <Resource Include="DogFace\Art\database.png" />
-    <Resource Include="DogFace\Art\edit.png" />
-    <Resource Include="DogFace\Art\forward.png" />
-    <Resource Include="DogFace\Art\forward_blue.png" />
-    <Content Include="DogFace\Art\home.png" />
-    <Content Include="DogFace\Art\mail.png" />
-    <Resource Include="DogFace\Art\next.png" />
-    <Content Include="DogFace\Art\page.png" />
-    <Resource Include="DogFace\Art\page_edit.png" />
-    <Resource Include="DogFace\Art\process.png" />
-    <Resource Include="DogFace\Art\search.png" />
-    <Content Include="DogFace\Art\user.png" />
-    <Resource Include="DogFace\Art\warning.png" />
-    <Content Include="DogFace\Images\harddisk.png" />
-    <Resource Include="DogFace\Images\server.png" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
