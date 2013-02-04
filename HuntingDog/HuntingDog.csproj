@@ -240,7 +240,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "$(HUNTINGDOG_HOME)" /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />
 <Target Name="GenSerializationAssembly"
