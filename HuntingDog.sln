@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog", "HuntingDog\Hu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2012", "HuntingDog2012\HuntingDog2012.csproj", "{36DCF906-2E95-4590-BBD3-4CF25852F6C3}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HuntingDogInstall", "HuntingDogInstall\HuntingDogInstall.vdproj", "{9522BCA4-7C05-46FE-A80E-F11EEB98356C}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{73617ECF-F02C-4D69-8DA0-F7E33BF560D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Art", "Art", "{4C22589C-A7AE-4442-82F4-87BDC1C83028}"
@@ -56,6 +58,10 @@ Global
 		{36DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9522BCA4-7C05-46FE-A80E-F11EEB98356C}.Debug|Any CPU.ActiveCfg = Debug
+		{9522BCA4-7C05-46FE-A80E-F11EEB98356C}.Debug|Any CPU.Build.0 = Debug
+		{9522BCA4-7C05-46FE-A80E-F11EEB98356C}.Release|Any CPU.ActiveCfg = Release
+		{9522BCA4-7C05-46FE-A80E-F11EEB98356C}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
