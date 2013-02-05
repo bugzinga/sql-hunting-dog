@@ -1,2 +1,17 @@
 
-TODO: write instructions how to install "Hunting Dog" manually for SSMS 2008
+How to install "Hunting Dog" manually for SSMS 2008
+
+The following steps must be done:
+
+1. Register HuntingDog.dll as a COM dll - "regasm HuntindDog.dll /codebase"
+2. Create an entry in Windows Registry
+     HKCU\Software\Microsoft\Microsoft SQL Server\100\Tools\Shell\Addins\HuntingDog.Connect
+
+	 with the following parameters:
+	 SatelliteDllName - HuntingDog.dll (string)
+	 SatelliteDllPath - path to the Hunting Dog folder (string)
+	 ProductName - "Hunting Dog" (string)
+	 ProductDescription - "Your devoted friend" (string)
+	 LoadBehavior - 1 (int)
+	 CommandLineSafe - 0 (int)
+
