@@ -13,7 +13,7 @@ Set oShell = CreateObject("Shell.Application")
 strAppFolder = oShell.NameSpace(ssfPROFILE).Self.Path
 
 
-msgbox strAppFolder,1,"AppData folder:"
+rem msgbox strAppFolder,1,"AppData folder:"
 
 dim replacementPath
 replacementPath = objFSO.BuildPath(param1, "SSMS2012\HuntingDog.dll") 
@@ -21,11 +21,12 @@ replacementPath = objFSO.BuildPath(param1, "SSMS2012\HuntingDog.dll")
 Const ForReading = 1
 Const ForWriting = 2
 
+Set WshShell = CreateObject("Wscript.Shell")
+dim rootFolder
+rootFolder = WshShell.ExpandEnvironmentStrings("%APPDATA%")
 
 dim addinFilePath
-addinFilePath = strAppFolder & "\Roaming\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
-
-
+addinFilePath = rootFolder & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
 
 msgbox  addinFilePath,1,"HutingDog.Addin folder:" 
 rem dim strText
@@ -38,9 +39,7 @@ strText = "<Assembly>TARGET</Assembly>"
 dim strNewText
 strNewText = Replace(strText, "TARGET",replacementPath)
 
-
-Set objFileWrite = objFSO.OpenTextFile(addinFilePath, ForWriting)
-
+Set objFileWrite = objFSO.CreateTextFile(addinFilePath, True, True)
 
  objFileWrite.WriteLine "<?xml version=""1.0"" encoding=""UTF-16"" standalone=""no""?>"
  objFileWrite.WriteLine "<Extensibility xmlns=""http://schemas.microsoft.com/AutomationExtensibility"">"
