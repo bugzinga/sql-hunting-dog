@@ -1,55 +1,90 @@
 
-dim paramsList 
-paramsList = split(session.property("CustomActionData"), ",") 
-dim param1 
-param1 = paramsList(0) 
+Dim data
+data = Session.Property("CustomActionData")
 
+Dim parameters
+parameters = split(data, ",") 
 
+Dim installFolder
+installFolder = parameters(0) 
 
-Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set fileSystem = CreateObject("Scripting.FileSystemObject")
 
-Const ssfPROFILE = &H1A
-Set oShell = CreateObject("Shell.Application")
-strAppFolder = oShell.NameSpace(ssfPROFILE).Self.Path
+Dim assemblyPath
+assemblyPath = fileSystem.BuildPath(installFolder, "SSMS2012\HuntingDog.dll") 
 
+Set shell = CreateObject("Wscript.Shell")
 
-rem msgbox strAppFolder,1,"AppData folder:"
+Dim appDataFolder
+appDataFolder = shell.ExpandEnvironmentStrings("%APPDATA%")
 
-dim replacementPath
-replacementPath = objFSO.BuildPath(param1, "SSMS2012\HuntingDog.dll") 
+Dim addinConfigPath
+addinConfigPath = appDataFolder & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
 
-Const ForReading = 1
-Const ForWriting = 2
+Class XmlConfig
 
-Set WshShell = CreateObject("Wscript.Shell")
-dim rootFolder
-rootFolder = WshShell.ExpandEnvironmentStrings("%APPDATA%")
+	Private xml
+	
+	Private Sub Class_Initialize
+		Set xml = CreateObject("Microsoft.XMLDOM")
+	End Sub
+	
+	Private Function AddNode(root, childName)
+		Set child = xml.CreateElement(childName)
+		root.AppendChild(child)
+		Set AddNode = child
+	End Function
+	
+	Private Sub AddTextNode(parent, childName, childValue)
+		Set child = AddNode(parent, childName)
+		child.Text = childValue
+	End Sub
+	
+	Public Sub Save(destination, assemblyPath)
 
-dim addinFilePath
-addinFilePath = rootFolder & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
+		Set root = AddNode(xml, "Extensibility")
+		Call root.SetAttribute("xmlns", "http://schemas.microsoft.com/AutomationExtensibility")
 
-rem msgbox  addinFilePath,1,"HutingDog.Addin folder:" 
-rem dim strText
-rem strText = "TARGET"
-rem Set objFile = objFSO.OpenTextFile(addinFilePath, ForReading)
-rem strText = objFile.ReadAll
-rem objFile.Close
+		Set app = AddNode(root, "HostApplication")
+		Call AddTextNode(app, "Name", "Microsoft SQL Server Management Studio")
+		Call AddTextNode(app, "Version", "*")
+		
+		Set addin = AddNode(root, "Addin")
+		Call AddTextNode(addin, "FriendlyName", "Hunting Dog")
+		Call AddTextNode(addin, "Description", "Hunting Dog")
+		Call AddTextNode(addin, "Assembly", assemblyPath)
+		Call AddTextNode(addin, "FullClassName", "HuntingDog.Connect")
+		Call AddTextNode(addin, "LoadBehavior", "1")
+		Call AddTextNode(addin, "CommandPreload", "0")
+		Call AddTextNode(addin, "CommandLineSafe", "0")
 
-strText = "<Assembly>TARGET</Assembly>"
-dim strNewText
-strNewText = Replace(strText, "TARGET",replacementPath)
+		Set stream = CreateObject("ADODB.Stream")
+		With stream
+			.Open
+			.Type = 1
+			Set writer = CreateObject("MSXML2.MXXMLWriter")
+			With writer
+				.OmitXMLDeclaration = False
+				.Standalone = False
+				.ByteOrderMark = True
+				.Encoding = "UTF-16"
+				.Indent = True
+				.Output = stream
+				Set reader = CreateObject("MSXML2.SAXXMLReader")
+				With reader
+					.ContentHandler = writer
+					.DTDHandler = writer
+					.errorHandler = writer
+					.Parse(xml)
+				End With
+			End With
+			.SaveToFile destination, 2
+			.Close
+		End With
+	
+	End Sub
 
-Set objFileWrite = objFSO.CreateTextFile(addinFilePath, True, True)
+End Class
 
- objFileWrite.WriteLine "<?xml version=""1.0"" encoding=""UTF-16"" standalone=""no""?>"
- objFileWrite.WriteLine "<Extensibility xmlns=""http://schemas.microsoft.com/AutomationExtensibility"">"
- objFileWrite.WriteLine "<HostApplication><Name>Microsoft SQL Server Management Studio</Name><Version>*</Version></HostApplication>"
- objFileWrite.WriteLine "<Addin><FriendlyName>Hunting Dog</FriendlyName><Description>Hunting Dog</Description>"
- objFileWrite.WriteLine strNewText
- objFileWrite.WriteLine	"<FullClassName>HuntingDog.Connect</FullClassName><LoadBehavior>1</LoadBehavior><CommandPreload>0</CommandPreload><CommandLineSafe>0</CommandLineSafe></Addin></Extensibility>"
-
-
-
-objFileWrite.Close
-
-
+Set config = New XmlConfig
+Call config.Save(addinConfigPath, assemblyPath)
