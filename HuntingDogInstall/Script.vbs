@@ -28,7 +28,7 @@ rootFolder = WshShell.ExpandEnvironmentStrings("%APPDATA%")
 dim addinFilePath
 addinFilePath = rootFolder & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
 
-msgbox  addinFilePath,1,"HutingDog.Addin folder:" 
+rem msgbox  addinFilePath,1,"HutingDog.Addin folder:" 
 rem dim strText
 rem strText = "TARGET"
 rem Set objFile = objFSO.OpenTextFile(addinFilePath, ForReading)
@@ -46,7 +46,7 @@ Set objFileWrite = objFSO.CreateTextFile(addinFilePath, True, True)
  objFileWrite.WriteLine "<HostApplication><Name>Microsoft SQL Server Management Studio</Name><Version>*</Version></HostApplication>"
  objFileWrite.WriteLine "<Addin><FriendlyName>Hunting Dog</FriendlyName><Description>Hunting Dog</Description>"
  objFileWrite.WriteLine strNewText
- objFileWrite.WriteLine	"<FullClassName>HuntingDog.Connect</FullClassName><LoadBehavior>0</LoadBehavior><CommandPreload>1</CommandPreload><CommandLineSafe>0</CommandLineSafe></Addin></Extensibility>"
+ objFileWrite.WriteLine	"<FullClassName>HuntingDog.Connect</FullClassName><LoadBehavior>1</LoadBehavior><CommandPreload>0</CommandPreload><CommandLineSafe>0</CommandLineSafe></Addin></Extensibility>"
 
 
 
