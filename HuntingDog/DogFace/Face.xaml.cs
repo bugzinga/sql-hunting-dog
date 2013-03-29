@@ -12,9 +12,40 @@ using System.Windows.Media;
 using DatabaseObjectSearcherUI;
 using HuntingDog.DogEngine;
 using HuntingDog.DogFace.Items;
+using System.Windows.Documents;
 
 namespace HuntingDog.DogFace
 {
+    class HighlightableItem : Item
+    {
+        public HighlightableItem(Item core)
+        {
+            Action1 = core.Action1;
+            Action1Description = core.Action1Description;
+            Action1Tooltip = core.Action1Tooltip;
+            Action2 = core.Action2;
+            Action2Description = core.Action2Description;
+            Action2Tooltip = core.Action2Tooltip;
+            Action3 = core.Action3;
+            Action3Description = core.Action3Description;
+            Action3Tooltip = core.Action3Tooltip;
+            Action3Visibility = core.Action3Visibility;
+            Action4 = core.Action4;
+            Action4Description = core.Action4Description;
+            Action4Tooltip = core.Action4Tooltip;
+            Action4Visibility = core.Action4Visibility;
+            Entity = core.Entity;
+            Image = core.Image;
+            IsChecked = core.IsChecked;
+            IsMouseOver = core.IsMouseOver;
+            MainObjectTooltip = core.MainObjectTooltip;
+            Name = core.Name;
+            NavigationTooltip = core.NavigationTooltip;
+        }
+
+        public String keyword { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for Face.xaml
     /// </summary>
@@ -592,7 +623,14 @@ namespace HuntingDog.DogFace
             InvokeInUI(() =>
             {
                 var items = ItemFactory.BuildFromEntries(result);
-                itemsControl.ItemsSource = items;
+                var ii = new List<HighlightableItem>();
+
+                foreach (var item in items)
+                {
+                    ii.Add(new HighlightableItem(item) { keyword = par.Text });
+                }
+
+                itemsControl.ItemsSource = ii;
                 itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
 
@@ -1421,7 +1459,9 @@ namespace HuntingDog.DogFace
 
         private Control GetSelectedItem(ListView lv)
         {
-            return lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control;
+            return (lv.SelectedIndex >= 0)
+                ? lv.ItemContainerGenerator.ContainerFromIndex(lv.SelectedIndex) as Control
+                : null;
         }
 
         private void ContextMenu_Closed(Object sender, RoutedEventArgs e)
