@@ -612,7 +612,7 @@
                                     FontSize="14"
                                     Grid.Column="1"
                                     HorizontalAlignment="Stretch"
-                                    IsEnabled="False"
+                                    IsSelectionEnabled="False"
                                     Margin="0,0,0,0"
                                     MouseDown="TextBlock_MouseDown_1" 
                                     MouseMove="TextBlock_MouseMove"
