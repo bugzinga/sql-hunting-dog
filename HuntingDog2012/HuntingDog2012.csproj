@@ -207,6 +207,7 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucHost.Designer.cs">
       <Link>DogFace\ucHost.Designer.cs</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucWpf.xaml.cs">
       <Link>DogFace\ucWpf.xaml.cs</Link>
@@ -287,6 +288,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\HuntingDog\DogFace\ucHost.resx">
       <Link>DogFace\ucHost.resx</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\HuntingDog\Engine\CommandBar.resx">
       <Link>Engine\CommandBar.resx</Link>

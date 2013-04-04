@@ -18,7 +18,7 @@ namespace HuntingDog.DogFace
 
             var text = item.Name;
             var upperText = text.ToUpperInvariant();
-            var keyword = item.keyword.ToUpperInvariant();
+            var keyword = item.Keyword.ToUpperInvariant();
 
             var start = upperText.IndexOf(keyword);
 
@@ -41,7 +41,7 @@ namespace HuntingDog.DogFace
                 }
                 else
                 {
-                    run.Background = new SolidColorBrush(Colors.LightYellow);
+                    run.Background = new SolidColorBrush(Colors.Yellow);
                 }
 
                 para.Inlines.Add(run);
@@ -57,7 +57,8 @@ namespace HuntingDog.DogFace
 
             FlowDocument doc = new FlowDocument(para);
             doc.PagePadding = new Thickness(0);
-            doc.FontFamily = new System.Windows.Media.FontFamily("Tahoma");
+            doc.FontFamily = new System.Windows.Media.FontFamily("Microsoft Sans Serif");
+            doc.FontSize = 14;
 
             return doc;
         }

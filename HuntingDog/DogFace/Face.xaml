@@ -609,7 +609,6 @@
                                     Background="Transparent"
                                     DockPanel.Dock="Left"
                                     Document="{Binding Path={}, Converter={StaticResource highlightConverter}}"
-                                    FontSize="14"
                                     Grid.Column="1"
                                     HorizontalAlignment="Stretch"
                                     IsSelectionEnabled="False"
