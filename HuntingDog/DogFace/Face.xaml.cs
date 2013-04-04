@@ -16,9 +16,9 @@ using System.Windows.Documents;
 
 namespace HuntingDog.DogFace
 {
-    class HighlightableItem : Item
+    class KeywordItem : Item
     {
-        public HighlightableItem(Item core)
+        public KeywordItem(Item core)
         {
             Action1 = core.Action1;
             Action1Description = core.Action1Description;
@@ -43,7 +43,7 @@ namespace HuntingDog.DogFace
             NavigationTooltip = core.NavigationTooltip;
         }
 
-        public String keyword { get; set; }
+        public String Keyword { get; set; }
     }
 
     /// <summary>
@@ -623,14 +623,14 @@ namespace HuntingDog.DogFace
             InvokeInUI(() =>
             {
                 var items = ItemFactory.BuildFromEntries(result);
-                //var ii = new List<HighlightableItem>();
+                var keywordItems = new ObservableCollection<KeywordItem>();
 
-                //foreach (var item in items)
-                //{
-                //    ii.Add(new HighlightableItem(item) { keyword = par.Text });
-                //}
+                foreach (var item in items)
+                {
+                    keywordItems.Add(new KeywordItem(item) { Keyword = par.Text });
+                }
 
-                itemsControl.ItemsSource = items;
+                itemsControl.ItemsSource = keywordItems;
                 itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
 

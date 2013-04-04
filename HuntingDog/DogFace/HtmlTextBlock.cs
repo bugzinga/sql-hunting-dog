@@ -14,6 +14,8 @@ namespace HuntingDog.DogFace
     {
         public static DependencyProperty HtmlProperty = DependencyProperty.Register("Html", typeof(String), typeof(HtmlTextBlock), new UIPropertyMetadata("Html", new PropertyChangedCallback(OnHtmlChanged)));
 
+        public static DependencyProperty KeywordProperty = DependencyProperty.Register("Keyword", typeof(String), typeof(HtmlTextBlock), new UIPropertyMetadata("Keyword", new PropertyChangedCallback(OnKeywordChanged)));
+
         public static DependencyProperty DoHighlighProperty = DependencyProperty.Register("DoHighlight", typeof(bool), typeof(HtmlTextBlock), new UIPropertyMetadata(true, new PropertyChangedCallback(OnHighlightChanged)));
 
 
@@ -28,6 +30,19 @@ namespace HuntingDog.DogFace
             set
             {
                 SetValue(HtmlProperty, value);
+            }
+        }
+
+        public String Keyword
+        {
+            get
+            {
+                return (String)GetValue(KeywordProperty);
+            }
+
+            set
+            {
+                SetValue(KeywordProperty, value);
             }
         }
 
@@ -50,6 +65,12 @@ namespace HuntingDog.DogFace
             sender.Parse((String) e.NewValue);
         }
 
+        public static void OnKeywordChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
+        {
+            HtmlTextBlock sender = (HtmlTextBlock)s;
+            sender.Parse(sender.Html);
+        }
+
         public static void OnHighlightChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
             HtmlTextBlock sender = (HtmlTextBlock)s;
@@ -65,45 +86,59 @@ namespace HuntingDog.DogFace
 
         private void ChangeHighlight(bool isHighlight)
         {
-            // change brush accroding to selection - I recommend to remove highligh at all if item is selected
-            var brush = isHighlight ? new SolidColorBrush(Colors.LightCyan):new SolidColorBrush(Colors.LightYellow);          
-            foreach (Run run in _runs)
+            Brush foregroundBrush = null;
+            Brush backgroundBrush = null;
+
+            if (isHighlight)
             {
-                    
-                run.Background = brush;
+                foregroundBrush = new SolidColorBrush(Colors.White);
+                backgroundBrush = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255));
             }
-          
+            else
+            {
+                foregroundBrush = new SolidColorBrush(Colors.Black);
+                backgroundBrush = new SolidColorBrush(Colors.Yellow);
+            }
+
+            foreach (var run in runs)
+            {
+                run.Foreground = foregroundBrush;
+                run.Background = backgroundBrush;
+            }
         }
 
-        List<Run> _runs = new List<Run>();
+        List<Run> runs = new List<Run>();
 
         private void Parse(String html)
         {
-           
             Inlines.Clear();
+            runs.Clear();
 
-            _runs.Clear();
+            var upperText = Html.ToUpperInvariant();
+            var keyword = Keyword.ToUpperInvariant();
 
-            if (html.Length > 5)
+            var start = upperText.IndexOf(keyword);
+
+            if (start != -1)
             {
-                var run = new Run(html.Substring(0, 5));
+                var length = keyword.Length;
+
+                var run = new Run(html.Substring(0, start));
                 Inlines.Add(run);
 
-                run = new Run(html.Substring(5));
-                run.Background = new SolidColorBrush(Colors.LightYellow);
+                run = new Run(html.Substring(start, length));
+                run.Background = new SolidColorBrush(Colors.Yellow);
                 Inlines.Add(run);
+                runs.Add(run);
 
-                // list of runs with different background
-                _runs.Add(run);
-                //update in-lines
+                run = new Run(html.Substring(length));
+                Inlines.Add(run);
             }
             else
             {
                 var run = new Run(html);
                 Inlines.Add(run);
-
             }
-            //Inlines.Add(new Span());
         }
     }
 }

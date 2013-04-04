@@ -605,19 +605,29 @@
                                         AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=38}"
                                        >
 
-                                <my:HtmlTextBlock   
-                           
-                             DockPanel.Dock="Left" x:Name="myEnityText" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"  Background="Transparent"   Tag="{Binding}" Grid.Column="1"
-                               Margin="0,0,0,0" FontSize="14" Html="{Binding Name}" DoHighlight="{Binding IsChecked}" VerticalAlignment="Center"  HorizontalAlignment="Stretch"                        
-                             />
+                                <my:HtmlTextBlock
+                                    DockPanel.Dock="Left"
+                                    x:Name="myEnityText"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"
+                                    Background="Transparent"
+                                    Tag="{Binding}"
+                                    Grid.Column="1"
+                                    Margin="0,0,0,0"
+                                    FontSize="14"
+                                    Html="{Binding Name}"
+                                    Keyword="{Binding Keyword}"
+                                    DoHighlight="{Binding IsChecked}"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch" />
+                                
                                 <!--FlowDocumentScrollViewer
                                     Background="Transparent"
                                     DockPanel.Dock="Left"
                                     Document="{Binding Path={}, Converter={StaticResource highlightConverter}}"
-                                    FontSize="14"
                                     Grid.Column="1"
                                     HorizontalAlignment="Stretch"
-                                    IsEnabled="False"
+                                    IsSelectionEnabled="False"
                                     Margin="0,0,0,0"
                                     MouseDown="TextBlock_MouseDown_1" 
                                     MouseMove="TextBlock_MouseMove"
