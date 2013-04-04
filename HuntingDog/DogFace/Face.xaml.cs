@@ -43,7 +43,7 @@ namespace HuntingDog.DogFace
             NavigationTooltip = core.NavigationTooltip;
         }
 
-        public String keyword { get; set; }
+        public String Keyword { get; set; }
     }
 
     /// <summary>
@@ -627,7 +627,7 @@ namespace HuntingDog.DogFace
 
                 foreach (var item in items)
                 {
-                    ii.Add(new HighlightableItem(item) { keyword = par.Text });
+                    ii.Add(new HighlightableItem(item) { Keyword = par.Text });
                 }
 
                 itemsControl.ItemsSource = ii;
