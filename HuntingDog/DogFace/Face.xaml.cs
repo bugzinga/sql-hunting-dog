@@ -623,14 +623,14 @@ namespace HuntingDog.DogFace
             InvokeInUI(() =>
             {
                 var items = ItemFactory.BuildFromEntries(result);
-                var ii = new List<HighlightableItem>();
+                //var ii = new List<HighlightableItem>();
 
-                foreach (var item in items)
-                {
-                    ii.Add(new HighlightableItem(item) { keyword = par.Text });
-                }
+                //foreach (var item in items)
+                //{
+                //    ii.Add(new HighlightableItem(item) { keyword = par.Text });
+                //}
 
-                itemsControl.ItemsSource = ii;
+                itemsControl.ItemsSource = items;
                 itemsControl.SelectedIndex = -1;
                 itemsControl.ScrollIntoView(itemsControl.SelectedItem);
 
