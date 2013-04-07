@@ -7,8 +7,6 @@ namespace HuntingDog.Core
 {
     public class Range<T> where T : IComparable
     {
-        private static Log log = LogFactory.GetLog(typeof(Range<T>));
-
         public T Start
         {
             get;
