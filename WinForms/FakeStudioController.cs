@@ -37,8 +37,26 @@ namespace WinForms
             if (searchText == " " || searchText == "")
                 return FakeFindList;
 
-           
-            return FakeFindList.Where(x=>x.Name.ToLower().Contains(searchText)).OrderBy(x=>x.Name).ToList();
+
+            var keywords = new List<string>();        
+            foreach (string searchKeyword in searchText.Split(' '))
+            {
+                keywords.Add(searchKeyword.ToUpper());
+            }
+
+            foreach (var entity in FakeFindList)
+            {
+                entity.Keywords = keywords;
+            }
+
+
+
+            return FakeFindList.Where(x=>
+
+                    keywords.Exists(k=> x.Name.ToUpper().Contains(k) )
+
+
+                    ).OrderBy(x=>x.Name).ToList();
         }
 
         public void Initialise()
@@ -70,6 +88,7 @@ namespace WinForms
              
              
                     newE.Name = e.Name + dupNumber;
+                
 
               newE.FullName = "dbo." + newE.Name;
                 FakeFindList.Add(newE);
