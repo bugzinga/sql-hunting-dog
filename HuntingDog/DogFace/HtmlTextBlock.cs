@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Collections.Generic;
 using HuntingDog.DogFace.Items;
+using HuntingDog.Core;
 
 namespace HuntingDog.DogFace
 {
@@ -88,36 +89,6 @@ namespace HuntingDog.DogFace
 
         List<Run> runs = new List<Run>();
 
-        class Range<T>
-        {
-            public T Start;
-            public T End;
-        }
-
-        private static IEnumerable<Range<T>> Collapse   <T>(IEnumerable<Range<T>> me, IComparer<T> comparer)
-        {
-            if (comparer == null) comparer = Comparer<T>.Default;
-
-            List<Range<T>> orderdList = me.OrderBy(r => r.Start).ToList();
-            List<Range<T>> newList = new List<Range<T>>();
-
-            T max = orderdList[0].End;
-            T min = orderdList[0].Start;
-
-            foreach (var item in orderdList.Skip(1))
-            {
-                if (comparer.Compare(item.End, max) > 0 && comparer.Compare(item.Start, max) > 0)
-                {
-                    newList.Add(new Range<T> { Start = min, End = max });
-                    min = item.Start;
-                }
-                max = comparer.Compare(max, item.End) > 0 ? max : item.End;
-            }
-            newList.Add(new Range<T> { Start = min, End = max });
-
-            return newList;
-        }
-
         private void DisplayResultItem(HuntingDog.DogFace.Items.Item resultItem)
         {
             Inlines.Clear();
@@ -137,7 +108,7 @@ namespace HuntingDog.DogFace
                     if (ranges.Count != 0)
                     {
                         // merge overlapping intervals in dictionary
-                        var mergedResult = Collapse(ranges, null);
+                        var mergedResult = Range<int>.Merge(ranges);
 
 
                         BuildRunsFromMergedResults(resultItem, mergedResult);

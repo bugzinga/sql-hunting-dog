@@ -117,6 +117,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Range.cs" />
     <Compile Include="DogEngine\Entity.cs" />
     <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
