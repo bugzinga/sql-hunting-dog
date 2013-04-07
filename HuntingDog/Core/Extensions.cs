@@ -7,9 +7,9 @@ namespace HuntingDog.Core
 {
     public static class Extensions
     {
-        public static Boolean IsEmpty<T>(this IEnumerable<T> value)
+        public static Boolean IsEmpty<T>(this IEnumerable<T> collection)
         {
-            return !value.Any();
+            return !collection.Any();
         }
     }
 }
