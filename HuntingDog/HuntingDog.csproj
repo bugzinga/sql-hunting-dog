@@ -117,6 +117,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\Range.cs" />
     <Compile Include="DogEngine\Entity.cs" />
     <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DogFace\HighlightConverter.cs" />
     <Compile Include="DogFace\HtmlTextBlock.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
     <Compile Include="DogFace\Items\BaseParamItem.cs" />

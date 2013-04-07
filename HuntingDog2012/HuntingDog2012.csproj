@@ -128,6 +128,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\HuntingDog\Core\Extensions.cs">
+      <Link>Core\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\Range.cs">
+      <Link>Core\Range.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
       <Link>DogEngine\Entity.cs</Link>
     </Compile>
@@ -174,6 +180,9 @@
       <Link>DogFace\Face.xaml.cs</Link>
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\HighlightConverter.cs">
+      <Link>DogFace\HighlightConverter.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\HtmlTextBlock.cs">
       <Link>DogFace\HtmlTextBlock.cs</Link>
     </Compile>
@@ -204,6 +213,7 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucHost.Designer.cs">
       <Link>DogFace\ucHost.Designer.cs</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucWpf.xaml.cs">
       <Link>DogFace\ucWpf.xaml.cs</Link>
@@ -284,6 +294,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\HuntingDog\DogFace\ucHost.resx">
       <Link>DogFace\ucHost.resx</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\HuntingDog\Engine\CommandBar.resx">
       <Link>Engine\CommandBar.resx</Link>
