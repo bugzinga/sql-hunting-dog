@@ -84,7 +84,7 @@ namespace HuntingDog.DogFace
             Inlines.Clear();
             runs.Clear();
 
-            if ((resultItem.Keywords == null) || !resultItem.Keywords.Any())
+            if ((resultItem.Keywords == null) || resultItem.Keywords.IsEmpty())
             {
                 // TODO: get rid of code duplication (lines 89, 106, 116)
                 var run = new Run(resultItem.Name);

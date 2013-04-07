@@ -128,6 +128,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\HuntingDog\Core\Extensions.cs">
+      <Link>Core\Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Core\Range.cs">
       <Link>Core\Range.cs</Link>
     </Compile>
