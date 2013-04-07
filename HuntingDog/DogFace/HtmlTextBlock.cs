@@ -126,9 +126,9 @@ namespace HuntingDog.DogFace
 
             foreach (var keyword in resultItem.Keywords)
             {
-                var startIndex = resultItem.UpperCaseNames.IndexOf(keyword);
+                var startIndex = 0;
 
-                if (startIndex != -1)
+                while ((startIndex = resultItem.UpperCaseNames.IndexOf(keyword, startIndex)) != -1)
                 {
                     int endIndex = (startIndex + keyword.Length);
 
@@ -138,7 +138,7 @@ namespace HuntingDog.DogFace
                         endIndex = resultItem.UpperCaseNames.Length;
                     }
 
-                    ranges.Add(new Range<Int32>() { Start = startIndex, End = endIndex });
+                    ranges.Add(new Range<Int32>() { Start = startIndex++, End = endIndex });
                 }
             }
 
