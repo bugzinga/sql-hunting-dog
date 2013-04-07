@@ -30,7 +30,7 @@ namespace HuntingDog.DogEngine.Impl
             private set;
         }
 
-        public List<DatabaseSearchResult> Find(String searchText, Int32 limit)
+        public List<DatabaseSearchResult> Find(String searchText, Int32 limit,List<string> keywordsToHighlight )
         {
             var result = new List<DatabaseSearchResult>();
 
@@ -41,6 +41,13 @@ namespace HuntingDog.DogEngine.Impl
             }
 
             SearchCriteria searchCrit = PrepareCriteria(searchText);
+
+            // there could be multiple keywords in search criteria
+            keywordsToHighlight.Clear();
+            foreach(var crit  in searchCrit.CritariaAnd)
+            {
+                keywordsToHighlight.Add(crit.ToUpper());
+            }
 
             // now search through all objects
             foreach (var entry in dictionary)

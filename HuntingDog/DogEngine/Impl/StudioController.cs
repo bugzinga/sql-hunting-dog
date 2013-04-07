@@ -68,7 +68,9 @@ namespace HuntingDog.DogEngine.Impl
         List<Entity> IStudioController.Find(String serverName, String databaseName, String searchText)
         {
             var server = Servers[serverName];
-            var listFound = server.Find(searchText, databaseName, searchLimit);
+
+            List<string> keywords = new List<string>();
+            var listFound = server.Find(searchText, databaseName, searchLimit, keywords);
 
             var result = new List<Entity>();
 
@@ -82,6 +84,7 @@ namespace HuntingDog.DogEngine.Impl
                 e.IsView = found.IsView;
                 e.FullName = found.SchemaAndName;
                 e.InternalObject = found.Result;
+                e.Keywords = keywords;
                 result.Add(e);
             }
 

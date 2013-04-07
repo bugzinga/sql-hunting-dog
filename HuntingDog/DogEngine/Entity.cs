@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace HuntingDog.DogEngine
 {
@@ -55,6 +56,12 @@ namespace HuntingDog.DogEngine
             }
 
             return FullName;
+        }
+
+        public List<string> Keywords 
+        { 
+            get; 
+            set;
         }
     }
 }

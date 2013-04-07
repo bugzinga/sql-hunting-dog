@@ -73,7 +73,7 @@ namespace HuntingDog.DogFace
                 var uiEntry = new Item() { Name = source.FullName, Entity = source };
                 uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
                 uiEntry.Action4Visibility = System.Windows.Visibility.Collapsed;
-
+                uiEntry.Keywords = source.Keywords;
                 //uiEntry.Action3 = imageProcess;
                 // uiEntry.Action3Description = "  ";
 

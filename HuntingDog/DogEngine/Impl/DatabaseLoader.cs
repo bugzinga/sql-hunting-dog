@@ -70,8 +70,10 @@ namespace HuntingDog.DogEngine.Impl
             //_server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
         }
 
+
+
         [SuppressMessage("Microsoft.Reliability", "CA2000")]
-        public List<DatabaseSearchResult> Find(String searchText, String databaseName, Int32 limit)
+        public List<DatabaseSearchResult> Find(String searchText, String databaseName, Int32 limit,List<string> keywordsToHighligh)
         {
             var dbDictionary = DictionaryList.FirstOrDefault(x => x.DatabaseName == databaseName);
 
@@ -83,7 +85,7 @@ namespace HuntingDog.DogEngine.Impl
                 FillDatabase(dbDictionary);
             }
 
-            return dbDictionary.Find(searchText, limit);
+            return dbDictionary.Find(searchText, limit, keywordsToHighligh);
         }
 
         public void RefreshDatabaseList()

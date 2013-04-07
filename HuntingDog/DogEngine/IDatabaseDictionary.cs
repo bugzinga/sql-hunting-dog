@@ -18,7 +18,7 @@ namespace HuntingDog.DogEngine
             get;
         }
 
-        List<DatabaseSearchResult> Find(String searchCriteria, Int32 limit);
+        List<DatabaseSearchResult> Find(String searchCriteria, Int32 limit,List<string> keywordsToHighlight );
 
         void Initialise(String databaseName);
 

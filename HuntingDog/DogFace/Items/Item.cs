@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -13,10 +14,20 @@ namespace HuntingDog.DogFace.Items
             set;
         }
 
+        private string _name;
         public String Name
         {
+            get { return _name; }
+            set
+            {
+                _name = value; 
+                UpperCaseNames = Name.ToUpper();
+            }
+        }
+
+        public string UpperCaseNames { 
             get;
-            set;
+            private set;
         }
 
         public String NavigationTooltip
@@ -118,6 +129,12 @@ namespace HuntingDog.DogFace.Items
         public String Action4Tooltip
         {
             get;
+            set;
+        }
+
+        public List<string> Keywords
+        {
+            get; 
             set;
         }
 
