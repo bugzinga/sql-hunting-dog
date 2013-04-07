@@ -1,46 +1,43 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Collections.Generic;
-using HuntingDog.DogFace.Items;
 using HuntingDog.Core;
+using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
     [ComVisible(false)]
     public class HtmlTextBlock : TextBlock
     {
-        public static DependencyProperty HtmlProperty = DependencyProperty.Register("Html", typeof(String), typeof(HtmlTextBlock), new UIPropertyMetadata("Html", new PropertyChangedCallback(OnHtmlChanged)));
+        private readonly Log log = LogFactory.GetLog(typeof(HtmlTextBlock));
 
-        public static DependencyProperty ResultItemProperty = DependencyProperty.Register("ResultItem", typeof(HuntingDog.DogFace.Items.Item), typeof(HtmlTextBlock), new UIPropertyMetadata(null, new PropertyChangedCallback(OnResultItemChanged)));
+        private List<Run> runs = new List<Run>();
 
-        public static DependencyProperty DoHighlighProperty = DependencyProperty.Register("DoHighlight", typeof(bool), typeof(HtmlTextBlock), new UIPropertyMetadata(true, new PropertyChangedCallback(OnHighlightChanged)));
+        public static DependencyProperty ResultItemProperty = DependencyProperty.Register(
+            "ResultItem",
+            typeof(Item),
+            typeof(HtmlTextBlock),
+            new UIPropertyMetadata(null, new PropertyChangedCallback(OnResultItemChanged))
+        );
 
+        public static DependencyProperty DoHighlighProperty = DependencyProperty.Register(
+            "DoHighlight",
+            typeof(Boolean),
+            typeof(HtmlTextBlock),
+            new UIPropertyMetadata(true, new PropertyChangedCallback(OnHighlightChanged))
+        );
 
-
-        public String Html
+        public Item ResultItem
         {
             get
             {
-                return (String) GetValue(HtmlProperty);
-            }
-
-            set
-            {
-                SetValue(HtmlProperty, value);
-            }
-        }
-
-        public  HuntingDog.DogFace.Items.Item ResultItem
-        {
-            get
-            {
-                return (HuntingDog.DogFace.Items.Item)GetValue(ResultItemProperty);
+                return (Item) GetValue(ResultItemProperty);
             }
 
             set
@@ -49,11 +46,11 @@ namespace HuntingDog.DogFace
             }
         }
 
-        public bool DoHighlight
+        public Boolean DoHighlight
         {
             get
             {
-                return (bool)GetValue(DoHighlighProperty);
+                return (Boolean) GetValue(DoHighlighProperty);
             }
 
             set
@@ -62,41 +59,34 @@ namespace HuntingDog.DogFace
             }
         }
 
-        public static void OnHtmlChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
-        {
-            HtmlTextBlock sender = (HtmlTextBlock) s;
-            //sender.Parse((String) e.NewValue);
-        }
-
         public static void OnResultItemChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
-            HtmlTextBlock sender = (HtmlTextBlock)s;
-            sender.DisplayResultItem(sender.ResultItem);
+            var htmlTextBlock = (s as HtmlTextBlock);
+
+            if (htmlTextBlock != null)
+            {
+                htmlTextBlock.DisplayResultItem(htmlTextBlock.ResultItem);
+            }
         }
 
         public static void OnHighlightChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
-            HtmlTextBlock sender = (HtmlTextBlock)s;
-            sender.ChangeHighlight((bool)e.NewValue);
+            var htmlTextBlock = (s as HtmlTextBlock);
+
+            if ((htmlTextBlock != null) && (e != null) && (e.NewValue is Boolean))
+            {
+                htmlTextBlock.ChangeHighlight((Boolean) e.NewValue);
+            }
         }
 
-
-        public override void OnApplyTemplate()
-        {
-            //base.OnApplyTemplate();
-            //Parse(Html);
-        }
-
-        List<Run> runs = new List<Run>();
-
-        private void DisplayResultItem(HuntingDog.DogFace.Items.Item resultItem)
+        private void DisplayResultItem(Item resultItem)
         {
             Inlines.Clear();
             runs.Clear();
 
-            if (resultItem.Keywords == null)
+            if ((resultItem.Keywords == null) || !resultItem.Keywords.Any())
             {
-
+                // TODO: get rid of code duplication (lines 89, 106, 116)
                 var run = new Run(resultItem.Name);
                 Inlines.Add(run);
             }
@@ -105,66 +95,71 @@ namespace HuntingDog.DogFace
                 try
                 {
                     var ranges = FindMatchingKeyworkRanges(resultItem);
-                    if (ranges.Count != 0)
+
+                    if (ranges.Any())
                     {
-                        // merge overlapping intervals in dictionary
-                        var mergedResult = Range<int>.Merge(ranges);
-
-
+                        var mergedResult = Range<Int32>.Merge(ranges);
                         BuildRunsFromMergedResults(resultItem, mergedResult);
                     }
                     else
                     {
+                        // TODO: get rid of code duplication (lines 89, 106, 116)
                         var run = new Run(resultItem.Name);
                         Inlines.Add(run);
                     }
                 }
+                // TODO: What is it for? How can any exception happen here?
                 catch (Exception ex)
                 {
-                    // soemhting terrible happened
-                      var run = new Run(resultItem.Name);
-                        Inlines.Add(run);
+                    log.Error(ex.Message, ex);
 
+                    // TODO: get rid of code duplication (lines 89, 106, 116)
+                    var run = new Run(resultItem.Name);
+                    Inlines.Add(run);
                 }
             }
-
-               
         }
 
-        private List<Range<int>> FindMatchingKeyworkRanges(Item resultItem)
+        private List<Range<Int32>> FindMatchingKeyworkRanges(Item resultItem)
         {
-            List<Range<int>> ranges = new List<Range<int>>();
-            foreach (var keyWord in resultItem.Keywords)
+            var ranges = new List<Range<Int32>>();
+
+            foreach (var keyword in resultItem.Keywords)
             {
-                int startIndex = resultItem.UpperCaseNames.IndexOf(keyWord);
+                var startIndex = resultItem.UpperCaseNames.IndexOf(keyword);
+
                 if (startIndex != -1)
                 {
-                    int endIndex = startIndex + keyWord.Length;
-                    if (endIndex > resultItem.UpperCaseNames.Length)
-                        endIndex = resultItem.UpperCaseNames.Length;
+                    int endIndex = (startIndex + keyword.Length);
 
-                    //add start index and lenght to dictionary
-                    ranges.Add(new Range<int>() {Start = startIndex, End = endIndex});
+                    // TODO: How is it possible?
+                    if (endIndex > resultItem.UpperCaseNames.Length)
+                    {
+                        endIndex = resultItem.UpperCaseNames.Length;
+                    }
+
+                    ranges.Add(new Range<Int32>() { Start = startIndex, End = endIndex });
                 }
             }
+
             return ranges;
         }
-  
 
-        private void BuildRunsFromMergedResults(Item resultItem, IEnumerable<Range<int>> mergedResult)
+        private void BuildRunsFromMergedResults(Item resultItem, IEnumerable<Range<Int32>> mergedResult)
         {
-            int currentIndex = 0;
-            foreach (Range<int> range in mergedResult)
+            var currentIndex = 0;
+
+            foreach (var range in mergedResult)
             {
                 if (currentIndex < range.Start)
                 {
                     // add normal run
-                    var normalRun = new Run(resultItem.Name.Substring(currentIndex, range.Start - currentIndex));
+                    var normalRun = new Run(resultItem.Name.Substring(currentIndex, (range.Start - currentIndex)));
                     Inlines.Add(normalRun);
                 }
 
                 // add highlighted run
-                var highlightedRun = new Run(resultItem.Name.Substring(range.Start, range.End - range.Start));
+                var highlightedRun = new Run(resultItem.Name.Substring(range.Start, (range.End - range.Start)));
                 Inlines.Add(highlightedRun);
                 runs.Add(highlightedRun);
 
@@ -179,12 +174,12 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void ChangeHighlight(bool isHighlight)
+        private void ChangeHighlight(Boolean selectedItem)
         {
             Brush foregroundBrush = null;
             Brush backgroundBrush = null;
 
-            if (isHighlight)
+            if (selectedItem)
             {
                 foregroundBrush = new SolidColorBrush(Colors.White);
                 backgroundBrush = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255));
@@ -201,39 +196,5 @@ namespace HuntingDog.DogFace
                 run.Background = backgroundBrush;
             }
         }
-
- 
-
-        //private void Parse(String html)
-        //{
-        //    Inlines.Clear();
-        //    runs.Clear();
-
-        //    var upperText = Html.ToUpperInvariant();
-        //    var keyword = Keyword.ToUpperInvariant();
-
-        //    var start = upperText.IndexOf(keyword);
-
-        //    if (start != -1)
-        //    {
-        //        var length = keyword.Length;
-
-        //        var run = new Run(html.Substring(0, start));
-        //        Inlines.Add(run);
-
-        //        run = new Run(html.Substring(start, length));
-        //        run.Background = new SolidColorBrush(Colors.Yellow);
-        //        Inlines.Add(run);
-        //        runs.Add(run);
-
-        //        run = new Run(html.Substring(length));
-        //        Inlines.Add(run);
-        //    }
-        //    else
-        //    {
-        //        var run = new Run(html);
-        //        Inlines.Add(run);
-        //    }
-        //}
     }
 }
