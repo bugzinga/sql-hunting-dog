@@ -135,7 +135,6 @@
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DogFace\HighlightConverter.cs" />
     <Compile Include="DogFace\HtmlTextBlock.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
     <Compile Include="DogFace\Items\BaseParamItem.cs" />

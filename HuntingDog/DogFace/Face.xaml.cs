@@ -16,36 +16,6 @@ using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
-    class KeywordItem : Item
-    {
-        public KeywordItem(Item core)
-        {
-            Action1 = core.Action1;
-            Action1Description = core.Action1Description;
-            Action1Tooltip = core.Action1Tooltip;
-            Action2 = core.Action2;
-            Action2Description = core.Action2Description;
-            Action2Tooltip = core.Action2Tooltip;
-            Action3 = core.Action3;
-            Action3Description = core.Action3Description;
-            Action3Tooltip = core.Action3Tooltip;
-            Action3Visibility = core.Action3Visibility;
-            Action4 = core.Action4;
-            Action4Description = core.Action4Description;
-            Action4Tooltip = core.Action4Tooltip;
-            Action4Visibility = core.Action4Visibility;
-            Entity = core.Entity;
-            Image = core.Image;
-            IsChecked = core.IsChecked;
-            IsMouseOver = core.IsMouseOver;
-            MainObjectTooltip = core.MainObjectTooltip;
-            Name = core.Name;
-            NavigationTooltip = core.NavigationTooltip;
-        }
-
-        public String Keyword { get; set; }
-    }
-
     /// <summary>
     /// Interaction logic for Face.xaml
     /// </summary>

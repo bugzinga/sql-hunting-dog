@@ -13,8 +13,6 @@
  <UserControl.Resources>
         <ResourceDictionary>
 
-            <my:HighlightConverter x:Key="highlightConverter"/>
-
             <my:BitmapConverter x:Key="bitmapConverter" />
 
 			<my:WidthConverter x:Key="widthConv"/>
@@ -620,23 +618,6 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Stretch" />
                                 
-                                <!--FlowDocumentScrollViewer
-                                    Background="Transparent"
-                                    DockPanel.Dock="Left"
-                                    Document="{Binding Path={}, Converter={StaticResource highlightConverter}}"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Stretch"
-                                    IsSelectionEnabled="False"
-                                    Margin="0,0,0,0"
-                                    MouseDown="TextBlock_MouseDown_1" 
-                                    MouseMove="TextBlock_MouseMove"
-                                    MouseUp="TextBlock_MouseUp"
-                                    Name="myEnityText"
-                                    Padding="2,2,2,2"
-                                    Tag="{Binding}"
-                                    VerticalAlignment="Center"
-                                    VerticalScrollBarVisibility="Hidden" /-->
-
                                 <!--<Popup  Margin="10,0,10,0"  Name="myPopup" IsOpen="False" AllowsTransparency="True" Placement="Right" PlacementTarget="{Binding ElementName=myEnityText}"
                                        StaysOpen="False" Opened="myPopup_Opened" Focusable="False" LostKeyboardFocus="myPopup_LostKeyboardFocus">
 
