@@ -153,9 +153,6 @@
     <Compile Include="Engine\ManagedConnection.cs" />
     <Compile Include="Engine\SearchCriteria.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
-    <Compile Include="Engine\ImageTranslator.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Engine\ManagementStudioController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />
     <Compile Include="Core\LogFactory.cs" />

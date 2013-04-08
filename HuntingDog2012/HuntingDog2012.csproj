@@ -234,10 +234,6 @@
     <Compile Include="..\HuntingDog\Engine\EventWatcher.cs">
       <Link>Engine\EventWatcher.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\ImageTranslator.cs">
-      <Link>Engine\ImageTranslator.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\ManagedConnection.cs">
       <Link>Engine\ManagedConnection.cs</Link>
     </Compile>
