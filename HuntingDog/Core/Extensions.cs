@@ -41,7 +41,7 @@ namespace HuntingDog.Core
 
         public static T FindChild<T>(this DependencyObject from) where T : class
         {
-            T candidate = from as T;
+            T candidate = (from as T);
 
             if (candidate != null)
             {
@@ -50,11 +50,11 @@ namespace HuntingDog.Core
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(from); i++)
             {
-                var isOur = FindChild<T>(VisualTreeHelper.GetChild(from, i));
+                var found = FindChild<T>(VisualTreeHelper.GetChild(from, i));
 
-                if (isOur != null)
+                if (found != null)
                 {
-                    return isOur;
+                    return found;
                 }
             }
 
@@ -63,7 +63,7 @@ namespace HuntingDog.Core
 
         public static T FindAncestor<T>(this DependencyObject from) where T : class
         {
-            T candidate = from as T;
+            T candidate = (from as T);
 
             if (candidate != null)
             {
