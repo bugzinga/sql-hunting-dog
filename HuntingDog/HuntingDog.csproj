@@ -156,17 +156,12 @@
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\DependecyResults.cs" />
     <Compile Include="Engine\SearchCriteria.cs" />
-    <Compile Include="Engine\Server Hit\DatabaseHit.cs" />
-    <Compile Include="Engine\Server Hit\ServerHit.cs" />
-    <Compile Include="Engine\Server Hit\TotalHit.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ImageTranslator.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Engine\ManagementStudioController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />
-    <Compile Include="Engine\Server Hit\Serializator.cs" />
-    <Compile Include="Engine\Server Hit\SmartDictionary.cs" />
     <Compile Include="Core\LogFactory.cs" />
     <Compile Include="Core\Log.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
