@@ -58,7 +58,7 @@ namespace HuntingDog.DogEngine
             return FullName;
         }
 
-        public List<string> Keywords 
+        public List<String> Keywords 
         { 
             get; 
             set;
