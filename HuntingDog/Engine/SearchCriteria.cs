@@ -22,11 +22,5 @@ namespace DatabaseObjectSearcher
             get;
             set;
         }
-
-        public EResultBehaviour ResultBehaviour
-        {
-            get;
-            set;
-        }
     }
 }

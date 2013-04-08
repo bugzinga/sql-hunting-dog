@@ -243,9 +243,6 @@
     <Compile Include="..\HuntingDog\Engine\DependecyResults.cs">
       <Link>Engine\DependecyResults.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\EResultBehaviour.cs">
-      <Link>Engine\EResultBehaviour.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\EventWatcher.cs">
       <Link>Engine\EventWatcher.cs</Link>
     </Compile>
