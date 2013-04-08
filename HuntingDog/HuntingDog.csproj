@@ -150,7 +150,6 @@
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
-    <Compile Include="Engine\DependecyResults.cs" />
     <Compile Include="Engine\SearchCriteria.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ImageTranslator.cs">
