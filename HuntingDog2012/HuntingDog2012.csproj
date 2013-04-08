@@ -256,9 +256,6 @@
     <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
       <Link>Engine\ObjectExplorerManager.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\ObjectFilter.cs">
-      <Link>Engine\ObjectFilter.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\SearchCriteria.cs">
       <Link>Engine\SearchCriteria.cs</Link>
     </Compile>
