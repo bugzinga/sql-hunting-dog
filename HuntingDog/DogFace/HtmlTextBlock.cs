@@ -182,7 +182,7 @@ namespace HuntingDog.DogFace
             if (selectedItem)
             {
                 foregroundBrush = new SolidColorBrush(Colors.White);
-                backgroundBrush = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255));
+                backgroundBrush = new SolidColorBrush(Colors.Transparent);
             }
             else
             {
