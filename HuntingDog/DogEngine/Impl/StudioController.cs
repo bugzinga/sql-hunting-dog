@@ -488,126 +488,93 @@ namespace HuntingDog.DogEngine.Impl
 
          public void ModifyFunction(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("ModifyFunction failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "ModifyFunction failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void ModifyView(String server, Entity entityObject)
         {
-            var serverInfo = Servers[server];
-            ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection);
+            this.SafeRun(() =>
+            {
+                var serverInfo = Servers[server];
+                ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection);
+            }, "ModifyView failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void ModifyProcedure(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("ModifyProcedure failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "ModifyProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void SelectFromView(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection);
 
-            }
-            catch (Exception ex)
-            {
-                log.Error("SelectFromView failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "SelectFromView failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void ExecuteProcedure(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.ExecuteStoredProc(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("ExecuteProcedure failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "ExecuteProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void ExecuteFunction(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.ExecuteFunction(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("ExecuteProcedure failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "ExecuteProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
         public void ScriptTable(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("ScriptTable failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "ScriptTable - " + GetSafeEntityObject(entityObject));
         }
 
         public void SelectFromTable(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("SelectFromTable failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "SelectFromTable - " + GetSafeEntityObject(entityObject));
         }
 
         public void EditTableData(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 manager.OpenTable2(entityObject.InternalObject as Table, serverInfo.Connection, serverInfo.Server);
-            }
-            catch (Exception ex)
-            {
-                log.Error("EditTableData failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "EditTableData - " + GetSafeEntityObject(entityObject));
         }
 
         public void DesignTable(String server, Entity entityObject)
         {
-            try
+            this.SafeRun(() =>
             {
                 var serverInfo = Servers[server];
                 ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.Connection);
-            }
-            catch (Exception ex)
-            {
-                log.Error("DesignTable failed: " + GetSafeEntityObject(entityObject), ex);
-            }
+            }, "DesignTable - " + GetSafeEntityObject(entityObject));
         }
     }
 }

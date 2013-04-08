@@ -11,5 +11,30 @@ namespace HuntingDog.Core
         {
             return !collection.Any();
         }
+
+        public static Boolean SafeRun(this Object o, Action action, String context)
+        {
+            var success = true;
+
+            try
+            {
+                if (action != null)
+                {
+                    action();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = (context != null)
+                    ? (context + ": ")
+                    : String.Empty;
+
+                LogFactory.GetLog(o.GetType()).Error((errorMessage + ex.Message), ex);
+
+                success = false;
+            }
+
+            return success;
+        }
     }
 }
