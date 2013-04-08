@@ -225,9 +225,6 @@
     <Compile Include="..\HuntingDog\DogFace\WidthConverter.cs">
       <Link>DogFace\WidthConverter.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogFace\WpfUtil.cs">
-      <Link>DogFace\WpfUtil.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Engine\Connect.cs">
       <Link>Engine\Connect.cs</Link>
     </Compile>

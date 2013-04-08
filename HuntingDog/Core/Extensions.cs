@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media;
 
 namespace HuntingDog.Core
 {
@@ -35,6 +37,40 @@ namespace HuntingDog.Core
             }
 
             return success;
+        }
+
+        public static T FindChild<T>(this DependencyObject from) where T : class
+        {
+            T candidate = from as T;
+
+            if (candidate != null)
+            {
+                return candidate;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(from); i++)
+            {
+                var isOur = FindChild<T>(VisualTreeHelper.GetChild(from, i));
+
+                if (isOur != null)
+                {
+                    return isOur;
+                }
+            }
+
+            return null;
+        }
+
+        public static T FindAncestor<T>(this DependencyObject from) where T : class
+        {
+            T candidate = from as T;
+
+            if (candidate != null)
+            {
+                return candidate;
+            }
+
+            return FindAncestor<T>(VisualTreeHelper.GetParent(from));
         }
     }
 }

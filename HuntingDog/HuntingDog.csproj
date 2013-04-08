@@ -146,7 +146,6 @@
     </Compile>
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WidthConverter.cs" />
-    <Compile Include="DogFace\WpfUtil.cs" />
     <Compile Include="Engine\Connect.cs" />
     <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />

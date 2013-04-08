@@ -183,7 +183,7 @@ namespace HuntingDog.DogFace
             {
                 log.Message("XAML Loaded...");
 
-                var scroll = WpfUtil.FindChild<ScrollContentPresenter>(itemsControl);
+                var scroll = itemsControl.FindChild<ScrollContentPresenter>();
                 //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
                 _userPref = UserPreferencesStorage.Load();
@@ -1137,7 +1137,7 @@ namespace HuntingDog.DogFace
 
                 if (item != null)
                 {
-                    ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
+                    ListViewItem listViewItem = item.FindAncestor<ListViewItem>();
 
                     // Find the data behind the ListViewItem
                     Item contact = (Item) itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
