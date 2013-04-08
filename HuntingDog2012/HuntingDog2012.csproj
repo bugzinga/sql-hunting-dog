@@ -215,10 +215,6 @@
       <Link>DogFace\ucHost.Designer.cs</Link>
       <DependentUpon>ucHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\HuntingDog\DogFace\ucWpf.xaml.cs">
-      <Link>DogFace\ucWpf.xaml.cs</Link>
-      <DependentUpon>ucWpf.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\HuntingDog\DogFace\UserPreferences.cs">
       <Link>DogFace\UserPreferences.cs</Link>
     </Compile>
@@ -287,11 +283,6 @@
   <ItemGroup>
     <Page Include="..\HuntingDog\DogFace\Face.xaml">
       <Link>DogFace\Face.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\HuntingDog\DogFace\ucWpf.xaml">
-      <Link>DogFace\ucWpf.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

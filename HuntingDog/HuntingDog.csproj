@@ -141,9 +141,6 @@
     <Compile Include="DogFace\Items\ProcedureParamItem.cs" />
     <Compile Include="DogFace\Items\TableParamItem.cs" />
     <Compile Include="DogFace\Items\ViewParamItem.cs" />
-    <Compile Include="DogFace\ucWpf.xaml.cs">
-      <DependentUpon>ucWpf.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WidthConverter.cs" />
     <Compile Include="Engine\Connect.cs" />
@@ -220,10 +217,6 @@
     <Page Include="DogFace\Face.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="DogFace\ucWpf.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
