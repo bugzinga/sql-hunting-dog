@@ -151,7 +151,7 @@
     <Compile Include="DogEngine\Impl\DatabaseDictionary.cs" />
     <Compile Include="Engine\DatabaseSearchResult.cs" />
     <Compile Include="Engine\ManagedConnection.cs" />
-    <Compile Include="Engine\SearchCriteria.cs" />
+    <Compile Include="DogEngine\SearchCriteria.cs" />
     <Compile Include="Engine\EventWatcher.cs" />
     <Compile Include="Engine\ManagementStudioController.cs" />
     <Compile Include="Engine\ObjectExplorerManager.cs" />

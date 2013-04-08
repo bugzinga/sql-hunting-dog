@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace DatabaseObjectSearcher
+namespace HuntingDog.DogEngine
 {
     class SearchCriteria
     {
