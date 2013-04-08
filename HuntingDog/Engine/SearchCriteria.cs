@@ -17,7 +17,7 @@ namespace DatabaseObjectSearcher
             set;
         }
 
-        public String[] CritariaAnd
+        public String[] CriteriaAnd
         {
             get;
             set;

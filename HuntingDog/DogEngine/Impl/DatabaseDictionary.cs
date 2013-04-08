@@ -45,7 +45,7 @@ namespace HuntingDog.DogEngine.Impl
 
             // there could be multiple keywords in search criteria
             keywordsToHighlight.Clear();
-            foreach(var crit  in searchCrit.CritariaAnd)
+            foreach(var crit  in searchCrit.CriteriaAnd)
             {
                 keywordsToHighlight.Add(crit.ToUpper());
             }
@@ -94,10 +94,10 @@ namespace HuntingDog.DogEngine.Impl
             }
 
             // filter by search criteria
-            if (MatchAnd(crit.CritariaAnd, entry.SearchName))
+            if (MatchAnd(crit.CriteriaAnd, entry.SearchName))
             {
                 // if(highlightMatch)
-                //     entry.HighlightName = Utils.ReplaceString(entry.Name, crit.CritariaAnd);
+                //     entry.HighlightName = Utils.ReplaceString(entry.Name, crit.CriteriaAnd);
                 return true;
             }
 
@@ -199,7 +199,7 @@ namespace HuntingDog.DogEngine.Impl
             crtLower = crtLower.Replace("/f", "");
             crtLower = crtLower.Replace("/v", "");
 
-            searchCrit.CritariaAnd = crtLower.Split(new String[] { And_Clause }, StringSplitOptions.RemoveEmptyEntries);
+            searchCrit.CriteriaAnd = crtLower.Split(new String[] { And_Clause }, StringSplitOptions.RemoveEmptyEntries);
 
             return searchCrit;
         }
