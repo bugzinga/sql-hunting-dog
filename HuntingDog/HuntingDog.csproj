@@ -168,7 +168,6 @@
     <Compile Include="Engine\ObjectExplorerManager.cs" />
     <Compile Include="Engine\Server Hit\Serializator.cs" />
     <Compile Include="Engine\Server Hit\SmartDictionary.cs" />
-    <Compile Include="Engine\Utils.cs" />
     <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

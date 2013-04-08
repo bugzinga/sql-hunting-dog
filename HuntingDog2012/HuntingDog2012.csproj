@@ -274,9 +274,6 @@
     <Compile Include="..\HuntingDog\Engine\Server Hit\TotalHit.cs">
       <Link>Engine\Server Hit\TotalHit.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\Engine\Utils.cs">
-      <Link>Engine\Utils.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\Logging\Log.cs">
       <Link>Logging\Log.cs</Link>
     </Compile>
