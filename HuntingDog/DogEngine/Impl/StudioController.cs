@@ -1,16 +1,16 @@
 ﻿
-using DatabaseObjectSearcher;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.UI.VSIntegration;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using DatabaseObjectSearcher;
+using EnvDTE;
+using EnvDTE80;
+using HuntingDog.Core;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.UI.VSIntegration;
 
 using Thread = System.Threading.Thread;
 

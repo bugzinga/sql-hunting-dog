@@ -10,9 +10,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using DatabaseObjectSearcherUI;
+using HuntingDog.Core;
 using HuntingDog.DogEngine;
 using HuntingDog.DogFace.Items;
-using System.Windows.Documents;
 
 namespace HuntingDog.DogFace
 {

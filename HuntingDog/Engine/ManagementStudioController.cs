@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
-using HuntingDog;
+using HuntingDog.Core;
 using HuntingDog.DogEngine;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;

@@ -3,7 +3,7 @@ using NLog;
 using System;
 using System.Diagnostics;
 
-namespace HuntingDog
+namespace HuntingDog.Core
 {
     public class Log
     {

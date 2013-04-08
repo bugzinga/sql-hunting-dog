@@ -1,9 +1,10 @@
 
-using DatabaseObjectSearcher;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
 using System;
 using System.Collections.Generic;
+using DatabaseObjectSearcher;
+using HuntingDog.Core;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace HuntingDog.DogEngine.Impl
 {

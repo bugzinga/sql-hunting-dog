@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Runtime.InteropServices;
+using HuntingDog.Core;
 
 namespace HuntingDog.DogFace
 {

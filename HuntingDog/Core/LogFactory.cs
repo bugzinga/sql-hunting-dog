@@ -5,7 +5,7 @@ using NLog.Targets;
 using System;
 using System.Collections.Generic;
 
-namespace HuntingDog
+namespace HuntingDog.Core
 {
     public static class LogFactory
     {

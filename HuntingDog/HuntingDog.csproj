@@ -168,8 +168,8 @@
     <Compile Include="Engine\ObjectExplorerManager.cs" />
     <Compile Include="Engine\Server Hit\Serializator.cs" />
     <Compile Include="Engine\Server Hit\SmartDictionary.cs" />
-    <Compile Include="Logging\LogFactory.cs" />
-    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Core\LogFactory.cs" />
+    <Compile Include="Core\Log.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
