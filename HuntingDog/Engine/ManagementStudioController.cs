@@ -22,25 +22,6 @@ namespace DatabaseObjectSearcher
     {
         private static readonly Log log = LogFactory.GetLog(typeof(ManagementStudioController));
 
-        [SuppressMessage("Microsoft.Design", "CA1063")]
-        public class ManagedConn : IManagedConnection
-        {
-            public SqlOlapConnectionInfoBase Connection
-            {
-                get;
-                set;
-            }
-
-            public void Close()
-            {
-            }
-
-            [SuppressMessage("Microsoft.Design", "CA1063")]
-            public void Dispose()
-            {
-            }
-        }
-
         private const String CREATE_PROC = "CREATE PROC";
 
         private const String ALTER_PROC = "ALTER PROC";
@@ -473,7 +454,7 @@ namespace DatabaseObjectSearcher
                 return;
             }
 
-            var mc = new ManagedConn();
+            var mc = new ManagedConnection();
             mc.Connection = connInfo;
 
             ServiceCache.ScriptFactory.DesignTableOrView(Microsoft.SqlServer.Management.UI.VSIntegration.Editors.DocumentType.Table,

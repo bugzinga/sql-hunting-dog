@@ -238,6 +238,9 @@
       <Link>Engine\ImageTranslator.cs</Link>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="..\HuntingDog\Engine\ManagedConnection.cs">
+      <Link>Engine\ManagedConnection.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Engine\ManagementStudioController.cs">
       <Link>Engine\ManagementStudioController.cs</Link>
     </Compile>

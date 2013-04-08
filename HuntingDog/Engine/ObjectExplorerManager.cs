@@ -342,7 +342,7 @@ namespace DatabaseObjectSearcher
                 fileName = CreateFile(script);
 
                 // invoke designer
-                var mc = new ManagementStudioController.ManagedConn();
+                var mc = new ManagedConnection();
                 mc.Connection = connection;
 
                 if (_editTableMethod == null)
