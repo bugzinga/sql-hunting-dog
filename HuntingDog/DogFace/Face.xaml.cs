@@ -16,9 +16,6 @@ using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
-    /// <summary>
-    /// Interaction logic for Face.xaml
-    /// </summary>
     [ComVisible(false)]
     public partial class Face : UserControl
     {
@@ -184,7 +181,6 @@ namespace HuntingDog.DogFace
                 log.Message("XAML Loaded...");
 
                 var scroll = itemsControl.FindChild<ScrollContentPresenter>();
-                //scroll.SizeChanged += new SizeChangedEventHandler(scroll_SizeChanged);
 
                 _userPref = UserPreferencesStorage.Load();
 
@@ -197,9 +193,6 @@ namespace HuntingDog.DogFace
 
                 var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
                 RestoreLastSearchTextFromUserProfile();
-
-                //cbServer.SelectedValue = lastSrvName;
-                //cbServer.SelectedItem = 
 
                 // select first server
                 if ((cbServer.SelectedIndex == -1) && (cbServer.Items.Count > 1))
@@ -328,7 +321,6 @@ namespace HuntingDog.DogFace
                 _serverList.Add(item);
             }
 
-            //srv.Add(new Item() { Name = ConnectNewServerString });
             log.Message("Reloading Servers - loaded:" + _serverList.Count + " servers.");
             cbServer.ItemsSource = _serverList;
 
@@ -336,8 +328,6 @@ namespace HuntingDog.DogFace
             {
                 cbServer.SelectedIndex = 0;
             }
-
-            // _processor.AddRequest(Async_ReloadServers, servers, (int)ERquestType.Server,true);
         }
 
         private void SetStatus(String text)
@@ -429,7 +419,6 @@ namespace HuntingDog.DogFace
                     _databaseChangedByUser = true;
                     _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
 
-                    //if(SelectedDatabase==null)
                     if (previousDatabaseWasFound)
                     {
                         // we managed to find our database - restore search text
@@ -441,8 +430,6 @@ namespace HuntingDog.DogFace
                         ClearSearchText();
                         cbDatabase.Focus();
                     }
-
-                    //cbDatabase.IsDropDownOpen = true;
                 }
                 else
                 {
@@ -459,7 +446,7 @@ namespace HuntingDog.DogFace
         {
             ReloadDatabaseList();
 
-            // keep track of last selected database on this server - need to restore it back!
+            // TODO: keep track of last selected database on this server - need to restore it back!
             //DoSearch();
         }
 
@@ -483,10 +470,6 @@ namespace HuntingDog.DogFace
                 _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer, SelectedDatabase);
             }
         }
-
-        // TODO: Commented as never used. Check whether the existance of the files
-        //       is actually needed.
-        //bool _isDragDropStartedPropeties = false;
 
         private void txtSearch_TextChanged(Object sender, TextChangedEventArgs e)
         {
@@ -579,8 +562,6 @@ namespace HuntingDog.DogFace
 
             var result = StudioController.Find(par.Srv, par.Database, par.Text);
 
-            //MyLogger.LogMessage("Searching " + par.Text + " in server:" + par.Srv + " database:" + par.Database);
-
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
             {
@@ -602,10 +583,6 @@ namespace HuntingDog.DogFace
                 {
                     gridEmptyResult.Visibility = System.Windows.Visibility.Visible;
                     itemsControl.Visibility = System.Windows.Visibility.Collapsed;
-
-                    // txtEmptyLine1.Text =  par.Text;
-                    //txtEmptyLine2.Text =  par.Database ;
-                    //txtEmptyLine3.Text = par.Srv;
                 }
                 else
                 {
@@ -633,80 +610,9 @@ namespace HuntingDog.DogFace
             Dispatcher.Invoke((Delegate) invoker);
         }
 
-        /*
-                private void Async_ShowProperties(object arg)
-                {
-                    //SystemColors.ControlLightBrushKey
-                    var ent = arg as Entity;
-                    if (ent == null)
-                        return;
-        
-         
-                    SetStatus("Retreveing details...",true);
-                    if (ent.IsProcedure)
-                    {
-                        var procedureParameters = StudioController.ListProcParameters(ent);
-
-                          InvokeInUI(delegate {
-                              txtPropertiesParameter.Text = "Parameter";
-                             listViewProperties.ItemsSource = ItemFactory.BuildProcedureParmeters(procedureParameters);  });
-                    }
-                    else if (ent.IsTable)
-                    {
-                        var columns = StudioController.ListColumns(ent);
-                
-                         InvokeInUI(delegate {
-                             txtPropertiesParameter.Text = "Column";
-                         listViewProperties.ItemsSource =  ItemFactory.BuildTableColumns(columns);});
-                    }
-                    else if (ent.IsFunction)
-                    {
-                        var funcParameters = StudioController.ListFuncParameters(ent);
-                
-                          InvokeInUI(delegate {
-                              txtPropertiesParameter.Text = "Parameter";
-                         listViewProperties.ItemsSource =  ItemFactory.BuildProcedureParmeters(funcParameters);});
-                    }
-                    else if (ent.IsView)
-                    {
-                        var columns = StudioController.ListViewColumns(ent);
-                
-                          InvokeInUI(delegate {
-                              txtPropertiesParameter.Text = "Column";
-                         listViewProperties.ItemsSource =  ItemFactory.BuildViewColumns(columns);});
-                    }
-
-                    SetStatus("");
-
-                }*/
-
+        // TODO: Remove (empty method)
         private void ItemsControlSelectionChanged1(Object sender, SelectionChangedEventArgs e)
         {
-            if (e.RemovedItems.Count > 0)
-            {
-                //var removedItem = (e.RemovedItems[0] as Item);
-                //var previousPopup = GetPopupFromItem(removedItem);
-                //if (previousPopup != null)
-                //    previousPopup.IsOpen = false;
-            }
-
-            //listViewProperties.ItemsSource = null;
-            if (itemsControl.SelectedIndex == -1)
-            {
-                // clear properties
-                //listViewProperties.ItemsSource = null;
-            }
-            else
-            {
-                var item = (itemsControl.SelectedItem as Item);
-
-                if (item != null)
-                {
-                    // DO NOT SHOW PROPERTIES
-                    //_processor.AddRequest(Async_ShowProperties, item.Entity, (int)ReqType.Details, true); 
-                }
-
-            }
         }
 
         public void Stop()
@@ -765,7 +671,7 @@ namespace HuntingDog.DogFace
 
             if (actionName == "Show Dependencies")
             {
-                // show dependencies in a new window
+                // TODO: show dependencies in a new window
             }
 
             if (item.Entity.IsTable)
@@ -898,6 +804,7 @@ namespace HuntingDog.DogFace
             InvokeDefaultOnItem(item);
         }
 
+        // TODO: Remove (empty method)
         private void txtSearch_KeyDown(Object sender, KeyEventArgs e)
         {
         }
@@ -909,9 +816,7 @@ namespace HuntingDog.DogFace
                 if (itemsControl.Items.Count > 0)
                 {
                     // move focus to result list view
-                    //txtSearch.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next));
                     MoveFocusItemsControl(false);
-
                 }
 
                 e.Handled = true;
@@ -974,7 +879,7 @@ namespace HuntingDog.DogFace
             {
                 itemsControl.SelectedIndex = -1;
 
-                // jump to text search box from Result View - 
+                // jump to text search box from Result View
                 itemsControl.MoveFocus(new TraversalRequest(System.Windows.Input.FocusNavigationDirection.Previous));
                 e.Handled = true;
             }
@@ -985,7 +890,7 @@ namespace HuntingDog.DogFace
             }
             else if (((e.Key == Key.Enter) || (e.Key == Key.Space)) && itemsControl.SelectedIndex != -1)
             {
-                // open popup control and move focus to teh first item there
+                // open popup control and move focus to the first item there
                 OpenContextMenu();
                 e.Handled = true;
             }
@@ -993,7 +898,6 @@ namespace HuntingDog.DogFace
             {
                 if (itemsControl.SelectedIndex != -1)
                 {
-                    //MoveFocusItemsControl(true);
                     InvokeActionOnItem(itemsControl.SelectedItem as Item);
                 }
 
@@ -1002,7 +906,6 @@ namespace HuntingDog.DogFace
             }
             else if (e.Key == Key.Left)
             {
-                //MoveFocusItemsControl(false);
                 e.Handled = true;
             }
         }
@@ -1096,8 +999,6 @@ namespace HuntingDog.DogFace
                 {
                     var controlSelected = itemsControl.ItemContainerGenerator.ContainerFromItem(SelectedItem);
                 }
-
-                //OpenPopup();
             }
             else
             {
@@ -1116,14 +1017,14 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Remove (empty method)
         private void PropertiesTextBlock_MouseUp(Object sender, MouseEventArgs e)
         {
-            //_isDragDropStartedPropeties = false;
         }
 
+        // TODO: Remove (empty method)
         private void PropertiesTextBlock_MouseDown(Object sender, MouseEventArgs e)
         {
-            //_isDragDropStartedPropeties = true;           
         }
 
         private void TextBlock_MouseMove(Object sender, MouseEventArgs e)
@@ -1151,60 +1052,29 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Remove (empty method)
         private void PropertiesTextBlock_MouseMove(Object sender, MouseEventArgs e)
         {
-            /*if (e.LeftButton == MouseButtonState.Pressed && _isDragDropStartedPropeties == true)
-            {
-                _isDragDropStartedPropeties = false;
-
-                try
-                {
-                    // Get the dragged ListViewItem
-                    FrameworkElement item = sender as FrameworkElement;
-
-                    if (item != null)
-                    {
-                        ListViewItem listViewItem = WpfUtil.FindAncestor<ListViewItem>(item);
-
-                        // Find the data behind the ListViewItem
-                        BaseParamItem pr = (BaseParamItem)listViewProperties.ItemContainerGenerator.ItemFromContainer(listViewItem);
-
-                        if (pr != null)
-                        {
-                            // Initialize the drag & drop operation
-                            DragDrop.DoDragDrop(listViewItem, pr.Name, DragDropEffects.Copy);
-                        }
-                    }
-                }
-                catch
-                {
-                    // LOG
-                }
-            }*/
         }
 
         private void cbDatabase_GotFocus(Object sender, RoutedEventArgs e)
         {
-            //borderDatabase.BorderBrush = _borderBrush;
             cbDatabase.BorderBrush = _borderBrush;
         }
 
+        // TODO: Remove (empty method)
         private void cbDatabase_LostFocus(Object sender, RoutedEventArgs e)
         {
-            //borderDatabase.BorderBrush = Brushes.Transparent;
-            //cbDatabase.BorderBrush = _blurBrush;
         }
 
+        // TODO: Remove (empty method)
         private void cbServer_GotFocus(Object sender, RoutedEventArgs e)
         {
-            //borderServer.BorderBrush = _borderBrush;
-            //cbServer.BorderBrush = _borderBrush;
         }
 
+        // TODO: Remove (empty method)
         private void cbServer_LostFocus(Object sender, RoutedEventArgs e)
         {
-            //borderServer.BorderBrush = Brushes.Transparent;
-            //cbServer.BorderBrush = _blurBrush;
         }
 
         private void txtSearch_GotFocus(Object sender, RoutedEventArgs e)
@@ -1214,44 +1084,28 @@ namespace HuntingDog.DogFace
             txtSearch.SelectAll();
         }
 
-
         private void txtSearch_SelectSearchText(object sender, RoutedEventArgs e)
         {
-
             TextBox tb = (sender as TextBox);
 
             if (tb != null)
             {
-
                 tb.SelectAll();
-
             }
-
         }
 
-
-
-        private void txtSearch_SelectivelyIgnoreMouseButton(object sender,
-
-            MouseButtonEventArgs e)
+        private void txtSearch_SelectivelyIgnoreMouseButton(object sender, MouseButtonEventArgs e)
         {
-
             TextBox tb = (sender as TextBox);
 
             if (tb != null)
             {
-
                 if (!tb.IsKeyboardFocusWithin)
                 {
-
                     e.Handled = true;
-
                     tb.Focus();
-
                 }
-
             }
-
         }
 
         private void txtSearch_LostFocus(Object sender, RoutedEventArgs e)
@@ -1292,14 +1146,10 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Remove (empty method)
         private void TextBlock_GotFocus(object sender, RoutedEventArgs e)
         {
         }
-
-        //private void itemsControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    OpenPopup();
-        //}
 
         ContextMenu GetCtxMenuFromItem(Item si)
         {
@@ -1318,6 +1168,7 @@ namespace HuntingDog.DogFace
             return null;
         }
 
+        // TODO: Remove (empty method)
         private void ListViewContextMenuClosing(Object sender, ContextMenuEventArgs e)
         {
         }
@@ -1384,6 +1235,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Remove (empty method)
         void PrepareContextMenu(ContextMenu ctx, Item item)
         {
         }
@@ -1398,17 +1250,8 @@ namespace HuntingDog.DogFace
                 ctx.PlacementTarget = SelectedListViewItem;
                 ctx.HorizontalOffset = itemsControl.ActualWidth / 2;
                 ctx.VerticalOffset = SelectedListViewItem.ActualHeight / 2;
-
-                //var listViewItem = SelectedListViewItem;
-                //var txt = WpfUtil.FindChild<TextBlock>(SelectedListViewItem);
-
-                //ctx.PlacementTarget = txt;
-
                 ctx.ItemsSource = BuilsAvailableActions(SelectedItem);
                 ctx.IsOpen = true;
-
-                // var lv = (popup.Child as Border).Child as ListView;
-                //  lv.ItemsSource = BuilsAvailableActions(SelectedItem);
             }
         }
 
@@ -1437,96 +1280,5 @@ namespace HuntingDog.DogFace
         {
             SubscribeToAction(sender as ContextMenu);
         }
-
-        /*private void popupListView_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape || e.Key == Key.Left  || e.Key == Key.Right)
-            {
-                var lv = sender as ListView;
-                var popup = (lv.Parent as Border).Parent as Popup;
-  
-                if(popup!=null)
-                    popup.IsOpen = false;
-
-                if (itemsControl.SelectedItem != null)
-                {
-                    var it1 = GetSelectedItem(itemsControl);
-                    if (it1 != null)
-                    {
-                        it1.Focus();
-                    }
-                }
-                            
-                e.Handled = true;
-            }
-            else if(e.Key == Key.Up)
-            {
-                var lv = sender as ListView;
-                if(lv.SelectedIndex == 0)
-                    e.Handled = true;
-            }
-            else if (e.Key == Key.Down)
-            {
-                 var lv = sender as ListView;
-                 if (lv.SelectedIndex == lv.Items.Count-1)
-                     e.Handled = true;
-
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Space)
-            {
-                // invoke action
-                var lv = sender as ListView;
-                if (lv != null && lv.SelectedItem!=null)
-                {
-                    InvokeActionByName(SelectedItem, lv.SelectedItem.ToString());
-                }
-
-                var popup = (lv.Parent as Border).Parent as Popup;
-                if (popup != null)
-                    popup.IsOpen = false;
-
-                //if (itemsControl.SelectedItem != null)
-                //{
-                //    var it1 = GetSelectedItem(itemsControl);
-                //    if (it1 != null)
-                //    {
-                //        it1.Focus();
-                //    }
-                //}
-
-                e.Handled = true;
-            }
-        }*/
-
-        //private void myPopup_Opened(object sender, EventArgs e)
-        //{
-        //    var popup = sender as Popup;
-
-        //    var lv = (popup.Child as Border).Child as ListView;
-        //    if (lv != null)
-        //    {
-        //        var selectedItem = SelectedItem;
-        //        if (selectedItem != null)
-        //        {
-        //            //lv.ItemsSource = BuilsAvailableActions(selectedItem);
-        //            lv.SelectedIndex = 0;
-        //            var firstElement = lv.ItemContainerGenerator.ContainerFromIndex(0) as UIElement;
-        //            if(firstElement!=null)
-        //             firstElement.Focus();
-        //        }
-        //    }
-        //    //this.Child.MoveFocus(new TraversalRequest(
-        //    //        FocusNavigationDirection.Next));
-        //}
-
-        //private void itemsControl_GotFocus(object sender, RoutedEventArgs e)
-        //{
-        //    borderItems.BorderBrush = _borderBrush;
-        //}
-
-        //private void itemsControl_LostFocus(object sender, RoutedEventArgs e)
-        //{
-        //    borderItems.BorderBrush = Brushes.Transparent;
-        //}
     }
 }
