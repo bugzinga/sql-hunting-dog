@@ -158,14 +158,8 @@
     <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseLoader.cs">
       <Link>DogEngine\Impl\DatabaseLoader.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\Impl\ServerStorage.cs">
-      <Link>DogEngine\Impl\ServerStorage.cs</Link>
-    </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Impl\StudioController.cs">
       <Link>DogEngine\Impl\StudioController.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogEngine\IServerStorage.cs">
-      <Link>DogEngine\IServerStorage.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\IStudioController.cs">
       <Link>DogEngine\IStudioController.cs</Link>

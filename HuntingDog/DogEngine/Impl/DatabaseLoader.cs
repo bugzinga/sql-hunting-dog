@@ -48,13 +48,23 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
+        public List<String> DatabaseList
+        {
+            get
+            {
+                return (from Database d in server.Databases
+                        where !d.IsSystemObject
+                        select d.Name).ToList();
+            }
+        }
+
         public void Initialise(SqlConnectionInfo connectionInfo)
         {
             DictionaryList = new List<IDatabaseDictionary>();
             this.connectionInfo = connectionInfo;
             server = new Server(new ServerConnection(connectionInfo));
 
-            //TODO: Performance - init fields should be "IsSystemObject","Name". Need to test performance.
+            // TODO: Performance - init fields should be "IsSystemObject", "Name". Need to test performance.
 
             // these give you a HUGE perf win with SMO - it pre-fetches these, rather than having to make another call to SQL Server to get this value
             server.SetDefaultInitFields(typeof(StoredProcedure), "IsSystemObject");
@@ -71,10 +81,8 @@ namespace HuntingDog.DogEngine.Impl
             //_server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
         }
 
-
-
         [SuppressMessage("Microsoft.Reliability", "CA2000")]
-        public List<DatabaseSearchResult> Find(String searchText, String databaseName, Int32 limit,List<string> keywordsToHighligh)
+        public List<DatabaseSearchResult> Find(String searchText, String databaseName, Int32 limit, List<string> keywordsToHighligh)
         {
             var dbDictionary = DictionaryList.FirstOrDefault(x => x.DatabaseName == databaseName);
 
@@ -94,16 +102,6 @@ namespace HuntingDog.DogEngine.Impl
             server.Databases.Refresh();
         }
 
-        public List<string> DatabaseList
-        {
-            get
-            {
-                return (from Database d in server.Databases
-                        where d.IsSystemObject == false
-                        select d.Name).ToList();
-            }
-        }
-
         void FillDatabase(IDatabaseDictionary databaseDictionary)
         {
             var timer = new Stopwatch();
@@ -117,7 +115,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             else
             {
-                log.Error("Database name could not be found :" + databaseDictionary.DatabaseName + ". Loader failed.");
+                log.Error("Database name could not be found: " + databaseDictionary.DatabaseName + "; loader failed");
                 return;
             }
 
@@ -128,7 +126,6 @@ namespace HuntingDog.DogEngine.Impl
             log.Performance("Refreshing database " + databaseDictionary.DatabaseName, timer);
 
             LoadObjects(d, databaseDictionary);
-
             databaseDictionary.MarkAsLoaded();
 
             log.Performance("Loading database " + databaseDictionary.DatabaseName, timer);
@@ -168,7 +165,7 @@ namespace HuntingDog.DogEngine.Impl
                 catch (Exception ex)
                 {
                     // this can get thrown for security reasons - probably need to swallow here
-                    log.Error("Security Error in database :" + d.Name + "", ex);
+                    log.Error("Security Error in database: " + d.Name, ex);
                 }
             }
         }
@@ -195,6 +192,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch
             {
+                // TODO: Do not swallow, log at least.
             }
 
             try
@@ -203,6 +201,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch
             {
+                // TODO: Do not swallow, log at least.
             }
 
             try
@@ -211,6 +210,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch
             {
+                // TODO: Do not swallow, log at least.
             }
 
             try
@@ -219,14 +219,16 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch
             {
+                // TODO: Do not swallow, log at least.
             }
-            
+
             try
             {
                 d.UserDefinedFunctions.Refresh();
             }
             catch
             {
+                // TODO: Do not swallow, log at least.
             }
         }
 
@@ -243,7 +245,7 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error loading view:" + f.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading view " + f.Name + " from db " + d.Name, ex);
                 }
             }
         }
@@ -261,7 +263,7 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error loading view:" + v.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading view " + v.Name + " from db " + d.Name, ex);
                 }
             }
         }
@@ -279,7 +281,7 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error loading procedure:" + p.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading procedure " + p.Name + " from db " + d.Name, ex);
                 }
             }
         }
@@ -297,7 +299,7 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error loading table:" + t.Name + " from db:" + d.Name + "", ex);
+                    log.Error("Error loading table " + t.Name + " from db " + d.Name, ex);
                 }
             }
         }

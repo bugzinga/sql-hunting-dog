@@ -31,7 +31,7 @@ namespace HuntingDog.DogEngine.Impl
             private set;
         }
 
-        public List<DatabaseSearchResult> Find(String searchText, Int32 limit,List<string> keywordsToHighlight )
+        public List<DatabaseSearchResult> Find(String searchText, Int32 limit, List<string> keywordsToHighlight)
         {
             var result = new List<DatabaseSearchResult>();
 
@@ -41,11 +41,12 @@ namespace HuntingDog.DogEngine.Impl
                 return result;
             }
 
-            SearchCriteria searchCrit = PrepareCriteria(searchText);
+            var searchCrit = PrepareCriteria(searchText);
 
             // there could be multiple keywords in search criteria
             keywordsToHighlight.Clear();
-            foreach(var crit  in searchCrit.CriteriaAnd)
+
+            foreach (var crit in searchCrit.CriteriaAnd)
             {
                 keywordsToHighlight.Add(crit.ToUpper());
             }
@@ -63,14 +64,12 @@ namespace HuntingDog.DogEngine.Impl
                 {
                     break;
                 }
-
             }
 
             return result;
-
         }
 
-        private bool IsMatch(DatabaseSearchResult entry, SearchCriteria crit)
+        private Boolean IsMatch(DatabaseSearchResult entry, SearchCriteria crit)
         {
             // filter by schema name
             if (crit.Schema != null)
@@ -81,7 +80,7 @@ namespace HuntingDog.DogEngine.Impl
                 }
             }
 
-            // filter only one flag is set (-s or -t ir -f or -v or combinations)
+            // filter only one flag is set (-s or -t or -f or -v or combinations)
             // if both flags are set - do not filter
             // FILTER OUT 
             if (crit.FilterType != 0)
@@ -96,15 +95,13 @@ namespace HuntingDog.DogEngine.Impl
             // filter by search criteria
             if (MatchAnd(crit.CriteriaAnd, entry.SearchName))
             {
-                // if(highlightMatch)
-                //     entry.HighlightName = Utils.ReplaceString(entry.Name, crit.CriteriaAnd);
                 return true;
             }
 
             return false;
         }
 
-        private bool MatchAnd(String[] critsAnd, String p)
+        private Boolean MatchAnd(String[] critsAnd, String p)
         {
             foreach (var and in critsAnd)
             {
@@ -112,7 +109,6 @@ namespace HuntingDog.DogEngine.Impl
                 {
                     return false;
                 }
-
             }
 
             return true;
@@ -140,7 +136,6 @@ namespace HuntingDog.DogEngine.Impl
 
         public void Clear()
         {
-
             IsLoaded = false;
             dictionary.Clear();
         }
@@ -160,8 +155,8 @@ namespace HuntingDog.DogEngine.Impl
         {
             // ignore all brackets
             criteria = criteria.Replace("]", "").Replace("[", "");
-            var searchCrit = new SearchCriteria();
 
+            var searchCrit = new SearchCriteria();
             searchCrit.Schema = GetSchema(criteria);
 
             // remove criteria from search string
@@ -170,28 +165,27 @@ namespace HuntingDog.DogEngine.Impl
                 criteria = criteria.Replace("x:" + searchCrit.Schema, "");
             }
 
-            String crtLower = criteria.ToLower().Trim();
-
+            var crtLower = criteria.ToLower().Trim();
             crtLower = crtLower.Replace(" ", And_Clause);
 
             if (crtLower.Contains("/s"))
             {
-                searchCrit.FilterType |= (int) ObjType.StoredProc;
+                searchCrit.FilterType |= (Int32) ObjType.StoredProc;
             }
 
             if (crtLower.Contains("/t"))
             {
-                searchCrit.FilterType |= (int) ObjType.Table;
+                searchCrit.FilterType |= (Int32) ObjType.Table;
             }
 
             if (crtLower.Contains("/f"))
             {
-                searchCrit.FilterType |= (int) ObjType.Func;
+                searchCrit.FilterType |= (Int32) ObjType.Func;
             }
 
             if (crtLower.Contains("/v"))
             {
-                searchCrit.FilterType |= (int) ObjType.View;
+                searchCrit.FilterType |= (Int32) ObjType.View;
             }
 
             crtLower = crtLower.Replace("/s", "");
@@ -221,6 +215,5 @@ namespace HuntingDog.DogEngine.Impl
                 ? criteria.Substring(indexOFschema)
                 : criteria.Substring(indexOFschema, lastIndex - indexOFschema);
         }
-
     }
 }

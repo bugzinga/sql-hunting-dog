@@ -68,10 +68,8 @@ namespace HuntingDog.DogEngine.Impl
         List<Entity> IStudioController.Find(String serverName, String databaseName, String searchText)
         {
             var server = Servers[serverName];
-
-            List<string> keywords = new List<string>();
+            var keywords = new List<String>();
             var listFound = server.Find(searchText, databaseName, searchLimit, keywords);
-
             var result = new List<Entity>();
 
             foreach (var found in listFound)
@@ -93,15 +91,6 @@ namespace HuntingDog.DogEngine.Impl
 
         void IStudioController.NavigateObject(String server, Entity entityObject)
         {
-            var bars = (Microsoft.VisualStudio.CommandBars.CommandBars) addIn.DTE.CommandBars;
-
-            foreach (var b in bars)
-            {
-                // TODO: Commented to avoid a compilation warning.
-                //       What was the purpose of this line?
-                //Int32 i = 1;
-            }
-
             try
             {
                 var srv = this.Servers[server];
@@ -109,7 +98,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Error locating object.", ex);
+                log.Error("Error locating object", ex);
             }
         }
 
@@ -146,17 +135,17 @@ namespace HuntingDog.DogEngine.Impl
 
                         if (oldList != null)
                         {
-                            var removed = oldList.Where(x => !newList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
-                            var added = newList.Where(x => !oldList.Any(y => y.ConnectionString == x.ConnectionString)).ToList();
+                            var removed = oldList.Where(x => !newList.Any(y => (y.ConnectionString == x.ConnectionString))).ToList();
+                            var added = newList.Where(x => !oldList.Any(y => (y.ConnectionString == x.ConnectionString))).ToList();
 
-                            if ((removed.Count > 0) || (added.Count > 0))
+                            if (removed.Any() || added.Any())
                             {
-                                if (removed.Count > 0)
+                                if (removed.Any())
                                 {
                                     log.Message("Found " + removed.Count.ToString() + " disconnected server");
                                 }
 
-                                if (removed.Count > 0)
+                                if (removed.Any())
                                 {
                                     log.Message("Found " + added.Count.ToString() + " connected server");
                                 }
@@ -174,7 +163,7 @@ namespace HuntingDog.DogEngine.Impl
 
                                 OnServersRemoved(removedNameList);
 
-                                if (Servers.Count == 0)
+                                if (Servers.IsEmpty())
                                 {
                                     // no servers left. Clean after yourself
                                     GC.Collect();
@@ -189,11 +178,9 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 catch (Exception e)
                 {
-                    log.Error("Thread server checker ", e);
+                    log.Error("Thread server checker", e);
                 }
                 
-                // check all servers
-
                 if (stopThread.WaitOne(4 * 1000))
                 {
                     break;
@@ -205,6 +192,7 @@ namespace HuntingDog.DogEngine.Impl
         {
             // we need to preserve old servers (and previously cached objects) when new server is added
             var oldServers = new Dictionary<string, DatabaseLoader>();
+
             foreach (var srvKeyValue in Servers)
             {
                 oldServers.Add(srvKeyValue.Key, srvKeyValue.Value);
@@ -217,7 +205,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 try
                 {
-                    String srvName = srvConnectionInfo.ServerName;
+                    var srvName = srvConnectionInfo.ServerName;
 
                     if (oldServers.ContainsKey(srvName))
                     {
@@ -233,15 +221,15 @@ namespace HuntingDog.DogEngine.Impl
                 catch (Exception ex)
                 {
                     // NEED TO LOG: FATAL ERROR:
-                    log.Error("Error reloading server list.", ex);
+                    log.Error("Error reloading server list", ex);
                 }
             }
         }
 
         private DatabaseLoader GetServerByName(String name)
         {
-            String lowerName = name.ToLower();
-            String key = Servers.Keys.FirstOrDefault(x => x.ToLower() == lowerName);
+            var lowerName = name.ToLower();
+            var key = Servers.Keys.FirstOrDefault(x => (x.ToLower() == lowerName));
 
             return (key != null)
                 ? Servers[key]
@@ -259,6 +247,7 @@ namespace HuntingDog.DogEngine.Impl
 
                 // do not believe server name provided by Object Explorer - it can have different case
                 var newServer = GetServerByName(serverName);
+
                 if (OnServersAdded != null)
                 {
                     OnServersAdded(new List<String>() { newServer.Name });
@@ -266,7 +255,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             else
             {
-                log.Error("Controller:new server connected event (but already connected):" + serverName);
+                log.Error("New server connected event (but already connected): " + serverName);
             }
         }
 
@@ -283,11 +272,11 @@ namespace HuntingDog.DogEngine.Impl
             }
             else
             {
-                log.Error("Controller: requested unknown server " + serverName + ".");
+                log.Error("Requested unknown server " + serverName);
 
                 foreach (var srv in Servers)
                 {
-                    log.Error("Controller:available server:" + srv.Key);
+                    log.Error("Available server: " + srv.Key);
                 }
 
                 return new List<String>();
@@ -305,12 +294,12 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 else
                 {
-                    log.Error("Controller: Refresh server. Unknown server name " + serverName + ".");
+                    log.Error("Unknown server name (refreshing server): " + serverName);
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Controller: RefreshServer", ex);
+                log.Error("Refreshing server failed (server: " + serverName + ")", ex);
             }
         }
 
@@ -325,12 +314,12 @@ namespace HuntingDog.DogEngine.Impl
                 }
                 else
                 {
-                    log.Error("Controller: Refresh Database. Unknown server name " + serverName + ".");
+                    log.Error("Unknown server name (refreshing database): " + serverName);
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Controller: RefreshDatabase failed. Server:" + serverName + " database:" + dbName, ex);
+                log.Error("Refreshing database failed (server: " + serverName + ", database: " + dbName + ")", ex);
             }
         }
 
@@ -364,7 +353,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ListViewColumns failed. " + GetSafeEntityObject(entityObject), ex);
+                log.Error("ListViewColumns failed: " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -382,18 +371,18 @@ namespace HuntingDog.DogEngine.Impl
                 foreach (Column tc in table.Columns)
                 {
                     result.Add(new TableColumn()
-                                   {
-                                       Name = tc.Name,
-                                       IsPrimaryKey = tc.InPrimaryKey,
-                                       IsForeignKey = tc.IsForeignKey,
-                                       Nullable = tc.Nullable,
-                                       Type = tc.DataType.Name
-                                   });
+                    {
+                        Name = tc.Name,
+                        IsPrimaryKey = tc.InPrimaryKey,
+                        IsForeignKey = tc.IsForeignKey,
+                        Nullable = tc.Nullable,
+                        Type = tc.DataType.Name
+                    });
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ListColumns failed. " + GetSafeEntityObject(entityObject), ex);
+                log.Error("ListColumns failed: " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -420,7 +409,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ListFuncParameters failed. " + GetSafeEntityObject(entityObject), ex);
+                log.Error("ListFuncParameters failed: " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
@@ -450,25 +439,10 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ListProcParameters failed. " + GetSafeEntityObject(entityObject), ex);
+                log.Error("ListProcParameters failed: " + GetSafeEntityObject(entityObject), ex);
             }
 
             return result;
-        }
-
-        List<Entity> IStudioController.GetInvokedBy(Entity entityObject)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<Entity> IStudioController.GetInvokes(Entity entityObject)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudioController.GenerateCreateScript(String name)
-        {
-            throw new NotImplementedException();
         }
 
         public EnvDTE.Window CreateAddinWindow(AddIn addIn)
@@ -521,7 +495,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ModifyFunction failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("ModifyFunction failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -540,7 +514,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ModifyProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("ModifyProcedure failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -554,7 +528,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: SelectFromView failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("SelectFromView failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -567,7 +541,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("ExecuteProcedure failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -580,7 +554,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ExecuteProcedure failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("ExecuteProcedure failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -593,7 +567,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: ScriptTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("ScriptTable failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -606,7 +580,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: SelectFromTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("SelectFromTable failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -619,7 +593,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: EditTableData failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("EditTableData failed: " + GetSafeEntityObject(entityObject), ex);
             }
         }
 
@@ -632,12 +606,8 @@ namespace HuntingDog.DogEngine.Impl
             }
             catch (Exception ex)
             {
-                log.Error("Controller: DesignTable failed." + GetSafeEntityObject(entityObject), ex);
+                log.Error("DesignTable failed: " + GetSafeEntityObject(entityObject), ex);
             }
-        }
-
-        public void ConnectNewServer()
-        {
         }
     }
 }

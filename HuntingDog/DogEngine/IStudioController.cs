@@ -6,8 +6,6 @@ namespace HuntingDog.DogEngine
 {
     public interface IStudioController
     {
-        void ConnectNewServer();
-
         event Action ShowYourself;
 
         // fire when new server is connected/disconnected
@@ -33,10 +31,6 @@ namespace HuntingDog.DogEngine
         List<ProcedureParameter> ListProcParameters(Entity entityObject);
         List<FunctionParameter> ListFuncParameters(Entity entityObject);
 
-        // dependencies
-        List<Entity> GetInvokedBy(Entity entityObjecte);
-        List<Entity> GetInvokes(Entity entityObject);
-
         // change script
         void ModifyFunction(String server, Entity entityObject);
         void ModifyView(String server, Entity entityObject);
@@ -54,9 +48,6 @@ namespace HuntingDog.DogEngine
         // open Edit table window/ design table window
         void EditTableData(String server, Entity entityObject);
         void DesignTable(String server, Entity entityObject);
-
-        // generate new table/view - script
-        void GenerateCreateScript(String name);
 
         // navigate object in object explorer
         void NavigateObject(String server, Entity entityObject);

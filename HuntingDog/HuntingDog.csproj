@@ -124,9 +124,7 @@
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />
     <Compile Include="DogEngine\IDatabaseDictionary.cs" />
     <Compile Include="DogEngine\IDatabaseLoader.cs" />
-    <Compile Include="DogEngine\IServerStorage.cs" />
     <Compile Include="DogEngine\IStudioController.cs" />
-    <Compile Include="DogEngine\Impl\ServerStorage.cs" />
     <Compile Include="DogEngine\Impl\StudioController.cs" />
     <Compile Include="DogEngine\ProcedureParameter.cs" />
     <Compile Include="DogEngine\TableColumn.cs" />
