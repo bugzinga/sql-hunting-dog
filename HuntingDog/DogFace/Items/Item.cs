@@ -3,35 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using HuntingDog.DogEngine;
 
 namespace HuntingDog.DogFace.Items
 {
     public class Item : DependencyObject
     {
-        public Item()
+        private String name;
+
+        public String Name
         {
-            Actions = new List<Action>();
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
+                UpperCaseNames = Name.ToUpper();
+            }
         }
 
-        public HuntingDog.DogEngine.Entity Entity
+        public Entity Entity
         {
             get;
             set;
         }
 
-        private string _name;
-
-        public String Name
+        public string UpperCaseNames
         {
-            get { return _name; }
-            set
-            {
-                _name = value; 
-                UpperCaseNames = Name.ToUpper();
-            }
-        }
-
-        public string UpperCaseNames { 
             get;
             private set;
         }
@@ -60,96 +61,17 @@ namespace HuntingDog.DogFace.Items
             private set;
         }
 
-/*
-        public ImageSource Action1
+        public List<String> Keywords
         {
             get;
             set;
         }
 
-        public String Action1Description
-        {
-            get;
-            set;
-        }
-
-        public String Action1Tooltip
-        {
-            get;
-            set;
-        }
-
-        public ImageSource Action2
-        {
-            get;
-            set;
-        }
-
-        public String Action2Description
-        {
-            get;
-            set;
-        }
-
-        public String Action2Tooltip
-        {
-            get;
-            set;
-        }
-
-        public Visibility Action3Visibility
-        {
-            get;
-            set;
-        }
-
-        public ImageSource Action3
-        {
-            get;
-            set;
-        }
-
-        public String Action3Description
-        {
-            get;
-            set;
-        }
-
-        public String Action3Tooltip
-        {
-            get;
-            set;
-        }
-
-        public Visibility Action4Visibility
-        {
-            get;
-            set;
-        }
-
-        public ImageSource Action4
-        {
-            get;
-            set;
-        }
-
-        public String Action4Description
-        {
-            get;
-            set;
-        }
-
-        public String Action4Tooltip
-        {
-            get;
-            set;
-        }
-*/
-        public List<string> Keywords
-        {
-            get; 
-            set;
-        }
+        public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register(
+            "IsChecked",
+            typeof(Boolean),
+            typeof(Item)
+        );
 
         public Boolean IsChecked
         {
@@ -164,7 +86,11 @@ namespace HuntingDog.DogFace.Items
             }
         }
 
-        public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(Boolean), typeof(Item));
+        public static readonly DependencyProperty IsMouseOverProperty = DependencyProperty.Register(
+            "IsMouseOver",
+            typeof(Boolean),
+            typeof(Item)
+        );
 
         public Boolean IsMouseOver
         {
@@ -179,6 +105,9 @@ namespace HuntingDog.DogFace.Items
             }
         }
 
-        public static readonly DependencyProperty IsMouseOverProperty = DependencyProperty.Register("IsMouseOver", typeof(Boolean), typeof(Item));
+        public Item()
+        {
+            Actions = new List<Action>();
+        }
     }
 }

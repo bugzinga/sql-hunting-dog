@@ -633,27 +633,14 @@ namespace HuntingDog.DogFace
 
         internal IEnumerable<String> BuilsAvailableActions(Item item)
         {
-            var res = new List<String>();
+            IEnumerable<String> result = new List<String>();
 
-            if (item.Entity.IsProcedure)
+            if (item != null)
             {
-                return new List<String> { "Modify", "Execute", "Locate", };
-            }
-
-            if (item.Entity.IsFunction)
-            {
-                return new List<String> { "Modify", "Execute", "Locate", };
-            }
-            else if (item.Entity.IsTable)
-            {
-                return new List<String> { "Select Data", "Edit Data", "Design Table", "Script Table", "Locate", };
-            }
-            else if (item.Entity.IsView)
-            {
-                return new List<String> { "Select Data", "Modify View", "Locate", };
+                result = item.Actions.Select(a => a.Description);
             }
 
-            return res;
+            return result;
         }
 
         void InvokeActionByName(Item item, String actionName)
