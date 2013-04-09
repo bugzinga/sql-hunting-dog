@@ -79,7 +79,6 @@ namespace HuntingDog.DogFace
                     uiEntry.Image = imageT;
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageRightArrow,
                         Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -88,7 +87,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageProcess,
                         Name = "Edit Data",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -97,7 +95,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageWrench,
                         Name = "Design Table",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -106,7 +103,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageEdit,
                         Name = "Script Table",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -120,7 +116,6 @@ namespace HuntingDog.DogFace
                     uiEntry.Image = imageS;
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageEdit,
                         Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -129,7 +124,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imagePageEdit,
                         Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -143,7 +137,6 @@ namespace HuntingDog.DogFace
                     uiEntry.Image = imageV;
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageRightArrow,
                         Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -152,7 +145,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageWrench,
                         Name = "Modify View",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -166,7 +158,6 @@ namespace HuntingDog.DogFace
                     uiEntry.Image = imageF;
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imageEdit,
                         Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -175,7 +166,6 @@ namespace HuntingDog.DogFace
                     });
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
-                        Image = imagePageEdit,
                         Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
@@ -187,7 +177,6 @@ namespace HuntingDog.DogFace
 
                 uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                 {
-                    Image = imageForwardBlue,
                     Name = "Locate",
                     Routine = (studioController, selectedServer) =>
                     {
