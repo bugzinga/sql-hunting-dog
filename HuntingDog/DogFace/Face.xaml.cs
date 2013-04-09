@@ -668,6 +668,7 @@ namespace HuntingDog.DogFace
             action.Routine(StudioController, SelectedServer);
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeDefaultOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -688,6 +689,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeAdditionalActionOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -696,6 +698,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeActionOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -712,6 +715,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeNavigationOnItem(Item item)
         {
             StudioController.NavigateObject(SelectedServer, item.Entity);
