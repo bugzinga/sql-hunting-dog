@@ -71,8 +71,8 @@ namespace HuntingDog.DogFace
             foreach (var source in sourceList)
             {
                 var uiEntry = new Item() { Name = source.FullName, Entity = source };
-                uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
-                uiEntry.Action4Visibility = System.Windows.Visibility.Collapsed;
+                //uiEntry.Action3Visibility = System.Windows.Visibility.Collapsed;
+                //uiEntry.Action4Visibility = System.Windows.Visibility.Collapsed;
                 uiEntry.Keywords = source.Keywords;
                 //uiEntry.Action3 = imageProcess;
                 // uiEntry.Action3Description = "  ";
@@ -81,62 +81,74 @@ namespace HuntingDog.DogFace
                 {
                     uiEntry.Image = imageT;
 
-                    uiEntry.Action1 = imageRightArrow;
-                    uiEntry.Action1Description = "Select";
-                    uiEntry.Action1Tooltip = "Select Data from Table";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageRightArrow, Description = "Select", Tooltip = "Select Data from Table" });
+                    //uiEntry.Action1 = imageRightArrow;
+                    //uiEntry.Action1Description = "Select";
+                    //uiEntry.Action1Tooltip = "Select Data from Table";
 
-                    uiEntry.Action2 = imageProcess;
-                    uiEntry.Action2Description = "Edit";
-                    uiEntry.Action2Tooltip = "Edit Table Data";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageProcess, Description = "Edit", Tooltip = "Edit Table Data" });
+                    //uiEntry.Action2 = imageProcess;
+                    //uiEntry.Action2Description = "Edit";
+                    //uiEntry.Action2Tooltip = "Edit Table Data";
 
-                    uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
-                    uiEntry.Action3 = imageWrench;
-                    uiEntry.Action3Description = "Design";
-                    uiEntry.Action3Tooltip = "Design Table";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageWrench, Description = "Design", Tooltip = "Design Table" });
+                    //uiEntry.Action3Visibility = System.Windows.Visibility.Visible;
+                    //uiEntry.Action3 = imageWrench;
+                    //uiEntry.Action3Description = "Design";
+                    //uiEntry.Action3Tooltip = "Design Table";
 
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Select from Table.";
                 }
                 else if (source.IsProcedure)
                 {
                     uiEntry.Image = imageS;
-                    uiEntry.Action1 = imageEdit;
-                    uiEntry.Action1Description = "Modify";
-                    uiEntry.Action1Tooltip = "Modify Stored Procedure";
 
-                    uiEntry.Action2 = imagePageEdit;
-                    uiEntry.Action2Description = "Execute";
-                    uiEntry.Action2Tooltip = "Execute Stored Proc";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageEdit, Description = "Modify", Tooltip = "Modify Stored Procedure" });
+                    //uiEntry.Action1 = imageEdit;
+                    //uiEntry.Action1Description = "Modify";
+                    //uiEntry.Action1Tooltip = "Modify Stored Procedure";
+
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imagePageEdit, Description = "Execute", Tooltip = "Execute Stored Proc" });
+                    //uiEntry.Action2 = imagePageEdit;
+                    //uiEntry.Action2Description = "Execute";
+                    //uiEntry.Action2Tooltip = "Execute Stored Proc";
 
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Procedure.";
                 }
                 else if (source.IsView)
                 {
                     uiEntry.Image = imageV;
-                    uiEntry.Action1 = imageRightArrow;
-                    uiEntry.Action1Description = "Select";
-                    uiEntry.Action1Tooltip = "Select Data from View";
 
-                    uiEntry.Action2 = imageWrench;
-                    uiEntry.Action2Description = "Design";
-                    uiEntry.Action2Tooltip = "Design View";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageRightArrow, Description = "Select", Tooltip = "Select Data from View" });
+                    //uiEntry.Action1 = imageRightArrow;
+                    //uiEntry.Action1Description = "Select";
+                    //uiEntry.Action1Tooltip = "Select Data from View";
+
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageWrench, Description = "Design", Tooltip = "Design View" });
+                    //uiEntry.Action2 = imageWrench;
+                    //uiEntry.Action2Description = "Design";
+                    //uiEntry.Action2Tooltip = "Design View";
 
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Select from View.";
                 }
                 else
                 {
                     uiEntry.Image = imageF;
-                    uiEntry.Action1 = imageEdit;
-                    uiEntry.Action1Description = "Modify";
-                    uiEntry.Action1Tooltip = "Modify Function";
 
-                    uiEntry.Action2 = imagePageEdit;
-                    uiEntry.Action2Description = "Execute";
-                    uiEntry.Action2Tooltip = "Execute Function";
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageEdit, Description = "Modify", Tooltip = "Modify Function" });
+                    //uiEntry.Action1 = imageEdit;
+                    //uiEntry.Action1Description = "Modify";
+                    //uiEntry.Action1Tooltip = "Modify Function";
+
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imagePageEdit, Description = "Execute", Tooltip = "Execute Function" });
+                    //uiEntry.Action2 = imagePageEdit;
+                    //uiEntry.Action2Description = "Execute";
+                    //uiEntry.Action2Tooltip = "Execute Function";
 
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Function.";
                 }
 
-                uiEntry.Action2 = imageForwardBlue;
+                //uiEntry.Action2 = imageForwardBlue;
 
                 res.Add(uiEntry);
             }

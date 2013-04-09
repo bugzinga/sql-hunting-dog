@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="DogFace\HtmlTextBlock.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
+    <Compile Include="DogFace\Items\Action.cs" />
     <Compile Include="DogFace\Items\BaseParamItem.cs" />
     <Compile Include="DogFace\Items\FunctionParamItem.cs" />
     <Compile Include="DogFace\Items\Item.cs" />

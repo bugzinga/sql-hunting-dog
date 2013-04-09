@@ -186,9 +186,9 @@ namespace HuntingDog.DogFace
 
                 _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
-                StudioController.OnServersAdded += new Action<List<String>>(StudioController_OnServersAdded);
-                StudioController.OnServersRemoved += new Action<List<String>>(StudioController_OnServersRemoved);
-                StudioController.ShowYourself += new Action(StudioController_ShowYourself);
+                StudioController.OnServersAdded += new System.Action<List<String>>(StudioController_OnServersAdded);
+                StudioController.OnServersRemoved += new System.Action<List<String>>(StudioController_OnServersRemoved);
+                StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
                 ReloadServers();
 
                 var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);

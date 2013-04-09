@@ -189,6 +189,9 @@
     <Compile Include="..\HuntingDog\DogFace\ItemFactory.cs">
       <Link>DogFace\ItemFactory.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Items\Action.cs">
+      <Link>DogFace\Items\Action.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\Items\BaseParamItem.cs">
       <Link>DogFace\Items\BaseParamItem.cs</Link>
     </Compile>

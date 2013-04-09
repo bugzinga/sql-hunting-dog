@@ -8,6 +8,11 @@ namespace HuntingDog.DogFace.Items
 {
     public class Item : DependencyObject
     {
+        public Item()
+        {
+            Actions = new List<Action>();
+        }
+
         public HuntingDog.DogEngine.Entity Entity
         {
             get;
@@ -15,6 +20,7 @@ namespace HuntingDog.DogFace.Items
         }
 
         private string _name;
+
         public String Name
         {
             get { return _name; }
@@ -48,6 +54,13 @@ namespace HuntingDog.DogFace.Items
             set;
         }
 
+        public IList<Action> Actions
+        {
+            get;
+            private set;
+        }
+
+/*
         public ImageSource Action1
         {
             get;
@@ -131,7 +144,7 @@ namespace HuntingDog.DogFace.Items
             get;
             set;
         }
-
+*/
         public List<string> Keywords
         {
             get; 
