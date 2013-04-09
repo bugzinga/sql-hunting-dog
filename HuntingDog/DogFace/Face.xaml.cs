@@ -637,7 +637,7 @@ namespace HuntingDog.DogFace
 
             if (item != null)
             {
-                result = item.Actions.Select(a => a.Description);
+                result = item.Actions.Select(a => a.Name);
             }
 
             return result;
@@ -651,7 +651,7 @@ namespace HuntingDog.DogFace
                 return;
             }
 
-            var action = item.Actions.FirstOrDefault(a => a.Description.Equals(actionName, StringComparison.InvariantCultureIgnoreCase));
+            var action = item.Actions.FirstOrDefault(a => a.Name.Equals(actionName, StringComparison.InvariantCultureIgnoreCase));
 
             if (action == null)
             {

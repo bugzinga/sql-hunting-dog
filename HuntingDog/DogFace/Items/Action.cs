@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
+using System;
 using System.Windows.Media;
-using System.Windows;
-using HuntingDog.DogEngine.Impl;
 using HuntingDog.DogEngine;
 
 namespace HuntingDog.DogFace.Items
@@ -17,13 +13,7 @@ namespace HuntingDog.DogFace.Items
             set;
         }
 
-        public String Description
-        {
-            get;
-            set;
-        }
-
-        public String Tooltip
+        public String Name
         {
             get;
             set;

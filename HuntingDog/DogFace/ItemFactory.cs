@@ -80,8 +80,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageRightArrow,
-                        Description = "Select Data",
-                        Tooltip = "Select Data from Table",
+                        Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.SelectFromTable(selectedServer, uiEntry.Entity);
@@ -90,8 +89,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageProcess,
-                        Description = "Edit Data",
-                        Tooltip = "Edit Table Data",
+                        Name = "Edit Data",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.EditTableData(selectedServer, uiEntry.Entity);
@@ -100,8 +98,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageWrench,
-                        Description = "Design Table",
-                        Tooltip = "Design Table",
+                        Name = "Design Table",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.DesignTable(selectedServer, uiEntry.Entity);
@@ -110,8 +107,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageEdit,
-                        Description = "Script Table",
-                        Tooltip = "Script Table",
+                        Name = "Script Table",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ScriptTable(selectedServer, uiEntry.Entity);
@@ -125,8 +121,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageEdit,
-                        Description = "Modify",
-                        Tooltip = "Modify Stored Procedure",
+                        Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ModifyProcedure(selectedServer, uiEntry.Entity);
@@ -135,8 +130,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imagePageEdit,
-                        Description = "Execute",
-                        Tooltip = "Execute Stored Procedure",
+                        Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ExecuteProcedure(selectedServer, uiEntry.Entity);
@@ -150,8 +144,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageRightArrow,
-                        Description = "Select Data",
-                        Tooltip = "Select Data from View",
+                        Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.SelectFromView(selectedServer, uiEntry.Entity);
@@ -160,8 +153,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageWrench,
-                        Description = "Modify View",
-                        Tooltip = "Design View",
+                        Name = "Modify View",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ModifyView(selectedServer, uiEntry.Entity);
@@ -175,8 +167,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imageEdit,
-                        Description = "Modify",
-                        Tooltip = "Modify Function",
+                        Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ModifyFunction(selectedServer, uiEntry.Entity);
@@ -185,8 +176,7 @@ namespace HuntingDog.DogFace
                     uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                     {
                         Image = imagePageEdit,
-                        Description = "Execute",
-                        Tooltip = "Execute Function",
+                        Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
                             studioController.ExecuteFunction(selectedServer, uiEntry.Entity);
@@ -198,8 +188,7 @@ namespace HuntingDog.DogFace
                 uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
                 {
                     Image = imageForwardBlue,
-                    Description = "Locate",
-                    Tooltip = "Locate Object",
+                    Name = "Locate",
                     Routine = (studioController, selectedServer) =>
                     {
                         studioController.NavigateObject(selectedServer, uiEntry.Entity);
