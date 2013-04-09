@@ -11,11 +11,6 @@ namespace HuntingDog.DogFace.Items
 {
     public class Action
     {
-        public Action()
-        {
-            Visibility = Visibility.Visible;
-        }
-
         public ImageSource Image
         {
             get;
@@ -29,12 +24,6 @@ namespace HuntingDog.DogFace.Items
         }
 
         public String Tooltip
-        {
-            get;
-            set;
-        }
-
-        public Visibility Visibility
         {
             get;
             set;
