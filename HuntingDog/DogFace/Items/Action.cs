@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using System.Windows;
+using HuntingDog.DogEngine.Impl;
+using HuntingDog.DogEngine;
 
 namespace HuntingDog.DogFace.Items
 {
@@ -33,6 +35,12 @@ namespace HuntingDog.DogFace.Items
         }
 
         public Visibility Visibility
+        {
+            get;
+            set;
+        }
+
+        public System.Action<IStudioController, String> Routine
         {
             get;
             set;

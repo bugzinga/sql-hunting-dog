@@ -66,7 +66,7 @@ namespace HuntingDog.DogFace
 
         public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
         {
-            var res = new List<Item>();
+            var items = new List<Item>();
 
             foreach (var source in sourceList)
             {
@@ -77,40 +77,139 @@ namespace HuntingDog.DogFace
                 if (source.IsTable)
                 {
                     uiEntry.Image = imageT;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageRightArrow, Description = "Select Data", Tooltip = "Select Data from Table" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageProcess, Description = "Edit Data", Tooltip = "Edit Table Data" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageWrench, Description = "Design Table", Tooltip = "Design Table" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageEdit, Description = "Script Table", Tooltip = "Script Table" });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageRightArrow,
+                        Description = "Select Data",
+                        Tooltip = "Select Data from Table",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.SelectFromTable(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageProcess,
+                        Description = "Edit Data",
+                        Tooltip = "Edit Table Data",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.EditTableData(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageWrench,
+                        Description = "Design Table",
+                        Tooltip = "Design Table",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.DesignTable(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageEdit,
+                        Description = "Script Table",
+                        Tooltip = "Script Table",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ScriptTable(selectedServer, uiEntry.Entity);
+                        }
+                    });
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Select from Table";
                 }
                 else if (source.IsProcedure)
                 {
                     uiEntry.Image = imageS;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageEdit, Description = "Modify", Tooltip = "Modify Stored Procedure" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imagePageEdit, Description = "Execute", Tooltip = "Execute Stored Procedure" });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageEdit,
+                        Description = "Modify",
+                        Tooltip = "Modify Stored Procedure",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ModifyProcedure(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imagePageEdit,
+                        Description = "Execute",
+                        Tooltip = "Execute Stored Procedure",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ExecuteProcedure(selectedServer, uiEntry.Entity);
+                        }
+                    });
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Procedure";
                 }
                 else if (source.IsView)
                 {
                     uiEntry.Image = imageV;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageRightArrow, Description = "Select Data", Tooltip = "Select Data from View" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageWrench, Description = "Modify View", Tooltip = "Design View" });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageRightArrow,
+                        Description = "Select Data",
+                        Tooltip = "Select Data from View",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.SelectFromView(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageWrench,
+                        Description = "Modify View",
+                        Tooltip = "Design View",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ModifyView(selectedServer, uiEntry.Entity);
+                        }
+                    });
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Select from View";
                 }
                 else
                 {
                     uiEntry.Image = imageF;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageEdit, Description = "Modify", Tooltip = "Modify Function" });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imagePageEdit, Description = "Execute", Tooltip = "Execute Function" });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imageEdit,
+                        Description = "Modify",
+                        Tooltip = "Modify Function",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ModifyFunction(selectedServer, uiEntry.Entity);
+                        }
+                    });
+                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    {
+                        Image = imagePageEdit,
+                        Description = "Execute",
+                        Tooltip = "Execute Function",
+                        Routine = (studioController, selectedServer) =>
+                        {
+                            studioController.ExecuteFunction(selectedServer, uiEntry.Entity);
+                        }
+                    });
                     uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Function";
                 }
 
-                uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action { Image = imageForwardBlue, Description = "Locate", Tooltip = "Locate Object" });
+                uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                {
+                    Image = imageForwardBlue,
+                    Description = "Locate",
+                    Tooltip = "Locate Object",
+                    Routine = (studioController, selectedServer) =>
+                    {
+                        studioController.NavigateObject(selectedServer, uiEntry.Entity);
+                    }
+                });
 
-                res.Add(uiEntry);
+                items.Add(uiEntry);
             }
 
-            return res;
+            return items;
         }
 
         public static List<Item> BuildDatabase(IEnumerable<String> sources)
