@@ -12,14 +12,13 @@ using System.Windows.Media;
 using DatabaseObjectSearcherUI;
 using HuntingDog.Core;
 using HuntingDog.DogEngine;
-using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
     [ComVisible(false)]
     public partial class Face : UserControl
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(Face));
+        protected readonly Log log = LogFactory.GetLog();
 
         class SearchAsyncParam
         {
@@ -186,9 +185,9 @@ namespace HuntingDog.DogFace
 
                 _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
-                StudioController.OnServersAdded += new Action<List<String>>(StudioController_OnServersAdded);
-                StudioController.OnServersRemoved += new Action<List<String>>(StudioController_OnServersRemoved);
-                StudioController.ShowYourself += new Action(StudioController_ShowYourself);
+                StudioController.OnServersAdded += new System.Action<List<String>>(StudioController_OnServersAdded);
+                StudioController.OnServersRemoved += new System.Action<List<String>>(StudioController_OnServersRemoved);
+                StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
                 ReloadServers();
 
                 var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
@@ -633,104 +632,42 @@ namespace HuntingDog.DogFace
 
         internal IEnumerable<String> BuilsAvailableActions(Item item)
         {
-            var res = new List<String>();
+            IEnumerable<String> result = new List<String>();
 
-            if (item.Entity.IsProcedure)
+            if (item != null)
             {
-                return new List<String> { "Modify", "Execute", "Locate", };
-            }
-
-            if (item.Entity.IsFunction)
-            {
-                return new List<String> { "Modify", "Execute", "Locate", };
-            }
-            else if (item.Entity.IsTable)
-            {
-                return new List<String> { "Select Data", "Edit Data", "Design Table", "Script Table", "Locate", };
-            }
-            else if (item.Entity.IsView)
-            {
-                return new List<String> { "Select Data", "Modify View", "Locate", };
+                result = item.Actions.Select(a => a.Name);
             }
 
-            return res;
+            return result;
         }
 
         void InvokeActionByName(Item item, String actionName)
         {
             if ((item == null) || String.IsNullOrEmpty(actionName))
             {
+                log.Error("Action name is null or an empty string");
                 return;
             }
 
-            if (actionName == "Locate")
+            var action = item.Actions.FirstOrDefault(a => a.Name.Equals(actionName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (action == null)
             {
-                StudioController.NavigateObject(SelectedServer, item.Entity);
+                log.Error("Action '" + actionName + "' has not been found");
                 return;
             }
 
-            if (actionName == "Show Dependencies")
+            if (action.Routine == null)
             {
-                // TODO: show dependencies in a new window
+                log.Error("Action '" + actionName + "' handler is not defined");
+                return;
             }
 
-            if (item.Entity.IsTable)
-            {
-                switch (actionName)
-                {
-                    case "Select Data":
-                        StudioController.SelectFromTable(SelectedServer, item.Entity);
-                        break;
-                    case "Edit Data":
-                        StudioController.EditTableData(SelectedServer, item.Entity);
-                        break;
-                    case "Design Table":
-                        StudioController.DesignTable(SelectedServer, item.Entity);
-                        break;
-                    case "Script Table":
-                        StudioController.ScriptTable(SelectedServer, item.Entity);
-                        break;
-                }
-            }
-            else if (item.Entity.IsView)
-            {
-                switch (actionName)
-                {
-                    case "Select Data":
-                        StudioController.SelectFromView(SelectedServer, item.Entity);
-                        break;
-                    case "Modify View":
-                        StudioController.ModifyView(SelectedServer, item.Entity);
-                        break;
-                }
-            }
-            else if (item.Entity.IsProcedure)
-            {
-                switch (actionName)
-                {
-                    case "Modify":
-                        StudioController.ModifyProcedure(SelectedServer, item.Entity);
-                        break;
-                    case "Execute":
-                        StudioController.ExecuteProcedure(SelectedServer, item.Entity);
-                        break;
-
-                }
-            }
-            else if (item.Entity.IsFunction)
-            {
-                switch (actionName)
-                {
-                    case "Modify":
-                        StudioController.ModifyFunction(SelectedServer, item.Entity);
-                        break;
-                    case "Execute":
-                        StudioController.ExecuteFunction(SelectedServer, item.Entity);
-                        break;
-                }
-            }
+            action.Routine(StudioController, SelectedServer);
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeDefaultOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -751,6 +688,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeAdditionalActionOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -759,6 +697,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeActionOnItem(Item item)
         {
             if (item.Entity.IsTable)
@@ -775,6 +714,7 @@ namespace HuntingDog.DogFace
             }
         }
 
+        // TODO: Refactor with respect of Item.Action generalization
         void InvokeNavigationOnItem(Item item)
         {
             StudioController.NavigateObject(SelectedServer, item.Entity);

@@ -173,6 +173,9 @@
     <Compile Include="..\HuntingDog\DogEngine\TableColumn.cs">
       <Link>DogEngine\TableColumn.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Action.cs">
+      <Link>DogFace\Action.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\BackgroundProcessor.cs">
       <Link>DogFace\BackgroundProcessor.cs</Link>
     </Compile>
@@ -186,26 +189,11 @@
     <Compile Include="..\HuntingDog\DogFace\HtmlTextBlock.cs">
       <Link>DogFace\HtmlTextBlock.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Item.cs">
+      <Link>DogFace\Item.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\ItemFactory.cs">
       <Link>DogFace\ItemFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\BaseParamItem.cs">
-      <Link>DogFace\Items\BaseParamItem.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\FunctionParamItem.cs">
-      <Link>DogFace\Items\FunctionParamItem.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\Item.cs">
-      <Link>DogFace\Items\Item.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\ProcedureParamItem.cs">
-      <Link>DogFace\Items\ProcedureParamItem.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\TableParamItem.cs">
-      <Link>DogFace\Items\TableParamItem.cs</Link>
-    </Compile>
-    <Compile Include="..\HuntingDog\DogFace\Items\ViewParamItem.cs">
-      <Link>DogFace\Items\ViewParamItem.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucHost.cs">
       <Link>DogFace\ucHost.cs</Link>

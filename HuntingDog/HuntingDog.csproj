@@ -135,12 +135,8 @@
     </Compile>
     <Compile Include="DogFace\HtmlTextBlock.cs" />
     <Compile Include="DogFace\ItemFactory.cs" />
-    <Compile Include="DogFace\Items\BaseParamItem.cs" />
-    <Compile Include="DogFace\Items\FunctionParamItem.cs" />
-    <Compile Include="DogFace\Items\Item.cs" />
-    <Compile Include="DogFace\Items\ProcedureParamItem.cs" />
-    <Compile Include="DogFace\Items\TableParamItem.cs" />
-    <Compile Include="DogFace\Items\ViewParamItem.cs" />
+    <Compile Include="DogFace\Action.cs" />
+    <Compile Include="DogFace\Item.cs" />
     <Compile Include="DogFace\UserPreferences.cs" />
     <Compile Include="DogFace\WidthConverter.cs" />
     <Compile Include="Engine\Connect.cs" />

@@ -8,14 +8,13 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using HuntingDog.Core;
-using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
     [ComVisible(false)]
     public class HtmlTextBlock : TextBlock
     {
-        private readonly Log log = LogFactory.GetLog(typeof(HtmlTextBlock));
+        protected readonly Log log = LogFactory.GetLog();
 
         private List<Run> runs = new List<Run>();
 

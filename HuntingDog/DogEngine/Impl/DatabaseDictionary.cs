@@ -13,7 +13,7 @@ namespace HuntingDog.DogEngine.Impl
     /// </summary>
     class DatabaseDictionary : IDatabaseDictionary, IDisposable
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(DatabaseDictionary));
+        protected readonly Log log = LogFactory.GetLog();
 
         public const String And_Clause = "{AND}";
 

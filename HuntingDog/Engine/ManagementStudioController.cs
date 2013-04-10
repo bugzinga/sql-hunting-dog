@@ -20,7 +20,7 @@ namespace DatabaseObjectSearcher
     // can open windows, execute scripts, navigate in object explorer
     public class ManagementStudioController
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(ManagementStudioController));
+        private static readonly Log log = LogFactory.GetLog();
 
         private const String CREATE_PROC = "CREATE PROC";
 
