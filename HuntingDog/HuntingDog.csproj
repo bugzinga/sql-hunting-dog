@@ -129,7 +129,6 @@
     <Compile Include="DogEngine\ProcedureParameter.cs" />
     <Compile Include="DogEngine\TableColumn.cs" />
     <Compile Include="DogFace\Background\BackgroundProcessor.cs" />
-    <Compile Include="DogFace\Background\IRequestCompleted.cs" />
     <Compile Include="DogFace\Background\Request.cs" />
     <Compile Include="DogFace\Background\RequestType.cs" />
     <Compile Include="DogFace\BitmapConverter.cs" />
