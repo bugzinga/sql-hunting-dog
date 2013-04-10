@@ -2,10 +2,8 @@
 using System;
 using System.Drawing;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
+using HuntingDog.Core;
 
 namespace HuntingDog.DogFace
 {
@@ -14,7 +12,7 @@ namespace HuntingDog.DogFace
         public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             return (value is Bitmap)
-                ? Imaging.CreateBitmapSourceFromHBitmap((value as Bitmap).GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                ? (value as Bitmap).ToBitmapSource()
                 : null;
         }
 

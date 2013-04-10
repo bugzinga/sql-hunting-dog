@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Interop;
 
 namespace HuntingDog.Core
 {
@@ -92,6 +93,11 @@ namespace HuntingDog.Core
             }
 
             return bitmapImage;
+        }
+
+        public static BitmapSource ToBitmapSource(this Bitmap bitmap)
+        {
+            return Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         }
     }
 }
