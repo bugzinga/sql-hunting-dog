@@ -7,7 +7,6 @@ using System.Threading;
 
 namespace HuntingDog.DogFace.Background
 {
-    [SuppressMessage("Microsoft.Design", "CA1001")]
     public class BackgroundProcessor
     {
         public delegate void DoWork(Object arg);
@@ -34,7 +33,6 @@ namespace HuntingDog.DogFace.Background
             {
                 var i = WaitHandle.WaitAny(new WaitHandle[] { stop, doWork });
 
-                // stop event
                 if (i == 0)
                 {
                     break;
