@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using HuntingDog.DogEngine;
 
-namespace HuntingDog.DogFace.Items
+namespace HuntingDog.DogFace
 {
     public class Item : DependencyObject
     {

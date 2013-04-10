@@ -24,7 +24,7 @@ namespace DatabaseObjectSearcher
 {
     public class ObjectExplorerManager
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(ObjectExplorerManager));
+        protected readonly Log log = LogFactory.GetLog();
 
         private static IObjectExplorerService _objExplorer = null;
 

@@ -22,7 +22,7 @@ namespace HuntingDog.DogFace
     [ComVisible(false)]
     public class UserPreferencesStorage : List<Entry>
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(UserPreferencesStorage));
+        private static readonly Log log = LogFactory.GetLog();
 
         public const String _settingFileName = "HuntingDogPreferences.txt";
 

@@ -12,14 +12,13 @@ using System.Windows.Media;
 using DatabaseObjectSearcherUI;
 using HuntingDog.Core;
 using HuntingDog.DogEngine;
-using HuntingDog.DogFace.Items;
 
 namespace HuntingDog.DogFace
 {
     [ComVisible(false)]
     public partial class Face : UserControl
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(Face));
+        protected readonly Log log = LogFactory.GetLog();
 
         class SearchAsyncParam
         {

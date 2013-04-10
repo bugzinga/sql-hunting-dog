@@ -1,273 +1,198 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Windows.Media.Imaging;
-using HuntingDog.DogFace.Items;
+using HuntingDog.Core;
+using HuntingDog.DogEngine;
+using HuntingDog.Properties;
 
 namespace HuntingDog.DogFace
 {
-    public class ItemFactory
+    public static class ItemFactory
     {
-        static BitmapImage imageT = CreateBitmapImage(HuntingDog.Properties.Resources.table_sql);
+        private static Log log = LogFactory.GetLog();
 
-        static BitmapImage imageS = CreateBitmapImage(HuntingDog.Properties.Resources.scroll);
+        private static BitmapImage TableIcon = Resources.table_sql.ToBitmapImage();
 
-        static BitmapImage imageF = CreateBitmapImage(HuntingDog.Properties.Resources.text_formula);
+        private static BitmapImage StoredProcedureIcon = Resources.scroll.ToBitmapImage();
 
-        static BitmapImage imageV = CreateBitmapImage(HuntingDog.Properties.Resources.text_align_center);
+        private static BitmapImage FunctionIcon = Resources.text_formula.ToBitmapImage();
 
-        static BitmapImage imageRightBlue = CreateBitmapImage(HuntingDog.Properties.Resources.arrow_right_blue);
+        private static BitmapImage ViewIcon = Resources.text_align_center.ToBitmapImage();
 
-        static BitmapImage imageRightGreen = CreateBitmapImage(HuntingDog.Properties.Resources.arrow_right_green);
+        private static BitmapImage DatabaseIcon = Resources.database.ToBitmapImage();
 
-        static BitmapImage imageRow = CreateBitmapImage(HuntingDog.Properties.Resources.row);
+        private static BitmapImage ComputerIcon = Resources.workplace2.ToBitmapImage();
 
-        static BitmapImage imageWrench = CreateBitmapImage(HuntingDog.Properties.Resources.wrench);
-
-        static BitmapImage imageDb1 = CreateBitmapImage(HuntingDog.Properties.Resources.database);
-
-        static BitmapImage imageSer = CreateBitmapImage(HuntingDog.Properties.Resources.computer);
-
-        static BitmapImage imageSearch = CreateBitmapImage(HuntingDog.Properties.Resources.search);
-
-        static BitmapImage imageRightArrow = CreateBitmapImage(HuntingDog.Properties.Resources.next);
-
-        static BitmapImage imageEdit = CreateBitmapImage(HuntingDog.Properties.Resources.edit);
-
-        static BitmapImage imageProcess = CreateBitmapImage(HuntingDog.Properties.Resources.process);
-
-        static BitmapImage imagePageEdit = CreateBitmapImage(HuntingDog.Properties.Resources.page_edit);
-
-        static BitmapImage imageForwardBlue = CreateBitmapImage(HuntingDog.Properties.Resources.forward_blue);
-
-        static BitmapImage imageFoot = CreateBitmapImage(HuntingDog.Properties.Resources.footprint);
-
-        static BitmapImage imageWorkplace = CreateBitmapImage(HuntingDog.Properties.Resources.workplace2);
-
-        private static BitmapImage CreateBitmapImage(Bitmap bitmap)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            }
-
-            return bitmapImage;
-        }
-
-        public static List<Item> BuildFromEntries(IEnumerable<HuntingDog.DogEngine.Entity> sourceList)
+        public static List<Item> BuildFromEntries(IEnumerable<Entity> entities)
         {
             var items = new List<Item>();
 
-            foreach (var source in sourceList)
+            foreach (var entity in entities)
             {
-                var uiEntry = new Item() { Name = source.FullName, Entity = source };
-
-                uiEntry.Keywords = source.Keywords;
-
-                if (source.IsTable)
+                var item = new Item
                 {
-                    uiEntry.Image = imageT;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    Name = entity.FullName,
+                    Entity = entity
+                };
+
+                item.Keywords = entity.Keywords;
+
+                if (entity.IsTable)
+                {
+                    item.Image = TableIcon;
+                    item.Actions.Add(new Action
                     {
                         Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.SelectFromTable(selectedServer, uiEntry.Entity);
+                            studioController.SelectFromTable(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Edit Data",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.EditTableData(selectedServer, uiEntry.Entity);
+                            studioController.EditTableData(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Design Table",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.DesignTable(selectedServer, uiEntry.Entity);
+                            studioController.DesignTable(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Script Table",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ScriptTable(selectedServer, uiEntry.Entity);
+                            studioController.ScriptTable(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.MainObjectTooltip = "Enter or Double Click to Select from Table";
+                    item.MainObjectTooltip = "Enter or Double Click to Select from Table";
                 }
-                else if (source.IsProcedure)
+                else if (entity.IsProcedure)
                 {
-                    uiEntry.Image = imageS;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Image = StoredProcedureIcon;
+                    item.Actions.Add(new Action
                     {
                         Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ModifyProcedure(selectedServer, uiEntry.Entity);
+                            studioController.ModifyProcedure(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ExecuteProcedure(selectedServer, uiEntry.Entity);
+                            studioController.ExecuteProcedure(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Procedure";
+                    item.MainObjectTooltip = "Enter or Double Click to Modify Procedure";
                 }
-                else if (source.IsView)
+                else if (entity.IsView)
                 {
-                    uiEntry.Image = imageV;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Image = ViewIcon;
+                    item.Actions.Add(new Action
                     {
                         Name = "Select Data",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.SelectFromView(selectedServer, uiEntry.Entity);
+                            studioController.SelectFromView(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Modify View",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ModifyView(selectedServer, uiEntry.Entity);
+                            studioController.ModifyView(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.MainObjectTooltip = "Enter or Double Click to Select from View";
+                    item.MainObjectTooltip = "Enter or Double Click to Select from View";
                 }
-                else
+                else if (entity.IsFunction)
                 {
-                    uiEntry.Image = imageF;
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Image = FunctionIcon;
+                    item.Actions.Add(new Action
                     {
                         Name = "Modify",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ModifyFunction(selectedServer, uiEntry.Entity);
+                            studioController.ModifyFunction(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                    item.Actions.Add(new Action
                     {
                         Name = "Execute",
                         Routine = (studioController, selectedServer) =>
                         {
-                            studioController.ExecuteFunction(selectedServer, uiEntry.Entity);
+                            studioController.ExecuteFunction(selectedServer, item.Entity);
                         }
                     });
-                    uiEntry.MainObjectTooltip = "Enter or Double Click to Modify Function";
+                    item.MainObjectTooltip = "Enter or Double Click to Modify Function";
+                }
+                else
+                {
+                    log.Error(String.Format("Cannot determine the type of the '{0}' entity", entity.Name));
                 }
 
-                uiEntry.Actions.Add(new HuntingDog.DogFace.Items.Action
+                item.Actions.Add(new Action
                 {
                     Name = "Locate",
                     Routine = (studioController, selectedServer) =>
                     {
-                        studioController.NavigateObject(selectedServer, uiEntry.Entity);
+                        studioController.NavigateObject(selectedServer, item.Entity);
                     }
                 });
 
-                items.Add(uiEntry);
+                items.Add(item);
             }
 
             return items;
         }
 
-        public static List<Item> BuildDatabase(IEnumerable<String> sources)
+        public static List<Item> BuildDatabase(IEnumerable<String> databaseNames)
         {
-            var res = new List<Item>();
+            var items = new List<Item>();
 
-            foreach (var dbName in sources)
+            foreach (var databaseName in databaseNames)
             {
-                res.Add(new Item() { Name = dbName, Image = imageDb1 });
-            }
-
-            return res;
-        }
-
-        public static List<Item> BuildServer(IEnumerable<String> sources)
-        {
-            var res = new List<Item>();
-
-            foreach (var srvName in sources)
-            {
-                res.Add(new Item() { Name = srvName, Image = imageWorkplace });
-            }
-
-            res.Sort((x, y) => String.Compare(x.Name, y.Name));
-
-            return res;
-        }
-
-        public static List<ProcedureParamItem> BuildProcedureParmeters(IEnumerable<HuntingDog.DogEngine.ProcedureParameter> paramList)
-        {
-            var res = new List<ProcedureParamItem>();
-
-            foreach (var par in paramList)
-            {
-                var viewParam = new ProcedureParamItem();
-                viewParam.Name = par.Name;
-                viewParam.Type = par.Type;
-
-                if (par.IsOut)
+                items.Add(new Item
                 {
-                    viewParam.Out = "OUT";
-                }
-
-                res.Add(viewParam);
+                    Name = databaseName,
+                    Image = DatabaseIcon
+                });
             }
 
-            return res;
+            // TODO: In the BuildServer method the server names are being sorted.
+            //       Do we not expect the same behavior here as well?
+
+            return items;
         }
 
-        internal static List<TableParamItem> BuildTableColumns(List<DogEngine.TableColumn> columns)
+        public static List<Item> BuildServer(IEnumerable<String> serverNames)
         {
-            var res = new List<TableParamItem>();
+            var items = new List<Item>();
 
-            foreach (var par in columns)
+            foreach (var serverName in serverNames)
             {
-                var viewParam = new TableParamItem();
-                viewParam.Name = par.Name;
-                viewParam.Type = par.Type;
-                viewParam.IsPrimaryKey = par.IsPrimaryKey;
-                viewParam.IsForeignKey = par.IsForeignKey;
-                res.Add(viewParam);
+                items.Add(new Item
+                {
+                    Name = serverName,
+                    Image = ComputerIcon
+                });
             }
 
-            return res;
-        }
+            items.Sort((x, y) => String.Compare(x.Name, y.Name));
 
-        internal static List<FunctionParamItem> BuildProcedureParmeters(List<DogEngine.FunctionParameter> funcParameters)
-        {
-            return funcParameters.ConvertAll<FunctionParamItem>(x => new FunctionParamItem() { Name = x.Name, Type = x.Type });
-        }
-
-        internal static List<ViewParamItem> BuildViewColumns(List<DogEngine.TableColumn> columns)
-        {
-            return columns.ConvertAll<ViewParamItem>(x => new ViewParamItem()
-            {
-                Name = x.Name,
-                Type = x.Type,
-                IsForeignKey = x.IsForeignKey,
-                IsPrimaryKey = x.IsPrimaryKey
-            });
+            return items;
         }
     }
 }

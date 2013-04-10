@@ -11,12 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Art", "Art", "{4C22589C-A7AE-4442-82F4-87BDC1C83028}"
 	ProjectSection(SolutionItems) = preProject
-		Resources\Art\computer.png = Resources\Art\computer.png
 		Resources\Art\database.png = Resources\Art\database.png
-		Resources\Art\edit.png = Resources\Art\edit.png
 		Resources\Art\forward_blue.png = Resources\Art\forward_blue.png
-		Resources\Art\next.png = Resources\Art\next.png
-		Resources\Art\page_edit.png = Resources\Art\page_edit.png
 		Resources\Art\process.png = Resources\Art\process.png
 		Resources\Art\search.png = Resources\Art\search.png
 		Resources\Art\warning.png = Resources\Art\warning.png
@@ -24,17 +20,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Art", "Art", "{4C22589C-A7A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C45BD9AF-6E2F-486E-BC3D-271F7F7B3042}"
 	ProjectSection(SolutionItems) = preProject
-		Resources\Images\arrow_right_blue.png = Resources\Images\arrow_right_blue.png
-		Resources\Images\arrow_right_green.png = Resources\Images\arrow_right_green.png
 		Resources\Images\cpu.png = Resources\Images\cpu.png
-		Resources\Images\row.png = Resources\Images\row.png
 		Resources\Images\scroll.png = Resources\Images\scroll.png
 		Resources\Images\server.png = Resources\Images\server.png
 		Resources\Images\table_sql.png = Resources\Images\table_sql.png
 		Resources\Images\text_align_center.png = Resources\Images\text_align_center.png
 		Resources\Images\text_formula.png = Resources\Images\text_formula.png
 		Resources\Images\workplace2.png = Resources\Images\workplace2.png
-		Resources\Images\wrench.png = Resources\Images\wrench.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{542FFDC0-C4B9-4717-ABF6-CC36E859265C}"

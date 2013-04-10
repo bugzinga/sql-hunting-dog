@@ -12,7 +12,7 @@ namespace HuntingDog.DogEngine.Impl
 {
     class DatabaseLoader : IDatabaseLoader
     {
-        private static readonly Log log = LogFactory.GetLog(typeof(DatabaseLoader));
+        protected readonly Log log = LogFactory.GetLog();
 
         private SqlConnectionInfo connectionInfo;
 

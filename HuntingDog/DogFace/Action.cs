@@ -2,7 +2,7 @@
 using System;
 using HuntingDog.DogEngine;
 
-namespace HuntingDog.DogFace.Items
+namespace HuntingDog.DogFace
 {
     public class Action
     {

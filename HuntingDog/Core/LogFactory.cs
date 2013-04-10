@@ -4,6 +4,7 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace HuntingDog.Core
 {
@@ -30,8 +31,26 @@ namespace HuntingDog.Core
             LogManager.Configuration = config;
         }
 
-        public static Log GetLog(Type type)
+        public static Log GetLog(Type type = null)
         {
+            if (type == null)
+            {
+                var stackTrace = new StackTrace(1);
+                var callerFrame = stackTrace.GetFrame(0);
+
+                foreach (var frame in stackTrace.GetFrames())
+                {
+                    if (!frame.GetMethod().IsConstructor)
+                    {
+                        break;
+                    }
+
+                    callerFrame = frame;
+                }
+
+                type = callerFrame.GetMethod().ReflectedType;
+            }
+            
             if (!loggers.ContainsKey(type))
             {
                 loggers[type] = new Log(type);

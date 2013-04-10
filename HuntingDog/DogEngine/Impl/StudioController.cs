@@ -24,7 +24,7 @@ namespace HuntingDog.DogEngine.Impl
 
         public event Action<List<String>> OnServersRemoved;
 
-        private static readonly Log log = LogFactory.GetLog(typeof(StudioController));
+        private readonly Log log = LogFactory.GetLog();
 
         private static readonly String windowId = "{7146B360-D37D-44A1-8D4C-5E7E36EA81D4}";
 
