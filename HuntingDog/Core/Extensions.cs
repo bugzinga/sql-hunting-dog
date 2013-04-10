@@ -31,11 +31,11 @@ namespace HuntingDog.Core
             }
             catch (Exception ex)
             {
-                var errorMessage = (context != null)
+                var contextMessage = (context != null)
                     ? (context + ": ")
                     : String.Empty;
 
-                LogFactory.GetLog(o.GetType()).Error((errorMessage + ex.Message), ex);
+                LogFactory.GetLog(o.GetType()).Error((contextMessage + ex.Message), ex);
 
                 success = false;
             }
