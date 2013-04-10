@@ -6,6 +6,8 @@ namespace HuntingDog.Core
 {
     public class PerformanceAnalyzer
     {
+        private readonly Boolean disabled = false;
+
         private readonly Log log = LogFactory.GetLog();
 
         private readonly Object synchronizer = new Object();
@@ -14,11 +16,21 @@ namespace HuntingDog.Core
 
         public PerformanceAnalyzer()
         {
+            if (disabled)
+            {
+                return;
+            }
+
             Start();
         }
 
         ~PerformanceAnalyzer()
         {
+            if (disabled)
+            {
+                return;
+            }
+
             lock (synchronizer)
             {
                 if (watcher.IsRunning)
@@ -30,6 +42,11 @@ namespace HuntingDog.Core
 
         public void Start()
         {
+            if (disabled)
+            {
+                return;
+            }
+
             lock (synchronizer)
             {
                 if (watcher.IsRunning)
@@ -45,6 +62,11 @@ namespace HuntingDog.Core
 
         public Stopwatch Stop()
         {
+            if (disabled)
+            {
+                return Result;
+            }
+
             lock (synchronizer)
             {
                 if (!watcher.IsRunning)

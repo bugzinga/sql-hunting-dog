@@ -80,6 +80,9 @@ namespace HuntingDog.DogFace
 
         private void DisplayResultItem(Item resultItem)
         {
+            log.Message("Updating item UI ranges");
+            var analyzer = new PerformanceAnalyzer();
+
             Inlines.Clear();
             runs.Clear();
 
@@ -117,11 +120,17 @@ namespace HuntingDog.DogFace
                     Inlines.Add(run);
                 }
             }
+
+            log.Performance("Item UI ranges updated", analyzer.Result);
+            analyzer.Stop();
         }
 
         private List<Range<Int32>> FindMatchingKeyworkRanges(Item resultItem)
         {
             var ranges = new List<Range<Int32>>();
+
+            log.Message(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", resultItem.Name, String.Join(", ", resultItem.Keywords.ToArray())));
+            var analyzer = new PerformanceAnalyzer();
 
             foreach (var keyword in resultItem.Keywords)
             {
@@ -140,6 +149,9 @@ namespace HuntingDog.DogFace
                     ranges.Add(new Range<Int32>() { Start = startIndex++, End = endIndex });
                 }
             }
+
+            log.Performance("Search time", analyzer.Result);
+            analyzer.Stop();
 
             return ranges;
         }

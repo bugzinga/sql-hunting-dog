@@ -7,6 +7,8 @@ namespace HuntingDog.Core
 {
     public class Range<T> where T : IComparable
     {
+        private static readonly Log log = LogFactory.GetLog();
+
         public T Start
         {
             get;
@@ -27,6 +29,9 @@ namespace HuntingDog.Core
             {
                 return mergedList;
             }
+
+            log.Message(String.Format("Merging keyword ranges: {0} range(s)", ranges.Count()));
+            var analyzer = new PerformanceAnalyzer();
 
             // TODO: This will fail if some element from the list is null.
             //       C# collections generally accepts nulls as their elements.
@@ -54,6 +59,9 @@ namespace HuntingDog.Core
             }
 
             mergedList.Add(new Range<T> { Start = start, End = end });
+
+            log.Performance("Keyword ranges merged", analyzer.Result);
+            analyzer.Stop();
 
             return mergedList;
         }

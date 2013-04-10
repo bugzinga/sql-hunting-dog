@@ -239,7 +239,7 @@ namespace HuntingDog.DogFace
 
         void StudioController_OnServersAdded(List<String> listAdded)
         {
-            log.Message("Face: server added." + (listAdded.Count > 0 ? listAdded[0] : String.Empty));
+            log.Message("Server added: " + ((listAdded.Count) > 0 ? listAdded[0] : String.Empty));
 
             InvokeInUI(() =>
             {
@@ -477,7 +477,13 @@ namespace HuntingDog.DogFace
 
         private void txtSearch_TextChanged(Object sender, TextChangedEventArgs e)
         {
+            log.Message(String.Format("Search text changed to '{0}'", txtSearch.Text));
+            var analyzer = new PerformanceAnalyzer();
+
             DoSearch(false);
+
+            log.Performance("Text changed event handled", analyzer.Result);
+            analyzer.Stop();
         }
 
         void DoSearch(Boolean forceSearch)
@@ -577,6 +583,9 @@ namespace HuntingDog.DogFace
 
             InvokeInUI(() =>
             {
+                log.Message("Updating UI items");
+                var analyzer = new PerformanceAnalyzer();
+
                 var items = ItemFactory.BuildFromEntries(result);
 
                 itemsControl.ItemsSource = items;
@@ -593,6 +602,9 @@ namespace HuntingDog.DogFace
                     gridEmptyResult.Visibility = System.Windows.Visibility.Collapsed;
                     itemsControl.Visibility = System.Windows.Visibility.Visible;
                 }
+
+                log.Performance("UI items updated", analyzer.Result);
+                analyzer.Stop();
             });
 
             if (result.Count == 0)
