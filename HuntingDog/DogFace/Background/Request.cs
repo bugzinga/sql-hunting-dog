@@ -11,7 +11,7 @@ namespace HuntingDog.DogFace.Background
             set;
         }
 
-        public Int32 RequestType
+        public RequestType RequestType
         {
             get;
             set;

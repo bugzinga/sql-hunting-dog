@@ -104,8 +104,7 @@ namespace HuntingDog.DogEngine.Impl
 
         void FillDatabase(IDatabaseDictionary databaseDictionary)
         {
-            var timer = new Stopwatch();
-            timer.Start();
+            var analyzer = new PerformanceAnalyzer();
 
             Database d = null;
 
@@ -123,12 +122,13 @@ namespace HuntingDog.DogEngine.Impl
 
             // do not need to refresh database RefresDatabase(d);
 
-            log.Performance("Refreshing database " + databaseDictionary.DatabaseName, timer);
+            log.Performance("Refreshing database " + databaseDictionary.DatabaseName, analyzer.Result);
 
             LoadObjects(d, databaseDictionary);
             databaseDictionary.MarkAsLoaded();
 
-            log.Performance("Loading database " + databaseDictionary.DatabaseName, timer);
+            log.Performance("Loading database " + databaseDictionary.DatabaseName, analyzer.Result);
+            analyzer.Stop();
         }
 
         void LoadObjects(Database d, IDatabaseDictionary databaseDictionary)
@@ -137,30 +137,21 @@ namespace HuntingDog.DogEngine.Impl
             {
                 try
                 {
-                    var timer = new Stopwatch();
-                    timer.Start();
+                    var analyzer = new PerformanceAnalyzer();
 
                     LoadTables(d, databaseDictionary);
+                    log.Performance("Loading tables " + d.Name, analyzer.Result);
 
-                    log.Performance("Loading tables " + d.Name, timer);
-
-                    timer.Reset();
-                    timer.Start();
                     LoadStoredProcs(d, databaseDictionary);
+                    log.Performance("Loading procedures " + d.Name, analyzer.Result);
 
-                    log.Performance("Loading procedures " + d.Name, timer);
-
-                    timer.Reset();
-                    timer.Start();
                     LoadViews(d, databaseDictionary);
-
-                    log.Performance("Loading views " + d.Name, timer);
-                    timer.Reset();
-                    timer.Start();
+                    log.Performance("Loading views " + d.Name, analyzer.Result);
 
                     LoadFunctions(d, databaseDictionary);
+                    log.Performance("Loading functions " + d.Name, analyzer.Result);
 
-                    log.Performance("Loading functions " + d.Name, timer);
+                    analyzer.Stop();
                 }
                 catch (Exception ex)
                 {

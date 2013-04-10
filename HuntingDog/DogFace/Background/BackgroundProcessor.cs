@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
+using HuntingDog.Core;
 
 namespace HuntingDog.DogFace.Background
 {
     public class BackgroundProcessor
     {
+        protected readonly Log log = LogFactory.GetLog();
+
         public delegate void DoWork(Object arg);
 
         public event Action<Request, Exception> RequestFailed;
@@ -42,19 +45,25 @@ namespace HuntingDog.DogFace.Background
 
                 while (processRequest)
                 {
-                    Request req = GetRequest();
+                    var request = GetRequest();
 
-                    if (req != null)
+                    if (request != null)
                     {
                         try
                         {
-                            req.DoWorkFunction(req.Argument);
+                            log.Message(String.Format("Processing request: type = {0}, parameter = {{ {1} }}", request.RequestType.ToString(), request.Argument));
+                            var analyzer = new PerformanceAnalyzer();
+
+                            request.DoWorkFunction(request.Argument);
+                            
+                            analyzer.Stop();
+                            log.Performance("Request process time", analyzer.Result);
                         }
                         catch (Exception ex)
                         {
                             if (RequestFailed != null)
                             {
-                                RequestFailed.Invoke(req, ex);
+                                RequestFailed.Invoke(request, ex);
                             }
                         }
                     }
@@ -72,7 +81,7 @@ namespace HuntingDog.DogFace.Background
             thread.Join();
         }
 
-        public void AddRequest(DoWork workingFunction, Object arg, Int32 requestType, Boolean deleteSameRequests)
+        public void AddRequest(DoWork workingFunction, Object arg, RequestType requestType, Boolean deleteSameRequests)
         {
             lock (this)
             {

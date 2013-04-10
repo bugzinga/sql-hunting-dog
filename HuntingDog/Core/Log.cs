@@ -45,7 +45,7 @@ namespace HuntingDog.Core
                 postfix = "ms";
             }
 
-            Message(String.Format("Performance: {0} - {1} {2}", operation, time, postfix));
+            logger.Trace(String.Format("Performance: {0} - {1} {2}", operation, time, postfix));
         }
     }
 }

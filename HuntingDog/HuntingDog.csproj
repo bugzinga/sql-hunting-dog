@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\PerformanceAnalyzer.cs" />
     <Compile Include="Core\Range.cs" />
     <Compile Include="DogEngine\Entity.cs" />
     <Compile Include="DogEngine\FunctionParameter.cs" />

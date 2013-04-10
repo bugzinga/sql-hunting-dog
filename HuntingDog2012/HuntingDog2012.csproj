@@ -137,6 +137,9 @@
     <Compile Include="..\HuntingDog\Core\LogFactory.cs">
       <Link>Core\LogFactory.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\Core\PerformanceAnalyzer.cs">
+      <Link>Core\PerformanceAnalyzer.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Core\Range.cs">
       <Link>Core\Range.cs</Link>
     </Compile>

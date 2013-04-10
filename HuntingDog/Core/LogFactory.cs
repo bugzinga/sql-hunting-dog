@@ -12,7 +12,7 @@ namespace HuntingDog.Core
     {
         private const String DefaultLogFileName = "${basedir}/Logs/HuntingDog.log";
 
-        private const String DefaultLogLayout = "[${logger}] ${message} ${exception:format=tostring}";
+        private const String DefaultLogLayout = "${longdate} ${level:uppercase=true:padding=-5} [${logger:shortName=true}] ${message} ${exception:format=tostring}";
 
         private static readonly Dictionary<Type, Log> loggers = new Dictionary<Type, Log>();
 

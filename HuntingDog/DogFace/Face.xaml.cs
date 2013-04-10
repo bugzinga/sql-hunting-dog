@@ -51,6 +51,11 @@ namespace HuntingDog.DogFace
                 get;
                 set;
             }
+
+            public override String ToString()
+            {
+                return String.Format("Server: {0}, Database: {1}, Text: '{2}'", Srv, Database, Text);
+            }
         }
 
         enum ERquestType : int
@@ -487,7 +492,7 @@ namespace HuntingDog.DogFace
                     sp.Text = txtSearch.Text;
                     sp.Database = SelectedDatabase;
                     sp.ForceSearch = forceSearch;
-                    _processor.AddRequest(Async_PerformSearch, sp, (int) RequestType.Search, true);
+                    _processor.AddRequest(Async_PerformSearch, sp, RequestType.Search, true);
                     _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
                 }
                 else
@@ -1070,7 +1075,7 @@ namespace HuntingDog.DogFace
             {
                 if (SelectedDatabase != null)
                 {
-                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<String, String>(SelectedServer, SelectedDatabase), (Int32) ERquestType.RefreshSearch, true);
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<String, String>(SelectedServer, SelectedDatabase), (RequestType) (Int32) ERquestType.RefreshSearch, true);
                 }
             }
         }
