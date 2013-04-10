@@ -11,9 +11,7 @@ namespace HuntingDog.DogFace
         {
             var diff = Double.Parse(parameter.ToString());
 
-            // var desiredWidth =  ((double)value - 8);
             var desiredWidth = ((Double) value - diff);
-            //desiredWidth -= 80;
 
             if (desiredWidth < 100)
             {
