@@ -1,28 +1,14 @@
-﻿using System;
-using Extensibility;
+﻿
+using System;
+using System.Diagnostics;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.CommandBars;
-using System.Resources;
-using System.Reflection;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Diagnostics;
-
-using Microsoft.SqlServer.Management.UI.VSIntegration;
-using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
-using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-
 
 namespace DatabaseObjectSearcher
 {
     public class EventWatcher
     {
-
         #region EventWatcher fields
         private EnvDTE.WindowEvents _windowsEvents;
         private EnvDTE.TextEditorEvents _textEditorEvents;
@@ -160,7 +146,6 @@ namespace DatabaseObjectSearcher
            
 
         }
-
 
         #region Events
 

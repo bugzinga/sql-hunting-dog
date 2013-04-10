@@ -1,18 +1,15 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using HuntingDog.Core;
-using HuntingDog.DogEngine;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
-using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 
 namespace DatabaseObjectSearcher
 {
@@ -278,7 +275,6 @@ namespace DatabaseObjectSearcher
                 return name + " = ''" + " -- " + MakeParameterType(parType);
         }
 
-
         private static string MakeParameter(StoredProcedureParameter par)
         {
             if (!string.IsNullOrEmpty(par.DefaultValue))
@@ -286,7 +282,6 @@ namespace DatabaseObjectSearcher
 
             return MakeParameterWithValue(par.Name, par.DataType, false);
         }
-
 
         private static string MakeParameterForFunction(UserDefinedFunctionParameter parType)
         {
@@ -337,7 +332,6 @@ namespace DatabaseObjectSearcher
                 log.Error("ExecuteStoredProc failed.", ex);
             }
         }
-
 
         public static void ExecuteFunction(UserDefinedFunction func, SqlConnectionInfo connInfo)
         {

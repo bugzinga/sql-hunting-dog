@@ -60,7 +60,6 @@ namespace HuntingDog.DogEngine
             }
         }
 
-
         public String Schema
         {
             get
