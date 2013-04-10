@@ -71,7 +71,7 @@ namespace HuntingDog.Core
             {
                 if (!watcher.IsRunning)
                 {
-                    log.Error("Cannot start: analyzer is still working");
+                    log.Error("Cannot stop: analyzer is not working");
                     return null;
                 }
 
