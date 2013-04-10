@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 
 namespace HuntingDog.DogFace.Background
@@ -19,7 +20,7 @@ namespace HuntingDog.DogFace.Background
 
         private Thread thread;
 
-        private List<Request> requests = new List<Request>();
+        private LinkedList<Request> requests = new LinkedList<Request>();
 
         public BackgroundProcessor()
         {
@@ -79,7 +80,7 @@ namespace HuntingDog.DogFace.Background
             {
                 if (deleteSameRequests)
                 {
-                    var sameTypeRequests = requests.FindAll(x => (x.RequestType == requestType));
+                    var sameTypeRequests = requests.Where(x => (x.RequestType == requestType));
 
                     foreach (Request request in sameTypeRequests)
                     {
@@ -87,12 +88,14 @@ namespace HuntingDog.DogFace.Background
                     }
                 }
 
-                var newReq = new Request();
-                newReq.DoWorkFunction = workingFunction;
-                newReq.RequestType = requestType;
-                newReq.Argument = arg;
-                requests.Add(newReq);
+                var newReq = new Request
+                {
+                    DoWorkFunction = workingFunction,
+                    RequestType = requestType,
+                    Argument = arg
+                };
 
+                requests.AddLast(newReq);
                 doWork.Set();
             }
         }
@@ -103,10 +106,10 @@ namespace HuntingDog.DogFace.Background
 
             lock (this)
             {
-                if (requests.Count > 0)
+                if (requests.Any())
                 {
-                    request = requests[0];
-                    requests.RemoveAt(0);
+                    request = requests.First.Value;
+                    requests.RemoveFirst();
                 }
             }
 
