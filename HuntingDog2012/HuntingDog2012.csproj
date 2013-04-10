@@ -176,8 +176,17 @@
     <Compile Include="..\HuntingDog\DogFace\Action.cs">
       <Link>DogFace\Action.cs</Link>
     </Compile>
-    <Compile Include="..\HuntingDog\DogFace\BackgroundProcessor.cs">
-      <Link>DogFace\BackgroundProcessor.cs</Link>
+    <Compile Include="..\HuntingDog\DogFace\Background\BackgroundProcessor.cs">
+      <Link>DogFace\Background\BackgroundProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\IRequestCompleted.cs">
+      <Link>DogFace\Background\IRequestCompleted.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\Request.cs">
+      <Link>DogFace\Background\Request.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\RequestType.cs">
+      <Link>DogFace\Background\RequestType.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\BitmapConverter.cs">
       <Link>DogFace\BitmapConverter.cs</Link>

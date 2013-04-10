@@ -128,7 +128,10 @@
     <Compile Include="DogEngine\Impl\StudioController.cs" />
     <Compile Include="DogEngine\ProcedureParameter.cs" />
     <Compile Include="DogEngine\TableColumn.cs" />
-    <Compile Include="DogFace\BackgroundProcessor.cs" />
+    <Compile Include="DogFace\Background\BackgroundProcessor.cs" />
+    <Compile Include="DogFace\Background\IRequestCompleted.cs" />
+    <Compile Include="DogFace\Background\Request.cs" />
+    <Compile Include="DogFace\Background\RequestType.cs" />
     <Compile Include="DogFace\BitmapConverter.cs" />
     <Compile Include="DogFace\Face.xaml.cs">
       <DependentUpon>Face.xaml</DependentUpon>

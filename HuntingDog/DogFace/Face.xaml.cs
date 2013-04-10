@@ -9,9 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using DatabaseObjectSearcherUI;
 using HuntingDog.Core;
 using HuntingDog.DogEngine;
+using HuntingDog.DogFace.Background;
 
 namespace HuntingDog.DogFace
 {
@@ -183,7 +183,7 @@ namespace HuntingDog.DogFace
 
                 _userPref = UserPreferencesStorage.Load();
 
-                _processor.RequestFailed += new Action<BackgroundProcessor.Request, Exception>(_processor_RequestFailed);
+                _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
                 StudioController.OnServersAdded += new System.Action<List<String>>(StudioController_OnServersAdded);
                 StudioController.OnServersRemoved += new System.Action<List<String>>(StudioController_OnServersRemoved);
@@ -302,7 +302,7 @@ namespace HuntingDog.DogFace
             });
         }
 
-        void _processor_RequestFailed(BackgroundProcessor.Request arg1, Exception arg2)
+        void _processor_RequestFailed(Request arg1, Exception arg2)
         {
             SetStatus("Error:" + arg2.Message);
             // notify user about an error
@@ -487,7 +487,7 @@ namespace HuntingDog.DogFace
                     sp.Text = txtSearch.Text;
                     sp.Database = SelectedDatabase;
                     sp.ForceSearch = forceSearch;
-                    _processor.AddRequest(Async_PerformSearch, sp, (int) ReqType.Search, true);
+                    _processor.AddRequest(Async_PerformSearch, sp, (int) RequestType.Search, true);
                     _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
                 }
                 else
