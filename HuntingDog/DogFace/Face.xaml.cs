@@ -174,7 +174,7 @@ namespace HuntingDog.DogFace
 
         public Face()
         {
-            log.Message("XAML Face Constructed.");
+            log.Info("XAML Face Constructed.");
             InitializeComponent();
         }
 
@@ -182,7 +182,7 @@ namespace HuntingDog.DogFace
         {
             try
             {
-                log.Message("XAML Loaded...");
+                log.Info("XAML Loaded...");
 
                 var scroll = itemsControl.FindChild<ScrollContentPresenter>();
 
@@ -239,7 +239,7 @@ namespace HuntingDog.DogFace
 
         void StudioController_OnServersAdded(List<String> listAdded)
         {
-            log.Message("Server added: " + ((listAdded.Count) > 0 ? listAdded[0] : String.Empty));
+            log.Info("Server added: " + ((listAdded.Count) > 0 ? listAdded[0] : String.Empty));
 
             InvokeInUI(() =>
             {
@@ -251,14 +251,14 @@ namespace HuntingDog.DogFace
                 if (_serverList.Count == 1)
                 {
                     cbServer.SelectedIndex = 0;
-                    log.Message("Face: first server is selected.");
+                    log.Info("Face: first server is selected.");
                 }
             });
         }
 
         void StudioController_OnServersRemoved(List<String> removedList)
         {
-            log.Message("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
+            log.Info("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
 
             InvokeInUI(() =>
             {
@@ -276,12 +276,12 @@ namespace HuntingDog.DogFace
                     // move selection to first available server                
                     if (_serverList.Count > 0)
                     {
-                        log.Message("Face: Selected Server was removed. Move focus to first server in list");
+                        log.Info("Face: Selected Server was removed. Move focus to first server in list");
                         cbServer.SelectedIndex = 0;
                     }
                     else
                     {
-                        log.Message("Face: Selected Server was removed. Server list is empty.Clear everything");
+                        log.Info("Face: Selected Server was removed. Server list is empty.Clear everything");
                         cbDatabase.ItemsSource = null;
                     }
                 }
@@ -290,7 +290,7 @@ namespace HuntingDog.DogFace
 
         void StudioController_OnServersChanged()
         {
-            log.Message("Face: server list changed.");
+            log.Info("Face: server list changed.");
 
             InvokeInUI(() =>
             {
@@ -316,7 +316,7 @@ namespace HuntingDog.DogFace
 
         public void ReloadServers()
         {
-            log.Message("Reloading Servers - initiated by user");
+            log.Info("Reloading Servers - initiated by user");
             var servers = StudioController.ListServers();
             _serverList.Clear();
 
@@ -325,7 +325,7 @@ namespace HuntingDog.DogFace
                 _serverList.Add(item);
             }
 
-            log.Message("Reloading Servers - loaded:" + _serverList.Count + " servers.");
+            log.Info("Reloading Servers - loaded:" + _serverList.Count + " servers.");
             cbServer.ItemsSource = _serverList;
 
             if (_serverList.Count == 1)
@@ -477,7 +477,7 @@ namespace HuntingDog.DogFace
 
         private void txtSearch_TextChanged(Object sender, TextChangedEventArgs e)
         {
-            log.Message(String.Format("Search text changed to '{0}'", txtSearch.Text));
+            log.Info(String.Format("Search text changed to '{0}'", txtSearch.Text));
             var analyzer = new PerformanceAnalyzer();
 
             DoSearch(false);
@@ -575,7 +575,7 @@ namespace HuntingDog.DogFace
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
             {
-                log.Message("Cancelled search request because new request was added. " + par.Text);
+                log.Info("Cancelled search request because new request was added. " + par.Text);
                 return;
             }
 
@@ -583,7 +583,7 @@ namespace HuntingDog.DogFace
 
             InvokeInUI(() =>
             {
-                log.Message("Updating UI items");
+                log.Info("Updating UI items");
                 var analyzer = new PerformanceAnalyzer();
 
                 var items = ItemFactory.BuildFromEntries(result);

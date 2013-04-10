@@ -444,7 +444,7 @@ namespace DatabaseObjectSearcher
         {
             if (tbl.State == SqlSmoState.Dropped)
             {
-                log.Message("trying to design dropped table.");
+                log.Info("trying to design dropped table.");
                 return;
             }
 
@@ -459,7 +459,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                log.Message("trying to open dropped table.");
+                log.Info("trying to open dropped table.");
                 return;
             }
 

@@ -102,7 +102,7 @@ namespace HuntingDog.DogFace
             }
             catch (Exception ex)
             {
-                log.Message("Could not load user preferences:" + ex.Message);
+                log.Info("Could not load user preferences:" + ex.Message);
             }
 
             return new UserPreferencesStorage();

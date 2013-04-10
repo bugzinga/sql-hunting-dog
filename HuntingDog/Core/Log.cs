@@ -14,7 +14,7 @@ namespace HuntingDog.Core
             logger = LogManager.GetLogger(type.FullName);
         }
 
-        public void Message(String message)
+        public void Info(String message)
         {
             logger.Info(message);
         }

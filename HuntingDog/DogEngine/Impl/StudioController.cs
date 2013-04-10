@@ -142,12 +142,12 @@ namespace HuntingDog.DogEngine.Impl
                             {
                                 if (removed.Any())
                                 {
-                                    log.Message("Found " + removed.Count.ToString() + " disconnected server");
+                                    log.Info("Found " + removed.Count.ToString() + " disconnected server");
                                 }
 
                                 if (removed.Any())
                                 {
-                                    log.Message("Found " + added.Count.ToString() + " connected server");
+                                    log.Info("Found " + added.Count.ToString() + " connected server");
                                 }
 
                                 var removedNameList = removed.Select(x => x.ServerName).ToList();

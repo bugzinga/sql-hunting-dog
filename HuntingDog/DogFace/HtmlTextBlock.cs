@@ -80,7 +80,7 @@ namespace HuntingDog.DogFace
 
         private void DisplayResultItem(Item resultItem)
         {
-            log.Message("Updating item UI ranges");
+            log.Info("Updating item UI ranges");
             var analyzer = new PerformanceAnalyzer();
 
             Inlines.Clear();
@@ -129,7 +129,7 @@ namespace HuntingDog.DogFace
         {
             var ranges = new List<Range<Int32>>();
 
-            log.Message(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", resultItem.Name, String.Join(", ", resultItem.Keywords.ToArray())));
+            log.Info(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", resultItem.Name, String.Join(", ", resultItem.Keywords.ToArray())));
             var analyzer = new PerformanceAnalyzer();
 
             foreach (var keyword in resultItem.Keywords)

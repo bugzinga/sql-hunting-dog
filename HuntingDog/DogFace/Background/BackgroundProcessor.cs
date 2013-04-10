@@ -51,7 +51,7 @@ namespace HuntingDog.DogFace.Background
                     {
                         try
                         {
-                            log.Message(String.Format("Processing request: type = {0}, parameter = {{ {1} }}", request.RequestType.ToString(), request.Argument));
+                            log.Info(String.Format("Processing request: type = {0}, parameter = {{ {1} }}", request.RequestType.ToString(), request.Argument));
                             var analyzer = new PerformanceAnalyzer();
 
                             request.DoWorkFunction(request.Argument);

@@ -198,7 +198,7 @@ namespace DatabaseObjectSearcher
                 {
                     if ((n != null) && (n.Parent == null))
                     {
-                        log.Message("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
+                        log.Info("New Server Connected " + n.Name + " -  " + n.Connection.ServerName);
 
                         // this could mean that new server was added
                         var res = " server " + n.Name + n.Connection.ServerName;
@@ -218,12 +218,12 @@ namespace DatabaseObjectSearcher
 
         public void AfterExecute(String Guid, Int32 ID, Object CustomIn, Object CustomOut)
         {
-            log.Message("After execute command:" + ID + " guid:" + Guid);
+            log.Info("After execute command:" + ID + " guid:" + Guid);
 
             // this could mean that server was removed
             if (ID == 516)
             {
-                log.Message("Server disconnected..!");
+                log.Info("Server disconnected..!");
 
                 if (OnServerDisconnected != null)
                 {
@@ -432,7 +432,7 @@ namespace DatabaseObjectSearcher
         {
             if (objectToSelect.State == SqlSmoState.Dropped)
             {
-                log.Message("Trying to locate dropped object:" + objectToSelect.Name);
+                log.Info("Trying to locate dropped object:" + objectToSelect.Name);
                 return;
             }
 
