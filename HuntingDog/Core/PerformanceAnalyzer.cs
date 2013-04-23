@@ -6,7 +6,7 @@ namespace HuntingDog.Core
 {
     public class PerformanceAnalyzer
     {
-        private readonly Boolean disabled = false;
+        private readonly Boolean disabled = true;
 
         private readonly Log log = LogFactory.GetLog();
 
