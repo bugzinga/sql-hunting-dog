@@ -540,7 +540,8 @@
                                     ResultItem="{Binding .}"
                                     DoHighlight="{Binding IsChecked}"
                                     VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch" />
+                                    HorizontalAlignment="Stretch"
+                                    MouseDown="TextBlock_MouseDown_1" />
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers />
