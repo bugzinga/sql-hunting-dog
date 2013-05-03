@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Hunting Dog</title>
+		<style>
+			html, body {
+				100%;
+			}
+		
+			a {
+				color: inherit;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+	<body>
+		<center>
+			<table>
+				<tr>
+					<td>
+						<img src="img/logo.png" />
+					</td>
+					<td style="text-align: center">
+						<a href=""><h1>Hunting Dog</h1></a>
+						<h3 style="color: lightgray">Improved search in MS SQL Management Studio</h3>
+						<a href="https://bitbucket.org/maslukov/hunting-dog/downloads/HuntingDogInstall.msi"><h2 style="color: green">Download</h2></a>
+					</td>
+					<td>
+						<img src="img/download.png" />
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center">
+						<img src="img/HD.jpg" />
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center">
+						2013 (c) Alex Maslukov
+					</td>
+				</tr>
+			</table>
+		</center>
+	</body>
+</html>

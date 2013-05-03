@@ -2,6 +2,11 @@
 <html>
 	<head>
 		<title>SQL Hunting Dog - Quick Search Add-In for MS SQL Management Studio</title>
+		<script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="nivo-slider/jquery.nivo.slider.pack.js"></script>
+		<link href='nivo-slider/nivo-slider.css' rel='stylesheet' type='text/css' />
+		<link href='nivo-slider/themes/default/default.css' rel='stylesheet' type='text/css' />
+		<!--link href='nivo-slider/themes/bar/bar.css' rel='stylesheet' type='text/css' /-->
 		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
 		<link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css' />
 		<style>
@@ -19,12 +24,46 @@
 			h2 {
 				font-weight: normal;
 			}
+			
+			.slider-wrapper {
+				margin-top: 40px;
+			}
+			
+			.nivoSlider {
+				width: 500px;
+			}
 		</style>
 	</head>
 	<body>
 		<center>
-			<h1>SQL HUNTING DOG</h1>
+			<table>
+				<tr>
+					<td style="padding-right: 15px">
+						<img src="img/logo.png" width="50" />
+					</td>
+					<td>
+						<h1>SQL HUNTING DOG</h1>
+					</td>
+					<td style="padding-left: 15px">
+						<a href="https://bitbucket.org/maslukov/hunting-dog/downloads/HuntingDogInstall.msi">
+							<img src="img/download.png" width="50" />
+						</a>
+					</td>
+				<tr>
+			</table>
 			<h2>Quick Search Add-In for Microsoft SQL Management Studio 2008/2012</h2>
+			<div>
+				<div class="theme-default slider-wrapper">
+					<div id="slider" class="nivoSlider">
+						<img src="http://648290826.r.cdn77.net/wp-content/uploads/2013/02/slider1.jpg" />
+						<img src="http://648290826.r.cdn77.net/wp-content/uploads/2013/02/slider2.jpg" />
+						<img src="http://648290826.r.cdn77.net/wp-content/uploads/2013/02/slider3.jpg" />
+					</div>
+				</div>
+				<div id="htmlcaption" class="nivo-html-caption">
+					<strong>This</strong> is an example of a <em>HTML</em> caption with <a href="#">a link</a>.
+				</div>
+			</div>
 			<div style="width: 500px; text-align: left">
 				<ul>
 					<li>Quickly find tables, stored procedure, functions and views</li>
@@ -34,5 +73,12 @@
 				</ul>
 			</div>
 		</center>
+				<script type="text/javascript">
+			$(window).load(function() {
+				    $('#slider').nivoSlider({
+					    controlNav: true
+				    });
+			});
+		</script>
 	</body>
 </html>
