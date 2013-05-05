@@ -18,8 +18,29 @@ Set shell = CreateObject("Wscript.Shell")
 Dim appDataFolder
 appDataFolder = shell.ExpandEnvironmentStrings("%APPDATA%")
 
+Dim microsoftFolder
+microsoftFolder = appDataFolder & "\Microsoft"
+
+If Not fileSystem.FolderExists(microsoftFolder) Then
+	fileSystem.CreateFolder(microsoftFolder)
+End If
+
+Dim envSharedFolder
+envSharedFolder = microsoftFolder & "\MSEnvShared"
+
+If Not fileSystem.FolderExists(envSharedFolder) Then
+	fileSystem.CreateFolder(envSharedFolder)
+End If
+
+Dim addinConfigFolder
+addinConfigFolder = envSharedFolder & "\Addins"
+
+If Not fileSystem.FolderExists(addinConfigFolder) Then
+	fileSystem.CreateFolder(addinConfigFolder)
+End If
+
 Dim addinConfigPath
-addinConfigPath = appDataFolder & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
+addinConfigPath = addinConfigFolder & "\HuntingDog.AddIn"
 
 Class XmlConfig
 
