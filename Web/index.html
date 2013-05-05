@@ -25,6 +25,12 @@
 				margin-top: 3px;
 			}
 			
+			a {
+				color: black;
+				text-decoration: none;
+				font-size: inherit;
+			}
+			
 			.nivoSlider {
 				width: 421px;
 			}
@@ -38,9 +44,13 @@
 			}
 			
 			.signature {
-				margin-top: 40px;
+				margin-top: 36px;
 				margin-bottom: 18px;
 				font-size: 12px;
+			}
+			
+			.signature a {
+				text-decoration: underline;
 			}
 		</style>
 	</head>
@@ -49,10 +59,14 @@
 			<table>
 				<tr>
 					<td style="padding-right: 8px">
-						<img src="img/logo.jpg" width="60" height="60" />
+						<a href="/">
+							<img src="img/logo.jpg" width="60" height="60" />
+						</a>
 					</td>
 					<td>
-						<h1>SQL HUNTING DOG</h1>
+						<a href="/">
+							<h1>SQL HUNTING DOG</h1>
+						</a>
 					</td>
 					<td style="padding-left: 11px">
 						<a href="install/HuntingDog-2.3.0.msi">
@@ -79,7 +93,7 @@
 					<li>Perform common operation (select data, modify table, design table, etc.) with ease</li>
 				</ul>
 			</div>
-			<div class="signature">2013 (c) Alex Maslukov</div>
+			<div class="signature">2013 (c) <a href="mailto:sqlhuntingdog@gmail.com">Alex Maslukov</a></div>
 		</center>
 		<script type="text/javascript">
 			$(window).load(function() {
@@ -88,6 +102,14 @@
 					    	pauseTime: 5500
 				  	  });
 				});
+		</script>
+		<script>
+			(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-40663592-1', 'sql-hunting-dog.com');
+			ga('send', 'pageview');
 		</script>
 	</body>
 </html>
