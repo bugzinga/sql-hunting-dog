@@ -161,14 +161,23 @@
     <Compile Include="..\HuntingDog\DogEngine\IDatabaseLoader.cs">
       <Link>DogEngine\IDatabaseLoader.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\Constructor.cs">
+      <Link>DogEngine\Impl\Constructor.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseDictionary.cs">
       <Link>DogEngine\Impl\DatabaseDictionary.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseLoader.cs">
       <Link>DogEngine\Impl\DatabaseLoader.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\ServerWatcher.cs">
+      <Link>DogEngine\Impl\ServerWatcher.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Impl\StudioController.cs">
       <Link>DogEngine\Impl\StudioController.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IServer.cs">
+      <Link>DogEngine\IServer.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\IStudioController.cs">
       <Link>DogEngine\IStudioController.cs</Link>
@@ -223,6 +232,9 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\WidthConverter.cs">
       <Link>DogFace\WidthConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\AddinCreater.cs">
+      <Link>Engine\AddinCreater.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\Engine\Connect.cs">
       <Link>Engine\Connect.cs</Link>
