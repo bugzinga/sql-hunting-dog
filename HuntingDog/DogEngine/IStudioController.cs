@@ -9,21 +9,21 @@ namespace HuntingDog.DogEngine
         event Action ShowYourself;
 
         // fire when new server is connected/disconnected
-        event Action<List<String>> OnServersAdded;
-        event Action<List<String>> OnServersRemoved;
+        event Action<List<IServer>> OnServersAdded;
+        event Action<List<IServer>> OnServersRemoved;
 
         // Search
-        List<Entity> Find(String serverName, String databaseName, String searchText);
+        List<Entity> Find(IServer serverName, String databaseName, String searchText);
 
         void Initialise();
 
-        List<String> ListServers();
+        List<IServer> ListServers();
 
-        List<String> ListDatabase(String serverName);
+        List<String> ListDatabase(IServer serverName);
 
-        void RefreshServer(String serverName);
+        void RefreshServer(IServer serverName);
 
-        void RefreshDatabase(String serverName, String databaseName);
+        void RefreshDatabase(IServer serverName, String databaseName);
 
         // columns, pro parameters
         List<TableColumn> ListColumns(Entity entityObject);
@@ -32,24 +32,24 @@ namespace HuntingDog.DogEngine
         List<FunctionParameter> ListFuncParameters(Entity entityObject);
 
         // change script
-        void ModifyFunction(String server, Entity entityObject);
-        void ModifyView(String server, Entity entityObject);
-        void ModifyProcedure(String server, Entity entityObject);
+        void ModifyFunction(IServer server, Entity entityObject);
+        void ModifyView(IServer server, Entity entityObject);
+        void ModifyProcedure(IServer server, Entity entityObject);
 
         // select * from script
-        void ScriptTable(String server, Entity entityObject);
-        void SelectFromTable(String server, Entity entityObject);
-        void SelectFromView(String server, Entity entityObject);
+        void ScriptTable(IServer server, Entity entityObject);
+        void SelectFromTable(IServer server, Entity entityObject);
+        void SelectFromView(IServer server, Entity entityObject);
 
         // execute sp script
-        void ExecuteProcedure(String server, Entity entityObject);
-        void ExecuteFunction(String server, Entity entityObject);
+        void ExecuteProcedure(IServer server, Entity entityObject);
+        void ExecuteFunction(IServer server, Entity entityObject);
 
         // open Edit table window/ design table window
-        void EditTableData(String server, Entity entityObject);
-        void DesignTable(String server, Entity entityObject);
+        void EditTableData(IServer server, Entity entityObject);
+        void DesignTable(IServer server, Entity entityObject);
 
         // navigate object in object explorer
-        void NavigateObject(String server, Entity entityObject);
+        void NavigateObject(IServer server, Entity entityObject);
     }
 }

@@ -31,6 +31,12 @@ namespace HuntingDog.DogFace
             set;
         }
 
+        public IServer Server
+        {
+            get;
+            set;
+        }
+
         public string UpperCaseNames
         {
             get;

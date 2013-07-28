@@ -28,7 +28,7 @@ namespace HuntingDog.DogFace
                 set;
             }
 
-            public String Srv
+            public IServer Srv
             {
                 get;
                 set;
@@ -93,7 +93,7 @@ namespace HuntingDog.DogFace
 
         private volatile int _requestSequenceNumber = 0;
 
-        private String _lastSrv;
+        private IServer _lastSrv;
 
         private String _lastDb;
 
@@ -110,7 +110,7 @@ namespace HuntingDog.DogFace
             {
                 if (_studio == null)
                 {
-                    _studio = HuntingDog.DogEngine.Impl.StudioController.Instance;
+                    _studio = HuntingDog.DogEngine.Impl.DiConstruct.Instance;
                 }
 
                 return _studio;
@@ -120,25 +120,15 @@ namespace HuntingDog.DogFace
             {
                 _studio = value;
             }
-        }
+        }  
 
-        private Boolean IsConnectNewServerSellected
-        {
-            get
-            {
-                return (cbServer.SelectedItem == null)
-                    ? false
-                    : ((cbServer.SelectedItem as Item).Name == ConnectNewServerString);
-            }
-        }
-
-        private String SelectedServer
+        private IServer SelectedServer
         {
             get
             {
                 return (cbServer.SelectedItem == null)
                     ? null
-                    : (cbServer.SelectedItem as Item).Name;
+                    : (cbServer.SelectedItem as Item).Server;
             }
         }
 
@@ -190,8 +180,8 @@ namespace HuntingDog.DogFace
 
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
-                StudioController.OnServersAdded += new System.Action<List<String>>(StudioController_OnServersAdded);
-                StudioController.OnServersRemoved += new System.Action<List<String>>(StudioController_OnServersRemoved);
+                StudioController.OnServersAdded += StudioController_OnServersAdded;
+                StudioController.OnServersRemoved += StudioController_OnServersRemoved;
                 StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
                 ReloadServers();
 
@@ -237,9 +227,9 @@ namespace HuntingDog.DogFace
             txtSearch.Focus();
         }
 
-        void StudioController_OnServersAdded(List<String> listAdded)
+        void StudioController_OnServersAdded(List<IServer> listAdded)
         {
-            log.Info("Server added: " + ((listAdded.Count) > 0 ? listAdded[0] : String.Empty));
+            log.Info("Server added: " + ((listAdded.Count) > 0 ? listAdded[0].ServerName : String.Empty));
 
             InvokeInUI(() =>
             {
@@ -256,16 +246,16 @@ namespace HuntingDog.DogFace
             });
         }
 
-        void StudioController_OnServersRemoved(List<String> removedList)
+        void StudioController_OnServersRemoved(List<IServer> removedList)
         {
-            log.Info("Face: server removed." + (removedList.Count > 0 ? removedList[0] : ""));
+            log.Info("Face: server removed." + (removedList.Count > 0 ? removedList[0].ServerName : ""));
 
             InvokeInUI(() =>
             {
 
                 foreach (var s in _serverList.ToList())
                 {
-                    if (removedList.Contains(s.Name))
+                    if (removedList.Contains(s.Server))
                     {
                         _serverList.Remove(s);
                     }
@@ -353,10 +343,10 @@ namespace HuntingDog.DogFace
         // Reload database list
         private void Async_ReloadDatabaseList(Object arg)
         {
-            if (arg is String)
+            if (arg is IServer)
             {
-                var server = (String) arg;
-                StudioController.RefreshServer(server);
+
+                StudioController.RefreshServer(arg as IServer);
 
                 InvokeInUI(() =>
                 {
@@ -368,37 +358,34 @@ namespace HuntingDog.DogFace
         // Reload objects in database
         private void Async_ReloadObjectsFromDatabase(Object arg)
         {
-            var pair = (KeyValuePair<String, String>) arg;
+            var cmd = (ServerDatabaseCommand)arg;   
 
-            var server = pair.Key;
-            var database = pair.Value;
+            SetStatus("Reloading " + cmd.DatabaseName + "...", true);
 
-            SetStatus("Reloading " + database + "...", true);
-
-            StudioController.RefreshDatabase(server, database);
+            StudioController.RefreshDatabase(cmd.Server, cmd.DatabaseName);
 
             InvokeInUI(() =>
             {
                 DoSearch(true);
             });
 
-            SetStatus("Completed reloading " + database);
+            SetStatus("Completed reloading " + cmd.DatabaseName);
         }
 
         void ReloadDatabaseList()
         {
             try
             {
-                var sel = cbServer.SelectedItem as Item;
+                var sel = SelectedServer;
 
                 if (sel != null)
                 {
-                    cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel.Name));
+                    cbDatabase.ItemsSource = ItemFactory.BuildDatabase(StudioController.ListDatabase(sel));
 
                     _databaseChangedByUser = false;
 
                     // changed server - try to restore database user worked with last time
-                    var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.Name);
+                    var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.ServerName);
                     var previousDatabaseWasFound = false;
 
                     if ((databaseName != null) && (cbDatabase.Items != null))
@@ -421,7 +408,7 @@ namespace HuntingDog.DogFace
                     }
 
                     _databaseChangedByUser = true;
-                    _userPref.StoreByName(UserPref_LastSelectedServer, sel.Name);
+                    _userPref.StoreByName(UserPref_LastSelectedServer, sel.ServerName);
 
                     if (previousDatabaseWasFound)
                     {
@@ -942,12 +929,14 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void TextBlock_MouseUp(Object sender, MouseEventArgs e)
+        private void myEnityText_MouseUp(object sender, MouseButtonEventArgs e)
         {
             _isDragDropStartedFromText = false;
         }
 
-        private void TextBlock_MouseDown_1(Object sender, MouseButtonEventArgs e)
+   
+
+        private void TextBlock_MouseDown(Object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Pressed)
             {
@@ -1076,10 +1065,7 @@ namespace HuntingDog.DogFace
             txtSearch.Focus();
         }
 
-        private void Refresh_Click(Object sender, RoutedEventArgs e)
-        {
-            ReloadObjectsFromDatabase();
-        }
+      
 
         private void ReloadObjectsFromDatabase()
         {
@@ -1087,9 +1073,14 @@ namespace HuntingDog.DogFace
             {
                 if (SelectedDatabase != null)
                 {
-                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new KeyValuePair<String, String>(SelectedServer, SelectedDatabase), (RequestType) (Int32) ERquestType.RefreshSearch, true);
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new ServerDatabaseCommand(){Server =  SelectedServer,DatabaseName = SelectedDatabase}, (RequestType)(Int32)ERquestType.RefreshSearch, true);
                 }
             }
+        }
+
+        private void Refresh_Click(Object sender, RoutedEventArgs e)
+        {
+            ReloadObjectsFromDatabase();
         }
 
         private void RefreshDatabaseList_Click(Object sender, RoutedEventArgs e)
@@ -1237,5 +1228,7 @@ namespace HuntingDog.DogFace
         {
             SubscribeToAction(sender as ContextMenu);
         }
+
+      
     }
 }

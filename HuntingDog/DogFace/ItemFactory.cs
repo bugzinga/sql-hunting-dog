@@ -171,22 +171,22 @@ namespace HuntingDog.DogFace
                 });
             }
 
-            // TODO: In the BuildServer method the server names are being sorted.
-            //       Do we not expect the same behavior here as well?
+            items.Sort((x, y) => String.Compare(x.Name, y.Name));
 
             return items;
         }
 
-        public static List<Item> BuildServer(IEnumerable<String> serverNames)
+        public static List<Item> BuildServer(IEnumerable<IServer> serverNames)
         {
             var items = new List<Item>();
 
-            foreach (var serverName in serverNames)
+            foreach (var server in serverNames)
             {
                 items.Add(new Item
                 {
-                    Name = serverName,
-                    Image = ComputerIcon
+                    Name = server.ServerName,
+                    Image = ComputerIcon,
+                    Server = server
                 });
             }
 

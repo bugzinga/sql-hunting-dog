@@ -12,10 +12,16 @@ namespace HuntingDog.DogFace
             set;
         }
 
-        public System.Action<IStudioController, String> Routine
+        public System.Action<IStudioController, IServer> Routine
         {
             get;
             set;
         }
+    }
+
+    public class ServerDatabaseCommand
+    {
+        public IServer Server { get; set; }
+        public string DatabaseName { get; set; }
     }
 }

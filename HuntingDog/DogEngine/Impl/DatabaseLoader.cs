@@ -10,7 +10,7 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace HuntingDog.DogEngine.Impl
 {
-    class DatabaseLoader : IDatabaseLoader
+    public class DatabaseLoader : IDatabaseLoader
     {
         protected readonly Log log = LogFactory.GetLog();
 
@@ -58,10 +58,12 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
-        public void Initialise(SqlConnectionInfo connectionInfo)
+        
+
+        public void Initialise(IServerWithConnection serverWithConnection)
         {
             DictionaryList = new List<IDatabaseDictionary>();
-            this.connectionInfo = connectionInfo;
+            this.connectionInfo = serverWithConnection.Connection;
             server = new Server(new ServerConnection(connectionInfo));
 
             // TODO: Performance - init fields should be "IsSystemObject", "Name". Need to test performance.

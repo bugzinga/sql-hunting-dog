@@ -89,7 +89,7 @@ namespace HuntingDog.DogFace.Background
                 {
                     var sameTypeRequests = requests.Where(x => (x.RequestType == requestType));
 
-                    foreach (Request request in sameTypeRequests)
+                    foreach (Request request in sameTypeRequests.ToList())
                     {
                         requests.Remove(request);
                     }

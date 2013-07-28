@@ -230,6 +230,11 @@ namespace DatabaseObjectSearcher
             return (dt.SqlDataType == SqlDataType.Date);
         }
 
+        private static Boolean IsBinary(DataType dt)
+        {
+            return (dt.SqlDataType == SqlDataType.Binary || dt.SqlDataType == SqlDataType.VarBinary || dt.SqlDataType == SqlDataType.VarBinaryMax);
+        }
+
         private static Boolean IsString(DataType dt)
         {
             return (dt.SqlDataType == SqlDataType.VarChar) || (dt.SqlDataType == SqlDataType.VarCharMax) ||
@@ -271,15 +276,21 @@ namespace DatabaseObjectSearcher
                 return name + " = 0" + " -- " + MakeParameterType(parType);
             else if (useLikeForString)
                 return name + " like '%%'" + " -- " + MakeParameterType(parType);
+            else if(IsBinary(parType))
+                return name + " = 0x00" + " -- " + MakeParameterType(parType);
             else
                 return name + " = ''" + " -- " + MakeParameterType(parType);
         }
 
-        private static string MakeParameter(StoredProcedureParameter par)
+        private static string MakeParameter(StoredProcedureParameter par, out bool  hasDefaultValue)
         {
             if (!string.IsNullOrEmpty(par.DefaultValue))
-                return " -- " + par.Name + " = " + par.DefaultValue + "  -- " + par.DataType.Name + " ,default " + par.DefaultValue;
+            {
+                hasDefaultValue = true;
+                return par.Name + " = " + par.DefaultValue + "  -- " + par.DataType.Name + " ,default " + par.DefaultValue;
+            }
 
+            hasDefaultValue = false;
             return MakeParameterWithValue(par.Name, par.DataType, false);
         }
 
@@ -306,15 +317,31 @@ namespace DatabaseObjectSearcher
 
                 lock (sp)
                 {
-                    sp.Refresh();
-                    sp.Parameters.Refresh();
+                    sp.Refresh(); 
+                    sp.Parameters.Refresh(true);    // refresh all parameters and their types and default values
                     string parameterList = "";
+
+                    bool hasAtLeastOneNondefaultParameter = false;
                     for (int i = 0; i < sp.Parameters.Count; i++)
                     {
-                        // make a proper padding and add a comma if it not first line
-                        parameterList += "\t\t" + (i > 0 ? "," : "");
 
-                        parameterList += MakeParameter(sp.Parameters[i]) + Environment.NewLine;
+                        bool hasDefaultValue = false;
+                        string parameterValue = MakeParameter(sp.Parameters[i], out hasDefaultValue);
+
+                        string commaOrComment = string.Empty;
+
+                        // add comma only to second or subsequent line and only if parameter does not have default value
+                        if (i > 0 && !hasDefaultValue && hasAtLeastOneNondefaultParameter) 
+                        {
+                            commaOrComment = ",";
+                        }
+
+                        if (hasDefaultValue)
+                            commaOrComment = " -- ";
+                        else
+                            hasAtLeastOneNondefaultParameter = true;
+
+                        parameterList += string.Format("\t\t{0}{1}\r\n", commaOrComment,  parameterValue);
 
                     }
 
@@ -345,7 +372,7 @@ namespace DatabaseObjectSearcher
                 {
 
                     func.Refresh();
-                    func.Parameters.Refresh();
+                    func.Parameters.Refresh(true);
 
 
                     string execTemplate = func.FunctionType == UserDefinedFunctionType.Scalar ? "SELECT " : "SELECT * FROM ";
@@ -477,8 +504,8 @@ namespace DatabaseObjectSearcher
                 lock (tbl)
                 {
                     tbl.Refresh();
-                    tbl.Columns.Refresh();
-                    tbl.Indexes.Refresh();
+                    tbl.Columns.Refresh(true);
+                    tbl.Indexes.Refresh(true);
 
                     select += UseDataBaseGo(tbl.Parent);
 
@@ -522,7 +549,7 @@ namespace DatabaseObjectSearcher
                 lock (tbl)
                 {
                     tbl.Refresh();
-                    tbl.Columns.Refresh();
+                    tbl.Columns.Refresh(true);
 
                     select = String.Format("{0}\r\n SELECT TOP 200 * FROM [{1}].[{2}]", UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name);
                     var where = Environment.NewLine + "\t\t\t-- WHERE ";

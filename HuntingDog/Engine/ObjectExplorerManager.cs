@@ -30,7 +30,7 @@ namespace DatabaseObjectSearcher
 
         private static Boolean? _is2008R2 = null;
 
-        public event Action<String> OnNewServerConnected;
+        public event Action<SqlConnectionInfo> OnNewServerConnected;
 
         public event Action OnServerDisconnected;
 
@@ -205,7 +205,7 @@ namespace DatabaseObjectSearcher
 
                         if (OnNewServerConnected != null)
                         {
-                            OnNewServerConnected(n.Connection.ServerName);
+                            OnNewServerConnected( (SqlConnectionInfo)n.Connection);
                         }
                     }
                 }

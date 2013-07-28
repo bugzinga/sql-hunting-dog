@@ -477,11 +477,11 @@
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <Image Width="24"
                                Height="24"
-                               Margin="5"
+                               Margin="15,5,5,5"
                                Source="{Binding Source={x:Static properties:Resources.warning}, Converter={StaticResource bitmapConverter}}" />
-                        <TextBlock VerticalAlignment="Center" FontSize="16">No results were found</TextBlock>
+                        <TextBlock VerticalAlignment="Center" FontSize="16">No results found</TextBlock>
                     </StackPanel>
-                    <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">You can try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">Try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
                 </StackPanel>
             </Grid>
 
@@ -541,7 +541,10 @@
                                     DoHighlight="{Binding IsChecked}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Stretch"
-                                    MouseDown="TextBlock_MouseDown_1" />
+                                    MouseDown="TextBlock_MouseDown"
+                                    MouseUp="myEnityText_MouseUp"
+                                    MouseMove="TextBlock_MouseMove"
+                                    />
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers />

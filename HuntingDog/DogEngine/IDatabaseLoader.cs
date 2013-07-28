@@ -17,12 +17,14 @@ namespace HuntingDog.DogEngine
             get;
         }
 
+       
+
         List<String> DatabaseList
         {
             get;
         }
 
-        void Initialise(SqlConnectionInfo connectionInfo);
+        void Initialise(IServerWithConnection connectionInfo);
 
         void RefreshDatabaseList();
 
