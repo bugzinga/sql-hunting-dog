@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HuntingDog.DogEngine;
 
 namespace WinForms
 {
@@ -9,11 +10,11 @@ namespace WinForms
     {
 
 
-        public event Action<List<string>> OnServersAdded;
+        public event Action<List<IServer>> OnServersAdded;
 
-        public event Action<List<string>> OnServersRemoved;
+        public event Action<List<IServer>> OnServersRemoved;
 
-        public List<HuntingDog.DogEngine.Entity> Find(string serverName, string databaseName, string searchText)
+        public List<HuntingDog.DogEngine.Entity> Find(IServer serverName, string databaseName, string searchText)
         {
             if (searchText == "slow")
                 System.Threading.Thread.Sleep(6 * 1000);
@@ -108,26 +109,26 @@ namespace WinForms
         public List<HuntingDog.DogEngine.Entity> FakeInvokesList { get; set; }
 
 
-        public List<string> FakeServers { get; set; }
+        public List<TestServer> FakeServers { get; set; }
         public List<string> FakeDatabases { get; set; }
 
-        public List<string> ListServers()
+        public List<IServer> ListServers()
         {
-            return FakeServers;
+            return FakeServers.Cast<IServer>().ToList();
         }
 
-        public List<string> ListDatabase(string serverName)
+        public List<string> ListDatabase(IServer serverName)
         {
             return FakeDatabases;
         }
 
-        public void RefreshServer(string serverName)
+        public void RefreshServer(IServer serverName)
         {
             if (OnAction != null)
                 OnAction("Refresh server: " + serverName);
         }
 
-        public void RefreshDatabase(string serverName, string databaseName)
+        public void RefreshDatabase(IServer serverName, string databaseName)
         {
             if (OnAction != null)
                 OnAction("Refresh database: " + serverName + ", db:" + databaseName);
@@ -284,62 +285,62 @@ namespace WinForms
                 OnAction("generate Create script: " + name);
         }
 
-        public void NavigateObject(string server, HuntingDog.DogEngine.Entity name)
+        public void NavigateObject(IServer server, HuntingDog.DogEngine.Entity name)
         {
             if (OnAction != null)
                 OnAction("Navigate Object: " + name.FullName);
         }
 
 
-        public void ModifyFunction(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ModifyFunction(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("Modify func: " + entityObject.FullName);
         }
 
-        public void ModifyView(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ModifyView(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("Modify view: " + entityObject.FullName);
         }
 
-        public void ModifyProcedure(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ModifyProcedure(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("Modify proc: " + entityObject.FullName);
         }
 
-        public void SelectFromTable(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void SelectFromTable(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("select table: " + entityObject.FullName);
         }
 
-        public void SelectFromView(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void SelectFromView(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("select view: " + entityObject.FullName);
         }
 
-        public void ExecuteProcedure(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ExecuteProcedure(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("exec proc: " + entityObject.FullName);
         }
 
-        public void ExecuteFunction(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ExecuteFunction(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("exec func: " + entityObject.FullName);
         }
 
-        public void EditTableData(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void EditTableData(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("edit table: " + entityObject.FullName);
         }
 
-        public void DesignTable(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void DesignTable(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             if (OnAction != null)
                 OnAction("design table: " + entityObject.FullName);
@@ -356,7 +357,7 @@ namespace WinForms
 
 
 
-        public void ScriptTable(string server, HuntingDog.DogEngine.Entity entityObject)
+        public void ScriptTable(IServer server, HuntingDog.DogEngine.Entity entityObject)
         {
             throw new NotImplementedException();
         }

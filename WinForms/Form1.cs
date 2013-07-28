@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
-using DevExpress.XtraEditors;
+
 using HuntingDog.DogEngine;
 
 namespace WinForms
@@ -31,7 +31,7 @@ namespace WinForms
             _fakeCtrl.SmallDataBase = "Restoration_from_big_storage";
 
             _fakeCtrl.OnAction += new Action<string>(_fakeCtrl_OnAction);
-            _fakeCtrl.FakeServers = new List<string> { "Ignorance", "Greed", "Arrogance" };
+            _fakeCtrl.FakeServers = new List<TestServer> {new TestServer("Ignorance"), new TestServer("Greed"), new TestServer("Arrogance") };
             _fakeCtrl.FakeDatabases = new List<string> { "All Human Sins", "Good Humans", "Backup","Restoration_from_big_storage" };
             _fakeCtrl.FakeFindList = new List<Entity>{ 
 
@@ -79,7 +79,7 @@ namespace WinForms
         
         void _fakeCtrl_OnAction(string obj)
         {
-            Invoke(delegate() { memoEdit1.Text += Environment.NewLine + obj; });
+            //Invoke(delegate() { memoEdit1.Text += Environment.NewLine + obj; });
         }
         HuntingDog.ucHost _wpf;
 
