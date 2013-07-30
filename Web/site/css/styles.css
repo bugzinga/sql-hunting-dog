@@ -9,7 +9,7 @@
 }
 
 .menu .active {
-	color: #a0a0a0;
+	color: #cf7575;
 }
 
 h1 {
@@ -37,6 +37,12 @@ h2 {
 	font-weight: normal;
 	font-size: 22px;
 	margin-top: 11px;
+}
+
+.article h3 {
+	text-align: center;
+	color: rgb(180, 64, 64);
+	margin-top: 25px;
 }
 
 a {
