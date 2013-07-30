@@ -2,6 +2,8 @@
 .menu * {
 	padding-left: 3px;
 	padding-right: 3px;
+	font-size: 20px;
+	padding: 0px 5px;
 }
 
 .menu .inactive {
@@ -79,7 +81,7 @@ a img {
 
 #content {
 	width: 500px;
-	margin: 0px auto;
+	margin: 28px auto 0px auto;
 }
 
 .article * {
