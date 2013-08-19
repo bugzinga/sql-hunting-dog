@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>SQL Hunting Dog - Quick Search AddIn for MS SQL Management Studio</title>
+		<meta name="description" content="SQL Hunting Dog - Quick Search Tool for MS SQL Management Studio">
+		<meta name="keywords" content="sql server 2068643839,-2068643839,sql error,error 2068643839,ssms,microsoft,management,studio,2008,2012,sql server">
+		<meta name="author" content="Alex Maslukov">
+		<meta charset="utf-8">
+		<script type="text/javascript" src="../third-party/jquery/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="../third-party/nivo-slider/jquery.nivo.slider.pack.js"></script>
+		<link href='../third-party/nivo-slider/nivo-slider.css' rel='stylesheet' type='text/css' />
+		<link href='../third-party/nivo-slider/themes/default/default.css' rel='stylesheet' type='text/css' />
+		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
+		<link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css' />
+		<link href="../css/styles.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-40663592-1']);
+			_gaq.push(['_setDomainName', 'sql-hunting-dog.com']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+	</head>
+	<body>
+		<center>
+			<table>
+				<tr>
+					<td style="padding-right: 7px">
+						<a href="../">
+							<img src="../img/logo.jpg" width="60" height="60" />
+						</a>
+					</td>
+					<td>
+						<a href="../">
+							<h1>SQL HUNTING DOG</h1>
+						</a>
+						<center class="menu">
+							<a href="../" class="inactive">What</a>
+							<a href="../why" class="inactive">Why</a>
+							<a href="../how"  class="inactive">How</a>
+							<!--a href="../who" class="inactive">Who</a-->
+						</center>
+					</td>
+					<td style="padding-left: 11px">
+						<a href="https://bitbucket.org/bugzinga/hunting-dog-release/downloads/HuntingDog-2.3.4.msi">
+							<img src="../img/download.png" width="50" height="50" /><br/>
+						</a>
+					</td>
+				</tr>
+			</table>
+			<div id="content" class="article">
+				<h2>SQL Server error 2068643839</h2>
+				<h3>Overview</h3>
+				<p>
+				A lot of people reporting SQL Error 2068643839 while they are trying to install SQL Sever 2008 R2. 
+				This usually happens when you try to install SQL Server 2008 Standard Edition or Express edition on Windows VIsta. 
+				It turned out that Microsoft Vista Service Pack1 does not support SQL Server 2008 R2.
+				As a result, you might see the error : "SQL 2008 SP1 - Exit code (Decimal): -2068643839".
+
+				</p>
+				<h3>Overview</h3>
+
+				
+		
+				<p>
+				
+				Even though Microsoft admits that problem exists it does not take any steps to resolve SQL error 2068643839. 
+				Microsoft team closed issue as "Not reproducible".
+				However, SQL database administrators and SQL Developers are still running into the same issue.
+				
+				 <a href=>http://connect.microsoft.com/SQLServer/feedback/details/433855/</a>
+				 
+				</p>
+				
+				<h3>Solutions</h3>
+				<p>
+					One possible solution to resolve SQL Error 2068643839 was to uninstall and reinstall MSXML3 and MSXML 4.
+					Other possible workarounds were:
+
+						<ul>
+						<li>
+						Uninstall all versions of SQL Server and try to install supported  version (i.e. 2008) if you have Windows Vista
+						</li>
+						
+						<li>
+						Reinstalling operation system will be a last resort. 
+						However, we recommend installing Windows 7 as it will completely resolves problem with SQL Server 2008 compatibility. 
+						Number of users reported that they face this issue "SQL Error2068643839 " during SQL Server installation is significantly less.
+						</li>
+						
+						<li>
+						Remember - SQL Server 2008 R2 and SQL Server 2012 are server database management systems.
+						They are much more optimised for server operation systems like Windows Server 2003 and Windows Server 2008.
+						</li>
+					</ul>	
+
+				</p>
+				
+				<h3>Summary</h3>
+				<p>
+				Any issues and errors happening during SQL Server installations are really hard to tackle. 
+				Sometimes installation log can give you a clue what is happening. With SQL Error 2068643839  installation logs does not help.
+				The only reasonable option is to either reinstall SQL Server 2008 suite or reinstall Windows.
+				</p>
+				
+		
+			</div>
+			<div class="signature">2013 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+		</center>
+	</body>
+</html>
