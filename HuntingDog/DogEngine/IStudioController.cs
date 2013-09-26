@@ -17,6 +17,8 @@ namespace HuntingDog.DogEngine
 
         void Initialise();
 
+        void SetConfiguration(HuntingDog.Config.DogConfig cfg);
+
         List<IServer> ListServers();
 
         List<String> ListDatabase(IServer serverName);

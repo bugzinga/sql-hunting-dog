@@ -48,12 +48,22 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
-        public List<String> DatabaseList
+        IEnumerable<Database> VisibleDatabases
         {
             get
             {
                 return (from Database d in server.Databases
-                        where !d.IsSystemObject
+                        where
+                            !d.IsSystemObject && d.IsAccessible
+                        select d);
+            }
+        }
+
+        public List<String> DatabaseList
+        {
+            get
+            {
+                return (from Database d in VisibleDatabases
                         select d.Name).ToList();
             }
         }
@@ -101,7 +111,7 @@ namespace HuntingDog.DogEngine.Impl
 
         public void RefreshDatabaseList()
         {
-            server.Databases.Refresh();
+            server.Databases.Refresh(true);
         }
 
         void FillDatabase(IDatabaseDictionary databaseDictionary)

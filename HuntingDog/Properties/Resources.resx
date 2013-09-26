@@ -127,6 +127,31 @@
   <data name="footprint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\Resources\footprint.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="footprintAlpha" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
+        AAD///8B////Af///wH///8Bra2t/0FBQf8gICD/CwsL/zQ0NP9YWFj/eXl5/7Kysv////8B////Af//
+        /wH///8B////Af///wH///8Bubm5/wEBAf8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/R0dH////
+        /wH///8B////Af///wH///8B////AVxcXP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAA
+        AP/e3t7/////Af///wH///8B////Af///wFmZmb/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAA
+        AP8iIiL/////Af///wH///8B////Af///wH///8B09PT/wcHB/8AAAD/AAAA/wAAAP8AAAD/AAAA/wAA
+        AP8AAAD/hoaG/////wH///8B////Af///wGcnJz/RUVF/6ioqP+Ojo7/AAAA/wAAAP8AAAD/AAAA/wAA
+        AP8AAAD/Ghoa/////wGKior/p6en/////wHX19f/BAQE/wAAAP8tLS3/////AQ0NDf8AAAD/AAAA/wAA
+        AP8AAAD/BgYG/7Ozs/+Dg4P/AAAA/wICAv+6urr/d3d3/wAAAP8AAAD/Pj4+/////wGRkZH/CQkJ/wAA
+        AP8AAAD/EBAQ/7W1tf////8BVFRU/wAAAP8AAAD/NTU1/zw8PP8AAAD/AAAA/62trf////8B////AdbW
+        1v9hYWH/dHR0/97e3v////8B////AWpqav8AAAD/AAAA/wcHB/8wMDD/AAAA/0NDQ/////8B5+fn/6am
+        pv////8B////Af///wH///8B////Af///wHT09P/CQkJ/wAAAP8WFhb/qqqq/4aGhv////8B////ASQk
+        JP8AAAD/cnJy/////wH///8BZmZm/1BQUP/b29v/////AaOjo/9RUVH/o6Oj/////wH///8B////Abm5
+        uf8AAAD/AAAA/zs7O/////8B1dXV/wAAAP8AAAD/NDQ0/////wH///8B////Af///wH///8B////Af//
+        /wGEhIT/AAAA/wAAAP8yMjL/////AcrKyv8AAAD/AAAA/wAAAP/FxcX/////Af///wH///8B////Af//
+        /wH///8Bd3d3/wAAAP8AAAD/S0tL/////wG/v7//AAAA/wAAAP8AAAD/rq6u/////wH///8B////Af//
+        /wH///8B////AXd3d/8AAAD/AQEB/7Kysv////8Bzs7O/wAAAP8AAAD/AAAA/7+/v/////8B////Af//
+        /wH///8B////Af///wHg4OD/Wlpa/5WVlf////8B////Af///wGMjIz/Pz8//4SEhP////8B////Af//
+        /wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA
+        //8AAP//AAD//w==
+</value>
+  </data>
   <data name="process" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\Art\process.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

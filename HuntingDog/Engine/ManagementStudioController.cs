@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using HuntingDog.Config;
 using HuntingDog.Core;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -17,6 +18,15 @@ namespace DatabaseObjectSearcher
     // can open windows, execute scripts, navigate in object explorer
     public class ManagementStudioController
     {
+        static string AlterOrCreate(HuntingDog.Config.EAlterOrCreate alterOrCreate)
+        {
+            if (alterOrCreate == HuntingDog.Config.EAlterOrCreate.Alter)
+                return "ALTER";
+            else
+                return "CREATE";
+
+        }
+
         private static readonly Log log = LogFactory.GetLog();
 
         private const String CREATE_PROC = "CREATE PROC";
@@ -44,17 +54,22 @@ namespace DatabaseObjectSearcher
                 + Environment.NewLine;
         }
 
-        public static void SelectFromView(View view, SqlConnectionInfo connInfo)
+        public static void SelectFromView(View view, SqlConnectionInfo connInfo, int selectTopXView, bool includeAllCoulumnNamesForViews)
         {
             try
             {
                 // create new document               
-                var select = String.Empty;
+                string select;
 
                 lock (view)
                 {
                     view.Refresh();
-                    select = String.Format("{0} SELECT * FROM [{1}].[{2}]", UseDataBaseGo(view.Parent), view.Schema, view.Name);
+                    view.Columns.Refresh();
+
+
+                    var selectColumns = BuildColumnNames(view.Columns, includeAllCoulumnNamesForViews);
+
+                    select = String.Format("{0} SELECT TOP {3} {4} FROM [{1}].[{2}]", UseDataBaseGo(view.Parent), view.Schema, view.Name, selectTopXView, selectColumns);
                 }
 
                 CreateSQLDocumentWithHeader(select, connInfo);
@@ -67,7 +82,7 @@ namespace DatabaseObjectSearcher
             }
         }
 
-        public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, SqlConnectionInfo connInfo)
+        public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, SqlConnectionInfo connInfo, HuntingDog.Config.EAlterOrCreate alterOrCreate)
         {
             try
             {
@@ -79,10 +94,17 @@ namespace DatabaseObjectSearcher
 
                     builder.AppendLine(UseDataBaseGo(userDefinedFunction.Parent));
 
-                    var indexOfCreate = userDefinedFunction.TextHeader.IndexOf(CREATE_FUNC, 0, StringComparison.OrdinalIgnoreCase);
-                    var alterTextHeader = userDefinedFunction.TextHeader.Remove(indexOfCreate, CREATE_FUNC.Length);
+                    if (alterOrCreate == HuntingDog.Config.EAlterOrCreate.Alter)
+                    {
+                        var indexOfCreate = userDefinedFunction.TextHeader.IndexOf(CREATE_FUNC, 0, StringComparison.OrdinalIgnoreCase);
+                        var alterTextHeader = userDefinedFunction.TextHeader.Remove(indexOfCreate, CREATE_FUNC.Length);
 
-                    builder.Append(alterTextHeader.Insert(indexOfCreate, ALTER_FUNC));
+                        builder.Append(alterTextHeader.Insert(indexOfCreate, ALTER_FUNC));
+                    }
+                    else
+                        builder.Append(userDefinedFunction.TextHeader);
+
+
                     builder.Append(userDefinedFunction.TextBody);
                 }
 
@@ -113,12 +135,12 @@ namespace DatabaseObjectSearcher
 
         public static void ListDependency(SqlConnectionInfo connInfo, StoredProcedure sp, Database db)
         {
-            var w = new DependencyWalker((Server) db.Parent);
+            var w = new DependencyWalker((Server)db.Parent);
             var dpTree = w.DiscoverDependencies(new SqlSmoObject[] { sp }, false);
             w.WalkDependencies(dpTree);
         }
 
-        public static void ModifyView(View vw, SqlConnectionInfo connInfo)
+        public static void ModifyView(View vw, SqlConnectionInfo connInfo, EAlterOrCreate alterOrCreateView)
         {
             try
             {
@@ -131,7 +153,9 @@ namespace DatabaseObjectSearcher
                     var originalSP = vw.TextBody;
 
                     builder.AppendLine(UseDataBaseGo(vw.Parent));
-                    builder.Append(vw.ScriptHeader(true));
+
+                    builder.Append(vw.ScriptHeader(alterOrCreateView == EAlterOrCreate.Alter));
+
 
                     // trye to use ScriptHeader(true) to change header. !!!
                     //var indexOfCreate = sp.TextHeader.IndexOf(CREATE_PROC,0,StringComparison.OrdinalIgnoreCase);
@@ -150,7 +174,7 @@ namespace DatabaseObjectSearcher
             }
         }
 
-        public static void OpenStoredProcedureForModification(StoredProcedure sp, SqlConnectionInfo connInfo)
+        public static void OpenStoredProcedureForModification(StoredProcedure sp, SqlConnectionInfo connInfo, EAlterOrCreate alterOrCreateSp)
         {
             try
             {
@@ -163,8 +187,10 @@ namespace DatabaseObjectSearcher
                     var originalSP = sp.TextBody;
 
                     builder.AppendLine(UseDataBaseGo(sp.Parent));
-                    builder.Append(sp.ScriptHeader(true));
-
+                    if (alterOrCreateSp == EAlterOrCreate.Alter)
+                        builder.Append(sp.ScriptHeader(true));
+                    else
+                        builder.Append(sp.ScriptHeader(false));
                     // trye to use ScriptHeader(true) to change header. !!!
                     //var indexOfCreate = sp.TextHeader.IndexOf(CREATE_PROC,0,StringComparison.OrdinalIgnoreCase);
 
@@ -200,7 +226,7 @@ namespace DatabaseObjectSearcher
             ServiceCache.ScriptFactory.CreateNewBlankScript(Microsoft.SqlServer.Management.UI.VSIntegration.Editors.ScriptType.Sql, uiConn, null);
 
             // create new document
-            EnvDTE.TextDocument doc = (EnvDTE.TextDocument) ServiceCache.ExtensibilityModel.Application.ActiveDocument.Object(null);
+            EnvDTE.TextDocument doc = (EnvDTE.TextDocument)ServiceCache.ExtensibilityModel.Application.ActiveDocument.Object(null);
             // insert SQL definition to document
 
             doc.EndPoint.CreateEditPoint().Insert(sqlText);
@@ -249,7 +275,7 @@ namespace DatabaseObjectSearcher
                 ? (parType.Name + "(" + parType.MaximumLength.ToString() + ")")
                 : parType.Name;
         }
-        
+
         private static IFormatProvider UsCulture
         {
             get
@@ -261,6 +287,8 @@ namespace DatabaseObjectSearcher
                 return _us_culture;
             }
         }
+
+
 
         private static string MakeParameterWithValue(string name, DataType parType, bool useLikeForString)
         {
@@ -276,13 +304,14 @@ namespace DatabaseObjectSearcher
                 return name + " = 0" + " -- " + MakeParameterType(parType);
             else if (useLikeForString)
                 return name + " like '%%'" + " -- " + MakeParameterType(parType);
-            else if(IsBinary(parType))
+            else if (IsBinary(parType))
                 return name + " = 0x00" + " -- " + MakeParameterType(parType);
             else
                 return name + " = ''" + " -- " + MakeParameterType(parType);
         }
 
-        private static string MakeParameter(StoredProcedureParameter par, out bool  hasDefaultValue)
+
+        private static string MakeParameter(StoredProcedureParameter par, out bool hasDefaultValue)
         {
             if (!string.IsNullOrEmpty(par.DefaultValue))
             {
@@ -317,7 +346,7 @@ namespace DatabaseObjectSearcher
 
                 lock (sp)
                 {
-                    sp.Refresh(); 
+                    sp.Refresh();
                     sp.Parameters.Refresh(true);    // refresh all parameters and their types and default values
                     string parameterList = "";
 
@@ -331,7 +360,7 @@ namespace DatabaseObjectSearcher
                         string commaOrComment = string.Empty;
 
                         // add comma only to second or subsequent line and only if parameter does not have default value
-                        if (i > 0 && !hasDefaultValue && hasAtLeastOneNondefaultParameter) 
+                        if (i > 0 && !hasDefaultValue && hasAtLeastOneNondefaultParameter)
                         {
                             commaOrComment = ",";
                         }
@@ -341,7 +370,7 @@ namespace DatabaseObjectSearcher
                         else
                             hasAtLeastOneNondefaultParameter = true;
 
-                        parameterList += string.Format("\t\t{0}{1}\r\n", commaOrComment,  parameterValue);
+                        parameterList += string.Format("\t\t{0}{1}\r\n", commaOrComment, parameterValue);
 
                     }
 
@@ -494,44 +523,102 @@ namespace DatabaseObjectSearcher
             _manager.OpenTable(objectToSelect, connection);
         }
 
-        public static void ScriptTable(Table tbl, SqlConnectionInfo connInfo)
+        public static void ScriptTable(Table tbl, SqlConnectionInfo connInfo, bool scriptIndexies, bool scriptForeignKeys, bool scriptTriggers)
         {
             try
             {
                 // create new document               
-                var select = String.Empty;
+                var select = new StringBuilder(2000);
 
                 lock (tbl)
                 {
                     tbl.Refresh();
-                    tbl.Columns.Refresh(true);
-                    tbl.Indexes.Refresh(true);
+                    tbl.Columns.Refresh();
 
-                    select += UseDataBaseGo(tbl.Parent);
+                    select.AppendLine(UseDataBaseGo(tbl.Parent));
 
                     foreach (var line in tbl.Script())
                     {
-                        select += "\r\n\t";
-                        select += line;
+                        select.AppendLine("\t" + line);
                     }
 
-                    if (tbl.Indexes.Count > 0)
+                    if (scriptIndexies && tbl.Indexes.Count > 0)
                     {
-                        select += "\r\n  \r\n  -- Indexes --\r\n";
+                        tbl.Indexes.Refresh();
+                        select.AppendLine();
+                        select.AppendLine(" -- Indexes --");
+                        select.AppendLine();
+
 
                         foreach (Index indexDef in tbl.Indexes)
                         {
+
                             foreach (var line in indexDef.Script())
                             {
-                                select += line;
+                                select.AppendLine(line);
                             }
 
-                            select += "\r\n \r\n";
+                            select.AppendLine();
+                            select.AppendLine();
                         }
+
+                    }
+
+
+                    if (scriptForeignKeys && tbl.ForeignKeys.Count > 0)
+                    {
+                        tbl.ForeignKeys.Refresh();
+                        select.AppendLine();
+                        select.AppendLine(" -- Foreign Keys --");
+                        select.AppendLine();
+
+                        foreach (ForeignKey fk in tbl.ForeignKeys)
+                        {
+                            foreach (var line in fk.Script())
+                            {
+                                select.AppendLine(line);
+                            }
+
+
+                            select.AppendLine();
+                            select.AppendLine();
+                        }
+
+                    }
+
+
+                    if (scriptTriggers && tbl.Triggers.Count > 0)
+                    {
+                        tbl.Triggers.Refresh();
+                        select.AppendLine();
+                        select.AppendLine(" -- Triggers --");
+                        select.AppendLine();
+
+                        foreach (Trigger tr in tbl.Triggers)
+                        {
+                            bool hasAddedGoStatement = false;
+                            foreach (var line in tr.Script())
+                            {
+                                // for a triggers we need GO statement before CREATE script
+                                if (!hasAddedGoStatement && line.ToUpper().Trim() == "SET QUOTED_IDENTIFIER ON" )
+                                {
+                                    hasAddedGoStatement = true;
+                                    select.AppendLine(line);
+                                    select.AppendLine("GO");
+                                }
+                                else
+                                 select.AppendLine(line);
+                            }
+
+
+                            select.AppendLine();
+                            select.AppendLine();
+                        }
+
                     }
                 }
 
-                CreateSQLDocumentWithHeader(select, connInfo);
+                CreateSQLDocumentWithHeader(select.ToString(), connInfo);
             }
             catch (Exception ex)
             {
@@ -539,7 +626,37 @@ namespace DatabaseObjectSearcher
             }
         }
 
-        public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo)
+        static StringBuilder BuildColumnNames(ColumnCollection columns, bool includeAllNames)
+        {
+            var selectColumns    = new StringBuilder(500);
+
+            if (includeAllNames)          
+            {
+                selectColumns.AppendLine();
+
+                bool needToAddComma = false;
+                foreach (Column p in columns)
+                {
+                    if (needToAddComma)
+                        selectColumns.AppendLine(",");
+
+                    needToAddComma = true;
+
+                    selectColumns.Append("\t\t");
+                    selectColumns.Append("[" + p.Name + "]");
+                }
+
+                selectColumns.AppendLine();
+            }
+            else           
+                 selectColumns.Append("*");
+           
+        
+
+            return selectColumns;
+        }
+
+        public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo, int selectTopXTable, bool includeAllCoulumnNamesForTables)
         {
             try
             {
@@ -551,7 +668,10 @@ namespace DatabaseObjectSearcher
                     tbl.Refresh();
                     tbl.Columns.Refresh(true);
 
-                    select = String.Format("{0}\r\n SELECT TOP 200 * FROM [{1}].[{2}]", UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name);
+
+                    var selectColumns = BuildColumnNames(tbl.Columns, includeAllCoulumnNamesForTables);
+                    select = String.Format("{0}\r\n SELECT TOP {3} {4} FROM [{1}].[{2}]", UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name, selectTopXTable, selectColumns.ToString());
+                    
                     var where = Environment.NewLine + "\t\t\t-- WHERE ";
 
                     foreach (Column p in tbl.Columns)
@@ -584,5 +704,7 @@ namespace DatabaseObjectSearcher
             var _manager = new ObjectExplorerManager();
             _manager.SelectSMOObjectInObjectExplorer(objectToSelect, connection);
         }
+
+
     }
 }

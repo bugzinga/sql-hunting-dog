@@ -28,15 +28,14 @@ namespace HuntingDog.DogEngine
             private set;
         }
 
-        public EnvDTE.Window CreateAddinWindow(AddIn addIn)
+        public EnvDTE.Window CreateAddinWindow(AddIn addIn, string caption)
         {
             try
             {
                 this.addIn = addIn;
 
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-                var className = typeof(HuntingDog.ucHost).FullName;
-                var caption = "Hunting Dog (Ctrl+D)";
+                var className = typeof(HuntingDog.ucHost).FullName;             
                 Object userControl = null;
 
                 var windows = ServiceCache.ExtensibilityModel.Windows as Windows2;

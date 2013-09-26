@@ -10,6 +10,7 @@ using HuntingDog.Core;
 
 namespace HuntingDog.DogFace
 {
+
     [Serializable]
     public class Entry
     {
@@ -20,7 +21,7 @@ namespace HuntingDog.DogFace
 
     [Serializable]
     [ComVisible(false)]
-    public class UserPreferencesStorage : List<Entry>
+    public class UserPreferencesStorage : List<Entry>, HuntingDog.DogEngine.IStorage
     {
         private static readonly Log log = LogFactory.GetLog();
 
@@ -113,6 +114,11 @@ namespace HuntingDog.DogFace
         {
             var isoStore = IsolatedStorageFile.GetStore((IsolatedStorageScope.User | IsolatedStorageScope.Assembly), null, null);
             return isoStore;
+        }
+
+        public bool Exists(String key)
+        {
+            return this.Any(x => x.Key == key);
         }
 
         public String GetByName(String key)

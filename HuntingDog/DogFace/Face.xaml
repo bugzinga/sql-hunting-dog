@@ -482,6 +482,10 @@
                         <TextBlock VerticalAlignment="Center" FontSize="16">No results found</TextBlock>
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">Try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
+
+                    <TextBlock VerticalAlignment="Center" Margin="5,5,0,0" FontSize="16"  x:Name="txtOption"> <Hyperlink FontSize="16"  Click="Options_Click">Options</Hyperlink> </TextBlock>
+
+
                 </StackPanel>
             </Grid>
 
@@ -555,6 +559,8 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
+
+            <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" FontWeight="Bold"  x:Name="txtOptionPermanent"> <Hyperlink  Click="Options_Click">Options</Hyperlink></TextBlock>
             <Image VerticalAlignment="Center"
                    x:Name="imgWorking"
                    Source="{Binding Source={x:Static properties:Resources.process}, Converter={StaticResource bitmapConverter}}"

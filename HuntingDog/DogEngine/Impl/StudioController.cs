@@ -322,7 +322,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
+                ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection,_cfg.AlterOrCreateFunction);
             }, "ModifyFunction failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -331,7 +331,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection);
+                ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection,_cfg.AlterOrCreateView);
             }, "ModifyView failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -340,7 +340,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+                ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection,_cfg.AlterOrCreateSp);
             }, "ModifyProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -349,7 +349,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection);
+                ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection, _cfg.SelectTopXView,_cfg.IncludeAllCoulumnNamesForViews);
 
             }, "SelectFromView failed - " + GetSafeEntityObject(entityObject));
         }
@@ -382,7 +382,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection);
+                ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.ScriptIndexies, _cfg.ScriptForeignKeys,_cfg.ScriptTriggers);
             }, "ScriptTable - " + GetSafeEntityObject(entityObject));
         }
 
@@ -391,7 +391,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection);
+                ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.SelectTopXTable,_cfg.IncludeAllCoulumnNamesForTables);
             }, "SelectFromTable - " + GetSafeEntityObject(entityObject));
         }
 
@@ -411,6 +411,15 @@ namespace HuntingDog.DogEngine.Impl
                 var serverInfo = GetServer(server);
                 ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.Connection);
             }, "DesignTable - " + GetSafeEntityObject(entityObject));
+        }
+
+
+        // default configuration
+        Config.DogConfig _cfg = new Config.DogConfig();
+
+        public void SetConfiguration(Config.DogConfig cfg)
+        {
+            _cfg = cfg;
         }
     }
 }

@@ -177,9 +177,11 @@ namespace HuntingDog.DogFace
                 var scroll = itemsControl.FindChild<ScrollContentPresenter>();
 
                 _userPref = UserPreferencesStorage.Load();
+                _cfg = Config.DogConfig.ReadFromStorage(_userPref);
 
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
+                StudioController.SetConfiguration(_cfg);
                 StudioController.OnServersAdded += StudioController_OnServersAdded;
                 StudioController.OnServersRemoved += StudioController_OnServersRemoved;
                 StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
@@ -350,7 +352,7 @@ namespace HuntingDog.DogFace
 
                 InvokeInUI(() =>
                 {
-                    ReloadDatabaseList();
+                    ReloadDatabaseList(true);
                 });
             }
         }
@@ -372,11 +374,15 @@ namespace HuntingDog.DogFace
             SetStatus("Completed reloading " + cmd.DatabaseName);
         }
 
-        void ReloadDatabaseList()
+        void ReloadDatabaseList(bool keepSameDatabase)
         {
+            string databaseName = string.Empty;
             try
             {
                 var sel = SelectedServer;
+
+                if(keepSameDatabase)
+                    databaseName = SelectedDatabase;
 
                 if (sel != null)
                 {
@@ -385,7 +391,8 @@ namespace HuntingDog.DogFace
                     _databaseChangedByUser = false;
 
                     // changed server - try to restore database user worked with last time
-                    var databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.ServerName);
+                    if(string.IsNullOrEmpty( databaseName))
+                        databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.ServerName);
                     var previousDatabaseWasFound = false;
 
                     if ((databaseName != null) && (cbDatabase.Items != null))
@@ -435,7 +442,7 @@ namespace HuntingDog.DogFace
 
         private void cbServer_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            ReloadDatabaseList();
+            ReloadDatabaseList(false);
 
             // TODO: keep track of last selected database on this server - need to restore it back!
             //DoSearch();
@@ -607,6 +614,9 @@ namespace HuntingDog.DogFace
                 SetStatus("Found " + result.Count + " objects ");
             }
         }
+
+
+        
 
         private void InvokeInUI(AnyInvoker invoker)
         {
@@ -1081,6 +1091,61 @@ namespace HuntingDog.DogFace
         private void Refresh_Click(Object sender, RoutedEventArgs e)
         {
             ReloadObjectsFromDatabase();
+        }
+
+
+        Config.DogConfig _cfg = new Config.DogConfig();
+
+     
+        private void Options_Click(Object sender, RoutedEventArgs e)
+        {  
+            var cfgWindow = new DialogWindow();
+            cfgWindow.ShowConfiguration(_cfg);
+            var result = cfgWindow.ShowDialog();
+            if (result != null && result == true)
+            {
+                _cfg = cfgWindow.DogConfig;
+                if (_studio != null)
+                    _studio.SetConfiguration(_cfg);
+
+                if (_userPref != null)
+                {
+                    _cfg.Persist(_userPref);
+                }
+            }
+
+
+            //var userCtrol = new ConfigDialog();
+            //userCtrol.OnNewConfig += new Action<Config.DogConfig>(userCtrol_OnNewConfig);
+            //Window window = new Window
+            //{
+            //    Title = "Hunting Dog Configuration",
+            //    Content = userCtrol
+            //};
+
+            //ImageSourceConverter c = new ImageSourceConverter();
+
+            ////window.Icon = System.Windows.Media.Imaging.BitmapFrame.Create( HuntingDog.Properties.Resources.hdicon);
+            //window.Height = 500;
+            //window.Width = 400;
+            //window.ResizeMode = ResizeMode.NoResize;
+            //userCtrol.Init(_cfg);
+            //window.ShowDialog();
+        }
+
+        void userCtrol_OnNewConfig(Config.DogConfig obj)
+        {
+            if(obj==null)
+                return;
+
+            _cfg = obj;
+            if (_studio != null)
+                _studio.SetConfiguration(_cfg);
+
+            if(_userPref!=null)
+            {
+                _cfg.Persist(_userPref);
+            }
         }
 
         private void RefreshDatabaseList_Click(Object sender, RoutedEventArgs e)
