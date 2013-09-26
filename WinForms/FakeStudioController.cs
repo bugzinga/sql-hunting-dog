@@ -364,5 +364,11 @@ namespace WinForms
 
 
 
+
+
+        public void SetConfiguration(HuntingDog.Config.DogConfig cfg)
+        {
+           
+        }
     }
 }
