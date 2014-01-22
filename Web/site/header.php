@@ -1,3 +1,4 @@
+	<head>
 		<title>SQL Hunting Dog - Quick Search Tool (AddIn) for MS SQL Management Studio</title>
 		<meta charset="utf-8">
 		<meta name="description" content="SQL Hunting Dog - Quick Search Tool (AddIn) for MS SQL Management Studio">
@@ -21,3 +22,4 @@
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
 		</script>
+	</head>
