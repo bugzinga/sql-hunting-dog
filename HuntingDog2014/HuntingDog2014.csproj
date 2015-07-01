@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{36DCF906-2E95-4590-BBD3-4CF25852F6C3}</ProjectGuid>
+    <ProjectGuid>{16DCF906-2E95-4590-BBD3-4CF25852F6C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HuntingDog</RootNamespace>
@@ -41,8 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConnectionDlg">
-      <HintPath>..\Dependencies\2012\ConnectionDlg.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\Dependencies\2014\ConnectionDlg.dll</HintPath>
     </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -64,33 +63,28 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.Controls">
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.SqlStudio">
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.Management.Sdk.SqlStudio.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Smo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.Smo.dll</HintPath>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.Smo.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\Microsoft.SqlServer.SqlEnum.dll</HintPath>
+      <HintPath>..\Dependencies\2014\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic.Compatibility" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -110,13 +104,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Royale" />
     <Reference Include="SqlPackageBase">
-      <HintPath>..\Dependencies\2012\SqlPackageBase.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\Dependencies\2014\SqlPackageBase.dll</HintPath>
     </Reference>
-    <Reference Include="SqlWorkbench.Interfaces, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\2012\SqlWorkbench.Interfaces.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="SqlWorkbench.Interfaces">
+      <HintPath>..\Dependencies\2014\SqlWorkbench.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

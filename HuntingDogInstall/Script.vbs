@@ -1,4 +1,5 @@
 
+
 Dim data
 data = Session.Property("CustomActionData")
 
@@ -10,37 +11,47 @@ installFolder = parameters(0)
 
 Set fileSystem = CreateObject("Scripting.FileSystemObject")
 
-Dim assemblyPath
-assemblyPath = fileSystem.BuildPath(installFolder, "SSMS2012\HuntingDog.dll") 
+Private Sub BuildFullPath(FullPath)
+    If Not fileSystem.FolderExists(FullPath) Then
+        Call BuildFullPath(fso.GetParentFolderName(FullPath))
+        fileSystem.CreateFolder(FullPath)
+    End If
+End Sub
+
+Dim assemblyPath2012
+assemblyPath2012 = fileSystem.BuildPath(installFolder, "SSMS2012\HuntingDog.dll") 
+
+Dim assemblyPath2014
+assemblyPath2014 = fileSystem.BuildPath(installFolder, "SSMS2014\HuntingDog.dll") 
 
 Set shell = CreateObject("Wscript.Shell")
 
 Dim appDataFolder
-appDataFolder = shell.ExpandEnvironmentStrings("%APPDATA%")
+appDataFolder = shell.ExpandEnvironmentStrings("%ProgramData%")
 
-Dim microsoftFolder
-microsoftFolder = appDataFolder & "\Microsoft"
+dim addinConfigFolder2012
+addinConfigFolder2012 = appDataFolder & "\Microsoft\SQL Server Management Studio\11.0\Addins"
+Call BuildFullPath(addinConfigFolder2012)
 
-If Not fileSystem.FolderExists(microsoftFolder) Then
-	fileSystem.CreateFolder(microsoftFolder)
-End If
+Dim addinConfigPath2012
+addinConfigPath2012 = addinConfigFolder2012 & "\HuntingDog.AddIn"
 
-Dim envSharedFolder
-envSharedFolder = microsoftFolder & "\MSEnvShared"
 
-If Not fileSystem.FolderExists(envSharedFolder) Then
-	fileSystem.CreateFolder(envSharedFolder)
-End If
+dim addinConfigFolder2014
+addinConfigFolder2014 = appDataFolder & "\Microsoft\SQL Server Management Studio\12.0\Addins"
+Call BuildFullPath(addinConfigFolder2014)
 
-Dim addinConfigFolder
-addinConfigFolder = envSharedFolder & "\Addins"
+Dim addinConfigPath2014
+addinConfigPath2014 = addinConfigFolder2014 & "\HuntingDog.AddIn"
 
-If Not fileSystem.FolderExists(addinConfigFolder) Then
-	fileSystem.CreateFolder(addinConfigFolder)
-End If
 
-Dim addinConfigPath
-addinConfigPath = addinConfigFolder & "\HuntingDog.AddIn"
+Dim oldAppData
+oldAppData = shell.ExpandEnvironmentStrings("%APPDATA%")
+dim previousAddinFile
+previousAddinFile = oldAppData & "\Microsoft\MSEnvShared\Addins\HuntingDog.AddIn"
+if fileSystem.FileExists(previousAddinFile) then
+    fileSystem.DeleteFile(previousAddinFile)
+end if
 
 Class XmlConfig
 
@@ -107,5 +118,8 @@ Class XmlConfig
 
 End Class
 
-Set config = New XmlConfig
-Call config.Save(addinConfigPath, assemblyPath)
+Set config2012 = New XmlConfig
+Call config2012.Save(addinConfigPath2012, assemblyPath2012)
+
+Set config2014 = New XmlConfig
+Call config2014.Save(addinConfigPath2014, assemblyPath2014)

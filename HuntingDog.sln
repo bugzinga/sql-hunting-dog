@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinForms", "WinForms\WinForms.csproj", "{65855A0F-DFB6-4254-9E16-3F70839C9C98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2014", "HuntingDog2014\HuntingDog2014.csproj", "{16DCF906-2E95-4590-BBD3-4CF25852F6C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,16 @@ Global
 		{65855A0F-DFB6-4254-9E16-3F70839C9C98}.Release|Mixed Platforms.Build.0 = Release|x86
 		{65855A0F-DFB6-4254-9E16-3F70839C9C98}.Release|x86.ActiveCfg = Release|x86
 		{65855A0F-DFB6-4254-9E16-3F70839C9C98}.Release|x86.Build.0 = Release|x86
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{16DCF906-2E95-4590-BBD3-4CF25852F6C3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

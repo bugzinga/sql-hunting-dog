@@ -1,3 +1,8 @@
 /Web/site/nbproject/private/
 /Web/site/nbproject/project.xml
 /Web/site/nbproject/project.properties
+[Bb]in/
+[Oo]bj/
+Debug/
+Release/
+*.suo
