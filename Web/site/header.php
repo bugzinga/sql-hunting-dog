@@ -2,7 +2,7 @@
 		<title>SQL Hunting Dog - Quick Search Tool (AddIn) for MS SQL Management Studio</title>
 		<meta charset="utf-8">
 		<meta name="description" content="SQL Hunting Dog - Quick Search Tool (AddIn) for MS SQL Management Studio">
-		<meta name="keywords" content="sql,quick,free,tool,search,addin,plugin,extension,ssms,microsoft,management,studio,2008,2012,server">
+		<meta name="keywords" content="sql,quick,free,tool,search,addin,plugin,extension,ssms,microsoft,management,studio,2008,2012,2014,server">
 		<meta name="author" content="Alex Maslukov">
 		<script type="text/javascript" src="/third-party/jquery/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="/third-party/nivo-slider/jquery.nivo.slider.pack.js"></script>

@@ -15,7 +15,7 @@
 				<h2>How it works</h2>
 				<p>
 					Hunting Dog works as a plugin for SQL Server Management Studio. That means that it embeds into SQL Server Management
-					Studio 2008 or 2012 and creates a separate window.
+					Studio 2008,2012 or 2014 and creates a separate window.
 				</p>
 				<p>
 					This window allows you to quickly search stored procedures, tables, etc. through the connected servers and perform most actions with a single keystroke.
@@ -163,7 +163,7 @@
 					Hunting Dog will automatically select Database and restore the last Search text.
 				</p>
 			</div>
-			<div class="signature">2013 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+			<div class="signature">2015 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 	</body>
 </html>

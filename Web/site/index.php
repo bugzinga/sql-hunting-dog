@@ -12,7 +12,7 @@
 ?>
 			</table>
 			<div id="content">
-				<h2>Quick Search Tool (AddIn) for Microsoft SQL Management Studio 2008/2012</h2>
+				<h2>Quick Search Tool (AddIn) for Microsoft SQL Management Studio 2008/2012/2014</h2>
 				<div>
 					<div class="theme-default slider-wrapper">
 						<div id="slider" class="nivoSlider">
@@ -37,7 +37,7 @@
 				SQL Hunting Dog is a free SQL Server tool. It works as an Addin and gives you quick search and smooth navigation. Do not use it very often , otherwise you will become addictive.
 				</p>
 			</div>
-			<div class="signature">2013 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+			<div class="signature">2015 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 		<script type="text/javascript">
 			$(window).load(function() {

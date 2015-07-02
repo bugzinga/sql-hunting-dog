@@ -49,7 +49,7 @@
 						</center>
 					</td>
 					<td style="padding-left: 11px">
-						<a href="https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-2.3.4.msi">
+						<a href="https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.1.1.msi">
 							<img src="/img/download.png" width="50" height="50" /><br/>
 						</a>
 					</td>

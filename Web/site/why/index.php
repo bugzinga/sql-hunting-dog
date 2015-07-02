@@ -15,7 +15,7 @@
 				<h2>Why default SSMS Object Browser kills time of people working with SQL Server</h2>
 				<p>
 					This tool was created for developers and database administrators who work
-					with Microsoft SQL Server Management Studio 2008 (or 2012) every day.
+					with Microsoft SQL Server Management Studio 2008 (or 2012, or 2014) every day.
 					Unfortunately, the default Object Explorer is hard to use, especially when you
 					need to quickly find a desired table or procedure.
 					SSMS forces the user to perform 7-10 different actions to navigate to the table and
@@ -102,6 +102,7 @@
 						<li>SQL Server Management Studio 2008 (32 bit and 64 bit)</li>
 						<li>SQL Server Management Studio 2008R2 (32 bit and 64 bit)</li>
 						<li>SQL Server Management Studio 2012 (32 bit and 64 bit)</li>
+						<li>SQL Server Management Studio 2014 (32 bit and 64 bit)</li>
 					</ul>
 				</p>
 				<p>
@@ -110,7 +111,7 @@
 					and you are using SSMS in you everyday work.
 				</p>
 			</div>
-			<div class="signature">2013 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+			<div class="signature">20135(c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 	</body>
 </html>
