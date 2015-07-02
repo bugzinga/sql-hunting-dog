@@ -32,7 +32,7 @@ namespace HuntingDog.DogEngine
             private set;
         }
 
-        public String HighlightName
+        public string Details
         {
             get;
             set;

@@ -35,20 +35,20 @@ namespace WinForms
             _fakeCtrl.FakeDatabases = new List<string> { "All Human Sins", "Good Humans", "Backup","Restoration_from_big_storage" };
             _fakeCtrl.FakeFindList = new List<Entity>{ 
 
-                new Entity{IsTable = true, Name = "Special Table1"},
-                new Entity{IsTable = true, Name = "ThisYearGoals"},
-                new Entity{IsTable = true, Name = "Unfinished"},
+                new Entity{IsTable = true, Name = "Special Table1", Details = "column:Identity"},
+                new Entity{IsTable = true, Name = "ThisYearGoals", Details = "column:Identity"},
+                new Entity{IsTable = true, Name = "Unfinished", Details = "column:Date"},
                 new Entity{IsTable = true, Name = "Wishes"},
                 new Entity{IsTable = true, Name = "Prerequisutes"},
                 new Entity{IsTable = true, Name = "Dedication"},
                  new Entity{IsTable = true, Name = "ChickenCurry"},
 
 
-                new Entity{IsProcedure = true, Name = "AddGoal"},
+                new Entity{IsProcedure = true, Name = "AddGoal", Details = "parameter:@UserName"},
                 new Entity{IsProcedure = true, Name = "CreateOrUpdateLastGoal"},
                 new Entity{IsProcedure = true, Name = "RemoveGoal"},
                 new Entity{IsProcedure = true, Name = "DeleteWishCompletelyFromTable"},
-                new Entity{IsProcedure = true, Name = "ListUnfinished"},
+                new Entity{IsProcedure = true, Name = "ListUnfinished", Details = "parameter:@UserName"},
 
                 new Entity{IsView = true, Name = "Sophisticated View1"},
                 new Entity{IsView = true, Name = "AnotherPoint"},

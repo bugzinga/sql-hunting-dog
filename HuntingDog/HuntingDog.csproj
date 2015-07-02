@@ -141,9 +141,11 @@
     <Compile Include="DogEngine\Entity.cs" />
     <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\IStorage.cs" />
+    <Compile Include="DogFace\DatabaseItem.cs" />
     <Compile Include="DogFace\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DogFace\ServerItem.cs" />
     <Compile Include="Engine\AddinCreater.cs" />
     <Compile Include="DogEngine\Impl\Constructor.cs" />
     <Compile Include="DogEngine\Impl\DatabaseLoader.cs" />

@@ -7,9 +7,66 @@ using HuntingDog.DogEngine;
 
 namespace HuntingDog.DogFace
 {
-    public class Item : DependencyObject
+  
+    public interface IHighlightedItem
+    {
+        string Name {get;}
+        List<String> Keywords { get; }
+    }
+
+    public class ChildItem : DependencyObject, IHighlightedItem
+    {
+        public ChildItem(string name, List<string> keywords)
+        {
+            Name = name;
+            Keywords = keywords;
+        }
+
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public List<string> Keywords
+        {
+            get;
+            set;
+        }
+    }
+
+    public class Item : DependencyObject, IHighlightedItem
     {
         private String name;
+
+        public IHighlightedItem ParentItem
+        {
+            get
+            {
+                return this;
+            }
+        }
+
+        public Item()
+        {
+            Actions = new List<Action>();
+        }
+
+        public IHighlightedItem ChildItem
+        {
+            get
+            {
+                return _detailsItem;
+            }
+        }
+
+
+        ChildItem _detailsItem;
+        public void SetDetails(string details, IEnumerable<string> keywords)
+        {
+            _detailsItem = new ChildItem(details, Keywords);
+        }
 
         public String Name
         {
@@ -26,12 +83,6 @@ namespace HuntingDog.DogFace
         }
 
         public Entity Entity
-        {
-            get;
-            set;
-        }
-
-        public IServer Server
         {
             get;
             set;
@@ -66,6 +117,7 @@ namespace HuntingDog.DogFace
             get;
             private set;
         }
+        
 
         public List<String> Keywords
         {
@@ -111,9 +163,6 @@ namespace HuntingDog.DogFace
             }
         }
 
-        public Item()
-        {
-            Actions = new List<Action>();
-        }
+     
     }
 }

@@ -18,6 +18,13 @@ namespace HuntingDog.DogEngine
             set;
         }
 
+
+        public String Details
+        {
+            get;
+            set;
+        }
+
         public Boolean IsProcedure
         {
             get;

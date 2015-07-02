@@ -110,6 +110,7 @@ namespace HuntingDog.DogEngine.Impl
                 e.IsView = found.IsView;
                 e.FullName = found.SchemaAndName;
                 e.InternalObject = found.Result;
+                e.Details = found.Details;
                 e.Keywords = keywords;
                 result.Add(e);
             }

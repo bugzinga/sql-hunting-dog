@@ -54,9 +54,12 @@ namespace HuntingDog.DogEngine.Impl
             // now search through all objects
             foreach (var entry in dictionary)
             {
-                if (IsMatch(entry.Value, searchCrit))
+                var dbItem = entry.Value;
+                string details = null;
+                if(IsMatch(dbItem, searchCrit, out details))
                 {
-                    result.Add(entry.Value);
+                    dbItem.Details = details;
+                    result.Add(dbItem);
                 }
 
                 // stop searching once we reached limit
@@ -69,13 +72,39 @@ namespace HuntingDog.DogEngine.Impl
             return result;
         }
 
-        private Boolean IsMatch(DatabaseSearchResult entry, SearchCriteria crit)
+        private string GetDetailsMatch(DatabaseSearchResult entry, String[] critsAnd)
+        {
+            if (entry.IsTable)
+            {
+                var tbl = (entry.Result as Table);
+                foreach (Column clm in tbl.Columns)
+                {
+                    if (MatchAnd(critsAnd, clm.Name.ToLower()))
+                        return clm.Name;
+                }
+
+            }
+            else if (entry.IsStoredProc)
+            {
+                var prc = (entry.Result as StoredProcedure);
+                foreach (StoredProcedureParameter prcParam in prc.Parameters)
+                {
+                    if (MatchAnd(critsAnd, prcParam.Name.ToLower()))
+                        return prcParam.Name;
+                }
+
+            }
+            return null;
+        }
+
+        private bool IsMatch(DatabaseSearchResult entry, SearchCriteria crit, out string detailsMatch)
         {
             // filter by schema name
             if (crit.Schema != null)
             {
                 if (!entry.Schema.Contains(crit.Schema))
                 {
+                    detailsMatch = null;
                     return false;
                 }
             }
@@ -88,6 +117,7 @@ namespace HuntingDog.DogEngine.Impl
                 // test Bits inside filter
                 if (((Int32) entry.ObjectType & crit.FilterType) == 0)
                 {
+                    detailsMatch = null;
                     return false;
                 }
             }
@@ -95,10 +125,13 @@ namespace HuntingDog.DogEngine.Impl
             // filter by search criteria
             if (MatchAnd(crit.CriteriaAnd, entry.SearchName))
             {
+                detailsMatch = null;
                 return true;
             }
 
-            return false;
+            // try to find columns
+            detailsMatch =  GetDetailsMatch(entry,crit.CriteriaAnd);
+            return !string.IsNullOrEmpty(detailsMatch);
         }
 
         private Boolean MatchAnd(String[] critsAnd, String p)

@@ -37,7 +37,7 @@ namespace HuntingDog.DogFace
                 };
 
                 item.Keywords = entity.Keywords;
-
+                item.SetDetails(entity.Details,entity.Keywords) ;
                 if (entity.IsTable)
                 {
                     item.Image = TableIcon;
@@ -158,17 +158,13 @@ namespace HuntingDog.DogFace
             return items;
         }
 
-        public static List<Item> BuildDatabase(IEnumerable<String> databaseNames)
+        public static List<IDatabaseItem> BuildDatabase(IEnumerable<String> databaseNames)
         {
-            var items = new List<Item>();
+            var items = new List<IDatabaseItem>();
 
             foreach (var databaseName in databaseNames)
             {
-                items.Add(new Item
-                {
-                    Name = databaseName,
-                    Image = DatabaseIcon
-                });
+                items.Add(new DatabaseItem(databaseName, DatabaseIcon));
             }
 
             items.Sort((x, y) => String.Compare(x.Name, y.Name));
@@ -176,18 +172,13 @@ namespace HuntingDog.DogFace
             return items;
         }
 
-        public static List<Item> BuildServer(IEnumerable<IServer> serverNames)
+        public static List<IServerItem> BuildServer(IEnumerable<IServer> serverNames)
         {
-            var items = new List<Item>();
+            var items = new List<IServerItem>();
 
             foreach (var server in serverNames)
             {
-                items.Add(new Item
-                {
-                    Name = server.ServerName,
-                    Image = ComputerIcon,
-                    Server = server
-                });
+                items.Add(new ServerItem(server, ComputerIcon));
             }
 
             items.Sort((x, y) => String.Compare(x.Name, y.Name));

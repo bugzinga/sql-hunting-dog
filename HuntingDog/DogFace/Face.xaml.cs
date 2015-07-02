@@ -81,7 +81,7 @@ namespace HuntingDog.DogFace
 
         private UserPreferencesStorage _userPref;
 
-        private ObservableCollection<Item> _serverList = new ObservableCollection<Item>();
+        private ObservableCollection<IServerItem> _serverList = new ObservableCollection<IServerItem>();
 
         private Boolean _databaseChangedByUser = true;
 
@@ -128,7 +128,7 @@ namespace HuntingDog.DogFace
             {
                 return (cbServer.SelectedItem == null)
                     ? null
-                    : (cbServer.SelectedItem as Item).Server;
+                    : (cbServer.SelectedItem as IServerItem).Server;
             }
         }
 
@@ -158,7 +158,7 @@ namespace HuntingDog.DogFace
             {
                 return (cbDatabase.SelectedItem == null)
                     ? null
-                    : (cbDatabase.SelectedItem as Item).Name;
+                    : (cbDatabase.SelectedItem as DatabaseItem).Name;
             }
         }
 
@@ -397,7 +397,7 @@ namespace HuntingDog.DogFace
 
                     if ((databaseName != null) && (cbDatabase.Items != null))
                     {
-                        foreach (Item item in cbDatabase.ItemsSource)
+                        foreach (DatabaseItem item in cbDatabase.ItemsSource)
                         {
                             if (item.Name == databaseName)
                             {
@@ -997,7 +997,7 @@ namespace HuntingDog.DogFace
                     ListViewItem listViewItem = item.FindAncestor<ListViewItem>();
 
                     // Find the data behind the ListViewItem
-                    Item contact = (Item) itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                    var contact = (Item) itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
 
                     if ((contact != null) && (contact.Entity != null))
                     {

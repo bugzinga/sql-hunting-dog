@@ -73,19 +73,20 @@
 
             <DataTemplate x:Key="DisplayImageWithText">
                 <Border Name="Border" SnapsToDevicePixels="true">
+                    
                     <StackPanel Orientation="Horizontal">
                         <Image VerticalAlignment="Center"
                                Margin="2"
                                Width="18"
                                Height="18"
-                               Source="{Binding Image}" />
-                        <TextBlock GotFocus="TextBlock_GotFocus"
-                                   VerticalAlignment="Center"
-                                   Margin="1,0,0,0"
-                                   Text="{Binding Name}"
-                                   TextWrapping="NoWrap"
-                                   Opacity="0.6"
-                                   TextTrimming="CharacterEllipsis" />
+                               Source="{Binding Image}" />                     
+                            <TextBlock GotFocus="TextBlock_GotFocus"
+                                       VerticalAlignment="Center"
+                                       Margin="1,0,0,0"
+                                       Text="{Binding Name}"
+                                       TextWrapping="NoWrap"
+                                       Opacity="0.6"
+                                       TextTrimming="CharacterEllipsis" />
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -531,17 +532,18 @@
                                        Grid.Row="0"
                                        LastChildFill="True"
                                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}, Path=ActualWidth,Converter={StaticResource widthConv}, ConverterParameter=38}">
-                                <my:HtmlTextBlock
+                                <StackPanel Orientation="Vertical"   Margin="10,10,0,0">
+                                    
+                                    <my:HtmlTextBlock
                                     DockPanel.Dock="Left"
                                     x:Name="myEnityText"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap"
                                     Background="Transparent"
-                                    Tag="{Binding}"
-                                    Grid.Column="1"
+                                    Tag="{Binding}"                                 
                                     Margin="0,0,0,0"
                                     FontSize="14"
-                                    ResultItem="{Binding .}"
+                                    ResultItem="{Binding ParentItem}"
                                     DoHighlight="{Binding IsChecked}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Stretch"
@@ -549,6 +551,29 @@
                                     MouseUp="myEnityText_MouseUp"
                                     MouseMove="TextBlock_MouseMove"
                                     />
+
+                                    <my:HtmlTextBlock
+                                    DockPanel.Dock="Left"
+                                    x:Name="myChildText"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"
+                                    Background="Transparent"
+                                    Tag="{Binding}"                              
+                                    Margin="0,5,0,0"
+                                    FontSize="11"
+                                   Foreground="#888"
+                                    ResultItem="{Binding ChildItem}"
+                                    DoHighlight="{Binding IsChecked}"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
+                                    MouseDown="TextBlock_MouseDown"
+                                    MouseUp="myEnityText_MouseUp"
+                                    MouseMove="TextBlock_MouseMove"
+                                    />
+
+
+                                </StackPanel>
+
                             </DockPanel>
                         </Grid>
                         <DataTemplate.Triggers />

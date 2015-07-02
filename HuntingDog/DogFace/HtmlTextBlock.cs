@@ -20,7 +20,7 @@ namespace HuntingDog.DogFace
 
         public static DependencyProperty ResultItemProperty = DependencyProperty.Register(
             "ResultItem",
-            typeof(Item),
+            typeof(IHighlightedItem),
             typeof(HtmlTextBlock),
             new UIPropertyMetadata(null, new PropertyChangedCallback(OnResultItemChanged))
         );
@@ -32,11 +32,11 @@ namespace HuntingDog.DogFace
             new UIPropertyMetadata(true, new PropertyChangedCallback(OnHighlightChanged))
         );
 
-        public Item ResultItem
+        public IHighlightedItem ResultItem
         {
             get
             {
-                return (Item) GetValue(ResultItemProperty);
+                return (IHighlightedItem)GetValue(ResultItemProperty);
             }
 
             set
@@ -64,7 +64,7 @@ namespace HuntingDog.DogFace
 
             if (htmlTextBlock != null)
             {
-                htmlTextBlock.DisplayResultItem(htmlTextBlock.ResultItem);
+                htmlTextBlock.DisplayResultItem(htmlTextBlock.ResultItem.Name, htmlTextBlock.ResultItem.Keywords);
             }
         }
 
@@ -78,7 +78,12 @@ namespace HuntingDog.DogFace
             }
         }
 
-        private void DisplayResultItem(Item resultItem)
+        private void AddInline(string text)
+        {
+            Inlines.Add(new Run(text));
+        }
+
+        private void DisplayResultItem(string name,IEnumerable<String> keywords)
         {
             log.Info("Updating item UI ranges");
             var analyzer = new PerformanceAnalyzer();
@@ -86,28 +91,26 @@ namespace HuntingDog.DogFace
             Inlines.Clear();
             runs.Clear();
 
-            if ((resultItem.Keywords == null) || resultItem.Keywords.IsEmpty())
+            if ((keywords == null) || keywords.IsEmpty())
             {
                 // TODO: get rid of code duplication (lines 89, 106, 116)
-                var run = new Run(resultItem.Name);
-                Inlines.Add(run);
+                AddInline(name);             
             }
             else
             {
                 try
                 {
-                    var ranges = FindMatchingKeyworkRanges(resultItem);
+                    var ranges = FindMatchingKeyworkRanges(name, keywords);
 
                     if (ranges.Any())
                     {
                         var mergedResult = Range<Int32>.Merge(ranges);
-                        BuildRunsFromMergedResults(resultItem, mergedResult);
+                        BuildRunsFromMergedResults(name, mergedResult);
                     }
                     else
-                    {
-                        // TODO: get rid of code duplication (lines 89, 106, 116)
-                        var run = new Run(resultItem.Name);
-                        Inlines.Add(run);
+                    {                    
+                        AddInline(name);
+     
                     }
                 }
                 // TODO: What is it for? How can any exception happen here?
@@ -115,9 +118,9 @@ namespace HuntingDog.DogFace
                 {
                     log.Error(ex.Message, ex);
 
-                    // TODO: get rid of code duplication (lines 89, 106, 116)
-                    var run = new Run(resultItem.Name);
-                    Inlines.Add(run);
+                 
+                    AddInline(name);
+
                 }
             }
 
@@ -125,25 +128,27 @@ namespace HuntingDog.DogFace
             analyzer.Stop();
         }
 
-        private List<Range<Int32>> FindMatchingKeyworkRanges(Item resultItem)
+        private List<Range<Int32>> FindMatchingKeyworkRanges(string name, IEnumerable<string> keywords)
         {
             var ranges = new List<Range<Int32>>();
 
-            log.Info(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", resultItem.Name, String.Join(", ", resultItem.Keywords.ToArray())));
+            var upperCaseName = name.ToUpper();
+
+            log.Info(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", name, String.Join(", ", keywords.ToArray())));
             var analyzer = new PerformanceAnalyzer();
 
-            foreach (var keyword in resultItem.Keywords)
+            foreach (var keyword in keywords)
             {
                 var startIndex = 0;
 
-                while ((startIndex = resultItem.UpperCaseNames.IndexOf(keyword, startIndex)) != -1)
+                while ((startIndex = upperCaseName.IndexOf(keyword, startIndex)) != -1)
                 {
                     int endIndex = (startIndex + keyword.Length);
 
                     // TODO: How is it possible?
-                    if (endIndex > resultItem.UpperCaseNames.Length)
+                    if (endIndex > upperCaseName.Length)
                     {
-                        endIndex = resultItem.UpperCaseNames.Length;
+                        endIndex = upperCaseName.Length;
                     }
 
                     ranges.Add(new Range<Int32>() { Start = startIndex++, End = endIndex });
@@ -156,7 +161,7 @@ namespace HuntingDog.DogFace
             return ranges;
         }
 
-        private void BuildRunsFromMergedResults(Item resultItem, IEnumerable<Range<Int32>> mergedResult)
+        private void BuildRunsFromMergedResults(string name, IEnumerable<Range<Int32>> mergedResult)
         {
             var currentIndex = 0;
 
@@ -165,46 +170,51 @@ namespace HuntingDog.DogFace
                 if (currentIndex < range.Start)
                 {
                     // add normal run
-                    var normalRun = new Run(resultItem.Name.Substring(currentIndex, (range.Start - currentIndex)));
-                    Inlines.Add(normalRun);
+                    AddInline(name.Substring(currentIndex, (range.Start - currentIndex)));
                 }
 
                 // add highlighted run
-                var highlightedRun = new Run(resultItem.Name.Substring(range.Start, (range.End - range.Start)));
+                var highlightedRun = new Run(name.Substring(range.Start, (range.End - range.Start)));
                 Inlines.Add(highlightedRun);
                 runs.Add(highlightedRun);
 
                 currentIndex = range.End;
             }
 
-            if (currentIndex < resultItem.Name.Length)
+            if (currentIndex < name.Length)
             {
                 // add final normal run if necessary
-                var normalRun = new Run(resultItem.Name.Substring(currentIndex));
-                Inlines.Add(normalRun);
+                AddInline(name.Substring(currentIndex));
             }
         }
+
+        static SolidColorBrush SelectedForeground = new SolidColorBrush(Colors.White);
+        static SolidColorBrush SelectedBackground = new SolidColorBrush(Colors.Transparent);
+        static SolidColorBrush NotSelectedForeground = new SolidColorBrush(Colors.Black);
+        static SolidColorBrush NotSelectedBackground = new SolidColorBrush(Colors.Yellow);
+
 
         private void ChangeHighlight(Boolean selectedItem)
         {
             Brush foregroundBrush = null;
             Brush backgroundBrush = null;
 
+            // TODO: Cache all brushes!!!!
             if (selectedItem)
             {
-                foregroundBrush = new SolidColorBrush(Colors.White);
-                backgroundBrush = new SolidColorBrush(Colors.Transparent);
+                foregroundBrush = SelectedForeground;
+                backgroundBrush = SelectedBackground;
             }
             else
             {
-                foregroundBrush = new SolidColorBrush(Colors.Black);
-                backgroundBrush = new SolidColorBrush(Colors.Yellow);
+                foregroundBrush = NotSelectedBackground;
+                backgroundBrush = NotSelectedBackground;
             }
 
             foreach (var run in runs)
             {
-                run.Foreground = foregroundBrush;
-                run.Background = backgroundBrush;
+                run.Foreground = selectedItem ? SelectedForeground : NotSelectedForeground;
+                run.Background = selectedItem? SelectedBackground:NotSelectedBackground;
             }
         }
     }
