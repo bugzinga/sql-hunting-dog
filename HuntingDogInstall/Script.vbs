@@ -13,7 +13,7 @@ Set fileSystem = CreateObject("Scripting.FileSystemObject")
 
 Private Sub BuildFullPath(FullPath)
     If Not fileSystem.FolderExists(FullPath) Then
-        Call BuildFullPath(fso.GetParentFolderName(FullPath))
+        Call BuildFullPath(fileSystem.GetParentFolderName(FullPath))
         fileSystem.CreateFolder(FullPath)
     End If
 End Sub
