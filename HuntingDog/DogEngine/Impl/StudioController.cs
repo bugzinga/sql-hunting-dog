@@ -28,7 +28,6 @@ namespace HuntingDog.DogEngine.Impl
 
         private ObjectExplorerManager manager ;
 
-        private Int32 searchLimit = 10000;
 
         IServerWatcher _srvWatcher;
 
@@ -89,11 +88,11 @@ namespace HuntingDog.DogEngine.Impl
             set;
         }
 
-    
 
-     
 
-        List<Entity> IStudioController.Find(IServer serverName, String databaseName, String searchText)
+
+
+        List<Entity> IStudioController.Find(IServer serverName, String databaseName, String searchText, int searchLimit)
         {
             var server = Servers[serverName];
             var keywords = new List<String>();
@@ -322,7 +321,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection,_cfg.AlterOrCreateFunction);
+                ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection,_cfg.AlterOrCreate);
             }, "ModifyFunction failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -331,7 +330,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection,_cfg.AlterOrCreateView);
+                ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection,_cfg.AlterOrCreate);
             }, "ModifyView failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -340,7 +339,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection,_cfg.AlterOrCreateSp);
+                ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection,_cfg.AlterOrCreate);
             }, "ModifyProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -349,7 +348,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection, _cfg.SelectTopXView,_cfg.IncludeAllCoulumnNamesForViews);
+                ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection, _cfg.SelectTopX,_cfg.IncludeAllColumns,_cfg.AddWhereClauseFor,_cfg.AddNoLock);
 
             }, "SelectFromView failed - " + GetSafeEntityObject(entityObject));
         }
@@ -391,7 +390,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.SelectTopXTable,_cfg.IncludeAllCoulumnNamesForTables);
+                ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.SelectTopX,_cfg.IncludeAllColumns,_cfg.AddWhereClauseFor,  _cfg.AddNoLock, _cfg.OrderBy);
             }, "SelectFromTable - " + GetSafeEntityObject(entityObject));
         }
 

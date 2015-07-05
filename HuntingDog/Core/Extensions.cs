@@ -14,6 +14,7 @@ namespace HuntingDog.Core
 {
     public static class Extensions
     {
+
         public static Boolean IsEmpty<T>(this IEnumerable<T> collection)
         {
             return !collection.Any();

@@ -101,6 +101,7 @@ namespace HuntingDog.DogFace
 
         private Boolean _isDragDropStartedFromText = false;
 
+
         // small hint - to use anonymous delegates in InvokeUI method
         public delegate void AnyInvoker();
 
@@ -177,7 +178,7 @@ namespace HuntingDog.DogFace
                 var scroll = itemsControl.FindChild<ScrollContentPresenter>();
 
                 _userPref = UserPreferencesStorage.Load();
-                _cfg = Config.DogConfig.ReadFromStorage(_userPref);
+                _cfg =_persistor.Restore<Config.DogConfig>(_userPref);
 
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
@@ -335,9 +336,6 @@ namespace HuntingDog.DogFace
         {
             InvokeInUI(() =>
             {
-                imgWorking.Visibility = showImage
-                    ? Visibility.Visible
-                    : Visibility.Hidden;
                 txtStatusTest.Text = text;
             });
         }
@@ -416,6 +414,7 @@ namespace HuntingDog.DogFace
 
                     _databaseChangedByUser = true;
                     _userPref.StoreByName(UserPref_LastSelectedServer, sel.ServerName);
+                    _userPref.Save();
 
                     if (previousDatabaseWasFound)
                     {
@@ -466,6 +465,7 @@ namespace HuntingDog.DogFace
             if ((SelectedServer != null) && (SelectedDatabase != null))
             {
                 _userPref.StoreByName(UserPref_ServerDatabase + SelectedServer, SelectedDatabase);
+                _userPref.Save();
             }
         }
 
@@ -494,6 +494,7 @@ namespace HuntingDog.DogFace
                     sp.ForceSearch = forceSearch;
                     _processor.AddRequest(Async_PerformSearch, sp, RequestType.Search, true);
                     _userPref.StoreByName(UserPref_LastSearchText, txtSearch.Text);
+                    _userPref.Save();
                 }
                 else
                 {
@@ -564,7 +565,7 @@ namespace HuntingDog.DogFace
 
             SetStatus("Searching '" + par.Text + "' in " + par.Database, true);
 
-            var result = StudioController.Find(par.Srv, par.Database, par.Text);
+            var result = StudioController.Find(par.Srv, par.Database, par.Text, _cfg.LimitSearch);
 
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
@@ -1095,11 +1096,12 @@ namespace HuntingDog.DogFace
 
 
         Config.DogConfig _cfg = new Config.DogConfig();
-
+        Config.ConfigPersistor _persistor = new Config.ConfigPersistor();
      
         private void Options_Click(Object sender, RoutedEventArgs e)
         {  
-            var cfgWindow = new DialogWindow();
+            var cfgWindow = new DialogWindow();           
+
             cfgWindow.ShowConfiguration(_cfg);
             var result = cfgWindow.ShowDialog();
             if (result != null && result == true)
@@ -1110,7 +1112,8 @@ namespace HuntingDog.DogFace
 
                 if (_userPref != null)
                 {
-                    _cfg.Persist(_userPref);
+                    _persistor.Persist(_cfg, _userPref);
+                    _userPref.Save();
                 }
             }
 
@@ -1144,7 +1147,8 @@ namespace HuntingDog.DogFace
 
             if(_userPref!=null)
             {
-                _cfg.Persist(_userPref);
+                _persistor.Persist(_cfg, _userPref);
+                _userPref.Save();
             }
         }
 

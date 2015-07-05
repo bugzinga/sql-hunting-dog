@@ -11,6 +11,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Smo.RegSvrEnum;
 using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
+using System.Linq;
 
 namespace DatabaseObjectSearcher
 {
@@ -54,25 +55,29 @@ namespace DatabaseObjectSearcher
                 + Environment.NewLine;
         }
 
-        public static void SelectFromView(View view, SqlConnectionInfo connInfo, int selectTopXView, bool includeAllCoulumnNamesForViews)
+        public static void SelectFromView(View view, SqlConnectionInfo connInfo, int selectTopX, bool includeAllCoulumnNamesForViews,bool includeWhereClause,bool addNoLockHint)
         {
             try
-            {
-                // create new document               
-                string select;
+            {               
+                var builder = new StringBuilder(1000);
 
                 lock (view)
                 {
                     view.Refresh();
                     view.Columns.Refresh();
 
-
+                    builder.AppendLine(UseDataBaseGo(view.Parent));
+                    var noLockHint = addNoLockHint ? " WITH(NOLOCK) " : "";
                     var selectColumns = BuildColumnNames(view.Columns, includeAllCoulumnNamesForViews);
+                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM {2}.{3} {4}", selectTopX, selectColumns, view.Schema, view.Name, noLockHint);
 
-                    select = String.Format("{0} SELECT TOP {3} {4} FROM [{1}].[{2}]", UseDataBaseGo(view.Parent), view.Schema, view.Name, selectTopXView, selectColumns);
+                    if (includeWhereClause)
+                    {
+                        builder.AppendFormat("\r\n{0}", BuildWhereClause(view.Columns));
+                    }
                 }
 
-                CreateSQLDocumentWithHeader(select, connInfo);
+                CreateSQLDocumentWithHeader(builder.ToString(), connInfo);
 
                 System.Windows.Forms.SendKeys.Send("{F5}");
             }
@@ -80,6 +85,91 @@ namespace DatabaseObjectSearcher
             {
                 log.Error("SelectFromView failed.", ex);
             }
+        }
+          
+
+        public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo, int selectTopXTable, bool includeAllCoulumnNamesForTables,bool includeWhereClause, bool addNoLockHint, HuntingDog.Config.EOrderBy orderBy)
+        {
+            try
+            {
+                var builder = new StringBuilder(1000);
+
+                lock (tbl)
+                {
+                    tbl.Refresh();
+                    tbl.Columns.Refresh(true);
+
+                    builder.AppendLine(UseDataBaseGo(tbl.Parent));
+
+                    var selectColumns = BuildColumnNames(tbl.Columns, includeAllCoulumnNamesForTables);
+                    var noLockHint = addNoLockHint ? " WITH(NOLOCK) " : "";            
+                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM {2}.{3} {4}", selectTopXTable, selectColumns, tbl.Schema, tbl.Name, noLockHint);
+
+                    if (includeWhereClause)
+                    {
+                        builder.AppendFormat("\r\n{0}", BuildWhereClause(tbl.Columns));
+                    }
+
+                    if (orderBy == EOrderBy.Ascending || orderBy == EOrderBy.Descedning)
+                    {
+                        builder.AppendFormat("\r\n{0}", BuildOrderByPrimaryKey(tbl, orderBy == EOrderBy.Ascending));
+                    }
+
+                }
+
+                CreateSQLDocumentWithHeader(builder.ToString(), connInfo);
+
+                System.Windows.Forms.SendKeys.Send("{F5}");
+            }
+            catch (Exception ex)
+            {
+                log.Error("SelectFromTable failed.", ex);
+            }
+        }
+
+        private static string BuildOrderByPrimaryKey(Table tbl, bool ascending)
+        {
+            var pkList = ListPrimaryKeys(tbl);
+            if (!pkList.Any())
+                return string.Empty;
+
+            var order = ascending?" ASC":" DESC";
+
+            var orderBy = new StringBuilder(200);
+            orderBy.Append("\tORDER BY ");
+            orderBy.Append(string.Join(",", pkList.Select(x => x.Name + order).ToArray()));
+
+            return orderBy.ToString();
+        }
+
+        private static IEnumerable<Column> ListPrimaryKeys(Table tbl)
+        {
+            var listResult = new List<Column>();
+            
+            foreach (Column p in tbl.Columns)
+            {
+                if (p.InPrimaryKey)
+                    listResult.Add(p);
+            }
+
+            return listResult;
+        }
+
+        private static string BuildWhereClause(ColumnCollection columns)
+        {
+            if (columns.Count == 0)
+                return string.Empty;
+
+            var where = new StringBuilder(200);
+
+            where.Append("\t-- WHERE ");
+
+            foreach (Column column in columns)
+            {
+                where.AppendFormat("{0}{1}{2}", Environment.NewLine, "\t\t-- ", MakeParameterWithValue(column.Name, column.DataType, true));
+            }
+
+            return where.ToString();
         }
 
         public static void OpenFunctionForModification(UserDefinedFunction userDefinedFunction, SqlConnectionInfo connInfo, HuntingDog.Config.EAlterOrCreate alterOrCreate)
@@ -93,18 +183,7 @@ namespace DatabaseObjectSearcher
                     userDefinedFunction.Refresh();
 
                     builder.AppendLine(UseDataBaseGo(userDefinedFunction.Parent));
-
-                    if (alterOrCreate == HuntingDog.Config.EAlterOrCreate.Alter)
-                    {
-                        var indexOfCreate = userDefinedFunction.TextHeader.IndexOf(CREATE_FUNC, 0, StringComparison.OrdinalIgnoreCase);
-                        var alterTextHeader = userDefinedFunction.TextHeader.Remove(indexOfCreate, CREATE_FUNC.Length);
-
-                        builder.Append(alterTextHeader.Insert(indexOfCreate, ALTER_FUNC));
-                    }
-                    else
-                        builder.Append(userDefinedFunction.TextHeader);
-
-
+                    builder.Append(userDefinedFunction.ScriptHeader(alterOrCreate == EAlterOrCreate.Alter));
                     builder.Append(userDefinedFunction.TextBody);
                 }
 
@@ -153,16 +232,7 @@ namespace DatabaseObjectSearcher
                     var originalSP = vw.TextBody;
 
                     builder.AppendLine(UseDataBaseGo(vw.Parent));
-
                     builder.Append(vw.ScriptHeader(alterOrCreateView == EAlterOrCreate.Alter));
-
-
-                    // trye to use ScriptHeader(true) to change header. !!!
-                    //var indexOfCreate = sp.TextHeader.IndexOf(CREATE_PROC,0,StringComparison.OrdinalIgnoreCase);
-
-                    // var alterTextHeader = sp.TextHeader.Remove(indexOfCreate, CREATE_PROC.Length);
-                    // builder.Append( alterTextHeader.Insert(indexOfCreate,ALTER_PROC) );
-
                     builder.Append(originalSP);
                 }
 
@@ -187,16 +257,7 @@ namespace DatabaseObjectSearcher
                     var originalSP = sp.TextBody;
 
                     builder.AppendLine(UseDataBaseGo(sp.Parent));
-                    if (alterOrCreateSp == EAlterOrCreate.Alter)
-                        builder.Append(sp.ScriptHeader(true));
-                    else
-                        builder.Append(sp.ScriptHeader(false));
-                    // trye to use ScriptHeader(true) to change header. !!!
-                    //var indexOfCreate = sp.TextHeader.IndexOf(CREATE_PROC,0,StringComparison.OrdinalIgnoreCase);
-
-                    // var alterTextHeader = sp.TextHeader.Remove(indexOfCreate, CREATE_PROC.Length);
-                    // builder.Append( alterTextHeader.Insert(indexOfCreate,ALTER_PROC) );
-
+                    builder.Append(sp.ScriptHeader(alterOrCreateSp == EAlterOrCreate.Alter));
                     builder.Append(originalSP);
                 }
 
@@ -459,42 +520,6 @@ namespace DatabaseObjectSearcher
             return str;
         }
 
-        public void Open2()
-        {
-            //open this object Microsoft.SqlServer.Management.UI.VSIntegration.Editors.VirtualProject
-
-            //var asm = Assembly.LoadFile(@"d:\sql\SQLEditors.dll");
-            ////var vpType = asm.GetType("Microsoft.SqlServer.Management.UI.VSIntegration.Editors.VirtualProject");
-
-            //// static method internal static VirtualProject TheVirtualProject { get; }
-            ////var projProp = vpType.GetProperty("TheVirtualProject", BindingFlags.Static | BindingFlags.NonPublic);
-
-            ////var virtualProject = projProp.GetValue(vpType, null);
-            //// should work for designing table
-
-            //var vpType= ScriptFactory.Instance.GetType();
-            //var createDesMethod = vpType.GetMethod("CreateDesigner", BindingFlags.Instance | BindingFlags.NonPublic);
-            //// will try for editing table as well - can work as well not sure...
-
-            //var enumType = asm.GetType("Microsoft.SqlServer.Management.UI.VSIntegration.Editors.DocumentOptions");
-
-            //var infos = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-            //object enumValue = null;
-            //foreach (FieldInfo fi in infos)
-            //{
-            //    if (fi.Name == "None")
-            //    {
-            //        enumValue = fi.GetValue(null);
-
-            //        var mc = new ManagedConn();
-            //        mc.Connection = connInfo;
-            //        //void ISqlVirtualProject.CreateDesigner(Urn origUrn, DocumentType editorType, DocumentOptions aeOptions, IManagedConnection con)
-            //        createDesMethod.Invoke(ScriptFactory.Instance, new object[] { DocumentType.OpenTable, enumValue, new Urn(tbl.Urn.ToString() + "/Data"), mc });
-
-            //    }
-            //}
-        }
-
         [SuppressMessage("Microsoft.Reliability", "CA2000")]
         public static void DesignTable(Table tbl, SqlConnectionInfo connInfo)
         {
@@ -646,7 +671,6 @@ namespace DatabaseObjectSearcher
                     selectColumns.Append("[" + p.Name + "]");
                 }
 
-                selectColumns.AppendLine();
             }
             else           
                  selectColumns.Append("*");
@@ -655,45 +679,7 @@ namespace DatabaseObjectSearcher
 
             return selectColumns;
         }
-
-        public static void SelectFromTable(Table tbl, SqlConnectionInfo connInfo, int selectTopXTable, bool includeAllCoulumnNamesForTables)
-        {
-            try
-            {
-                // create new document
-                var select = String.Empty;
-
-                lock (tbl)
-                {
-                    tbl.Refresh();
-                    tbl.Columns.Refresh(true);
-
-
-                    var selectColumns = BuildColumnNames(tbl.Columns, includeAllCoulumnNamesForTables);
-                    select = String.Format("{0}\r\n SELECT TOP {3} {4} FROM [{1}].[{2}]", UseDataBaseGo(tbl.Parent), tbl.Schema, tbl.Name, selectTopXTable, selectColumns.ToString());
-                    
-                    var where = Environment.NewLine + "\t\t\t-- WHERE ";
-
-                    foreach (Column p in tbl.Columns)
-                    {
-                        where += Environment.NewLine + "\t\t\t\t-- " + MakeParameterWithValue(p.Name, p.DataType, true);
-                    }
-
-                    if (tbl.Columns.Count > 0)
-                    {
-                        select += where;
-                    }
-                }
-
-                CreateSQLDocumentWithHeader(select, connInfo);
-
-                System.Windows.Forms.SendKeys.Send("{F5}");
-            }
-            catch (Exception ex)
-            {
-                log.Error("SelectFromTable failed.", ex);
-            }
-        }
+    
 
         public static void SelectServerInObjectExplorer()
         {

@@ -14,7 +14,7 @@ namespace WinForms
 
         public event Action<List<IServer>> OnServersRemoved;
 
-        public List<HuntingDog.DogEngine.Entity> Find(IServer serverName, string databaseName, string searchText)
+        public List<HuntingDog.DogEngine.Entity> Find(IServer serverName, string databaseName, string searchText, int searchLimit)
         {
             if (searchText == "slow")
                 System.Threading.Thread.Sleep(6 * 1000);

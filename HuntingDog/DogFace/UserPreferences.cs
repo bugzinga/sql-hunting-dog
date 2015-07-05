@@ -48,6 +48,7 @@ namespace HuntingDog.DogFace
                     writer.Close();
                 }
 
+                oStream.Flush();
                 oStream.Close();
 
                 //var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");

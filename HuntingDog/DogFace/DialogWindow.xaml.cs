@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HuntingDog.Config;
+using Xceed.Wpf.Toolkit;
 
 namespace HuntingDog.DogFace
 {
@@ -29,10 +30,10 @@ namespace HuntingDog.DogFace
         public void ShowConfiguration(DogConfig cfg)
         {
             DogConfig = cfg.CloneMe();
-            //_propertyGrid.SelectedObject = DogConfig;
-            //_propertyGrid.ShowSearchBox = false;
-            //_propertyGrid.ShowSortOptions = false;
-            //_propertyGrid.ShowTitle = false;
+            _propertyGrid.SelectedObject = DogConfig;
+            _propertyGrid.ShowSearchBox = false;
+            _propertyGrid.ShowSortOptions = false;
+            _propertyGrid.ShowTitle = false;
         }
 
         public DogConfig DogConfig 

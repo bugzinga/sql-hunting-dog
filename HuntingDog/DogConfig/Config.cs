@@ -10,10 +10,17 @@ namespace HuntingDog.Config
         Create
     }
 
+    public enum EOrderBy
+    {
+        None,
+        Ascending,
+        Descedning
+    }
+
     public class DogConfig 
     {
         private int _selectTopXTable;
-        private int _selectTopXView;
+        private int _limitSearch;
 
         public DogConfig()
         {
@@ -21,142 +28,57 @@ namespace HuntingDog.Config
             ScriptTriggers = true;
             ScriptForeignKeys = false;
 
-            SelectTopXTable = 200;
-            SelectTopXView = 200;
+            SelectTopX = 200;
 
-            AlterOrCreateSp = EAlterOrCreate.Alter;
-            AlterOrCreateFunction = EAlterOrCreate.Alter;
-            AlterOrCreateView = EAlterOrCreate.Alter;
+            AddNoLock = false;
+            IncludeAllColumns = true;
+            AddWhereClauseFor = false;
+            OrderBy = EOrderBy.Descedning;
+            
+            AlterOrCreate = EAlterOrCreate.Create;
 
-            IncludeAllCoulumnNamesForTables = false;
+            LimitSearch = 500;
         }
-
-        public void Persist(DogEngine.IStorage storage)
-        {
-            storage.StoreByName("ScriptIndexies", ScriptIndexies.ToString());
-            storage.StoreByName("ScriptTriggers", ScriptTriggers.ToString());
-            storage.StoreByName("ScriptForeignKeys", ScriptForeignKeys.ToString());
-
-            storage.StoreByName("SelectTopXTable", SelectTopXTable.ToString());
-            storage.StoreByName("SelectTopXView", SelectTopXView.ToString());
-
-            storage.StoreByName("AlterOrCreateSp", AlterOrCreateSp.ToString());
-            storage.StoreByName("AlterOrCreateFunction", AlterOrCreateFunction.ToString());
-            storage.StoreByName("AlterOrCreateView", AlterOrCreateView.ToString());
-
-            storage.StoreByName("LaunchingHotKey", LaunchingHotKey);
-
-            storage.StoreByName("IncludeAllCoulumnNamesForTables", IncludeAllCoulumnNamesForTables.ToString());
-            storage.StoreByName("IncludeAllCoulumnNamesForViews", IncludeAllCoulumnNamesForViews.ToString());
-        }
-
-        public static DogConfig ReadFromStorage(HuntingDog.DogEngine.IStorage storage)
-        {
-            var cfg = new DogConfig();
-            cfg.Restore(storage);
-            return cfg;
-        }
-
-        private void Restore(DogEngine.IStorage storage)
-        {
-            try
-            {
-                if (storage.Exists("LaunchingHotKey"))
-                {
-                    LaunchingHotKey = storage.GetByName("LaunchingHotKey");
-                }
-
-                if (storage.Exists("ScriptIndexies"))
-                {
-                    ScriptIndexies = bool.Parse(storage.GetByName("ScriptIndexies"));
-                }
-
-
-                if (storage.Exists("IncludeAllCoulumnNamesForTables"))
-                {
-                    IncludeAllCoulumnNamesForTables = bool.Parse(storage.GetByName("IncludeAllCoulumnNamesForTables"));
-                }
-
-                if (storage.Exists("IncludeAllCoulumnNamesForViews"))
-                {
-                    IncludeAllCoulumnNamesForViews = bool.Parse(storage.GetByName("IncludeAllCoulumnNamesForViews"));
-                }
-
-
-
-                if (storage.Exists("ScriptTriggers"))
-                {
-                    ScriptTriggers = bool.Parse(storage.GetByName("ScriptTriggers"));
-                }
-
-                if (storage.Exists("ScriptForeignKeys"))
-                {
-                    ScriptForeignKeys = bool.Parse(storage.GetByName("ScriptForeignKeys"));
-                }
-
-                if (storage.Exists("SelectTopXTable"))
-                {
-                    SelectTopXTable = int.Parse(storage.GetByName("SelectTopXTable"));
-                }
-
-                if (storage.Exists("SelectTopXView"))
-                {
-                    SelectTopXView = int.Parse(storage.GetByName("SelectTopXView"));
-                }
-
-                if (storage.Exists("AlterOrCreateSp"))
-                {
-                    AlterOrCreateSp = (EAlterOrCreate)Enum.Parse(typeof(EAlterOrCreate), storage.GetByName("AlterOrCreateSp"));
-                }
-
-                if (storage.Exists("AlterOrCreateView"))
-                {
-                    AlterOrCreateView = (EAlterOrCreate)Enum.Parse(typeof(EAlterOrCreate), storage.GetByName("AlterOrCreateView"));
-                }
-
-
-                if (storage.Exists("AlterOrCreateFunction"))
-                {
-                    AlterOrCreateFunction = (EAlterOrCreate)Enum.Parse(typeof(EAlterOrCreate), storage.GetByName("AlterOrCreateFunction"));
-                }
-
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        [Category("Tables")]
+  
+        [Category("SELECT")]
         [DisplayName("Add Column Names to SELECT")]
-        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")]   
-        public bool IncludeAllCoulumnNamesForTables { get; set; }
+        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")] 
+        public bool IncludeAllColumns { get; set; }
 
-        [Category("Views")]
-        [DisplayName("Add Column Names to SELECT")]
-        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")]   
-        public bool IncludeAllCoulumnNamesForViews { get; set; }
-
-        [Category("Tables")]
+        [Category("SCRIPT")]
         [DisplayName("Script Indexes")]
         [Description("Include Indexes when scripting a Table")]
         public bool ScriptIndexies { get; set; }
 
-        [Category("Tables")]
+        [Category("SCRIPT")]
         [DisplayName("Script Triggers")]
         [Description("Include Triggers when scripting a Table")]
         public bool ScriptTriggers { get; set; }
 
-        [Category("Tables")]
+        [Category("SCRIPT")]
         [DisplayName("Script Foreign Keys")]
         [Description("Include Foregn Keys when scripting a Table")]
         public bool ScriptForeignKeys { get; set; }
 
+        [Category("SELECT")]
+        [DisplayName("Add WHERE Caluse")]
+        [Description("Add commented WHERE clause that includes all columns and their types")]
+        public bool AddWhereClauseFor { get; set; }
 
-        [Category("Tables")]
+        [Category("SELECT")]
+        [DisplayName("Add WITH(NOLOCK) Hint")]
+        [Description("Add NOLOCK hint. Can lead to dirty of inconsistent data to be presented")]
+        public bool AddNoLock { get; set; }
+
+        [Category("SELECT")]
+        [DisplayName("User ORDER BY")]
+        [Description("Add Order by Primary Key(s) at the end of select statement")]
+        public EOrderBy OrderBy { get; set; }
+
+        [Category("SELECT")]
         [DisplayName("Select top X")]
-        [Description("Override row count limitation when you select data from the table")]
-        public int SelectTopXTable
+        [Description("Override row count limitation when you select data from the table or view")]
+        public int SelectTopX
         {
             get { return _selectTopXTable; }
             set
@@ -167,13 +89,22 @@ namespace HuntingDog.Config
             }
         }
 
-
-        //[Category("General")]
-        //[Description("Change Hunting Dog default font size")]   
-        //public int DefaultFontSize { get; set; }
-
+        [Category("GENERAL")]
+        [DisplayName("Search Limit")]
+        [Description("Retreieve only first X objects")]
+        public int LimitSearch
+        {
+            get { return _limitSearch; }
+            set
+            {
+                if (value <= 0)
+                    throw new InvalidDataException("Must be greater than zero");
+                _limitSearch = value;
+            }
+        }
+   
         private string _launchingHotKey = "D";
-        [Category("General")]
+        [Category("GENERAL")]
         [DisplayName("Hot Key: Ctrl+")]
         [Description("Launch Hunting Dog using Ctrl + this key. Will be effective after SSMS is restarted")]
         public string LaunchingHotKey
@@ -187,38 +118,10 @@ namespace HuntingDog.Config
             }
         }
 
-        [Category("Views")]
-        [DisplayName("Select top X ")]
-        [Description("Override row count limitation when you select data from the view")]
-        public int SelectTopXView
-        {
-            get { return _selectTopXView; }
-            set
-            {
-                if (value <= 0)
-                    throw new InvalidDataException("Must be greater than zero");
-                _selectTopXView = value;
-            }
-        }
-
-
-        [Category("Views")]
+        [Category("MODIFY")]
         [DisplayName("Inspect Body using")]
-        [Description("When inspecting View body use ALTER or CREATE script")]
-        public EAlterOrCreate AlterOrCreateView { get; set; }
-
-        [Category("Stored Procedures")]
-        [DisplayName("Inspect Body using")]
-        [Description("When inspecting Procedures body use ALTER or CREATE script")]
-        public EAlterOrCreate AlterOrCreateSp { get; set; }
-
-        [Category("Functions")]
-        [DisplayName("Inspect Body using")]
-        [Description("When inspecting Functions body use ALTER or CREATE script")]
-        public EAlterOrCreate AlterOrCreateFunction { get; set; }
-
-   
-
+        [Description("When inspecting Procedure, View or Function body use ALTER or CREATE script")]
+        public EAlterOrCreate AlterOrCreate { get; set; }
 
         public DogConfig CloneMe()
         {

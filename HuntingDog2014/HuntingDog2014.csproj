@@ -123,6 +123,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\Dependencies\2014\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\HuntingDog\Core\Extensions.cs">
@@ -142,6 +145,9 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogConfig\Config.cs">
       <Link>DogConfig\Config.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogConfig\ConfigPersistor.cs">
+      <Link>DogConfig\ConfigPersistor.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
       <Link>DogEngine\Entity.cs</Link>

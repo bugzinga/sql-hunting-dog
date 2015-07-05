@@ -132,6 +132,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\Dependencies\2012\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\HuntingDog\Core\Extensions.cs">
@@ -151,6 +154,9 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogConfig\Config.cs">
       <Link>DogConfig\Config.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogConfig\ConfigPersistor.cs">
+      <Link>DogConfig\ConfigPersistor.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
       <Link>DogEngine\Entity.cs</Link>
@@ -319,7 +325,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
+    <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R
+rem xcopy "$(TargetDir)Xceed.Wpf.Toolkit.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />
 <Target Name="GenSerializationAssembly"

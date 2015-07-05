@@ -198,7 +198,7 @@ namespace HuntingDog.DogFace
             else
             {
                 foregroundBrush = new SolidColorBrush(Colors.Black);
-                backgroundBrush = new SolidColorBrush(Colors.Yellow);
+                backgroundBrush = new SolidColorBrush(Color.FromRgb(255,232,166));
             }
 
             foreach (var run in runs)

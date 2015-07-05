@@ -132,12 +132,16 @@
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\Dependencies\2008\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\PerformanceAnalyzer.cs" />
     <Compile Include="Core\Range.cs" />
     <Compile Include="DogConfig\Config.cs" />
+    <Compile Include="DogConfig\ConfigPersistor.cs" />
     <Compile Include="DogEngine\Entity.cs" />
     <Compile Include="DogEngine\FunctionParameter.cs" />
     <Compile Include="DogEngine\IStorage.cs" />

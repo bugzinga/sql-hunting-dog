@@ -483,7 +483,7 @@
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">Try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
 
-                    <!--TextBlock VerticalAlignment="Center" Margin="5,5,0,0" FontSize="16"  x:Name="txtOption"> <Hyperlink FontSize="16"  Click="Options_Click">Options</Hyperlink> </TextBlock-->
+                    <TextBlock VerticalAlignment="Center" Margin="5,5,0,0" FontSize="16"  x:Name="txtOption"> <Hyperlink FontSize="16"  Click="Options_Click">Options</Hyperlink> </TextBlock>
 
 
                 </StackPanel>
@@ -560,14 +560,8 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
 
-            <!--TextBlock VerticalAlignment="Center" Margin="5,0,0,0" FontWeight="Bold"  x:Name="txtOptionPermanent"> <Hyperlink  Click="Options_Click">Options</Hyperlink></TextBlock-->
-            <Image VerticalAlignment="Center"
-                   x:Name="imgWorking"
-                   Source="{Binding Source={x:Static properties:Resources.process}, Converter={StaticResource bitmapConverter}}"
-                   Width="20"
-                   Height="20"
-                   Margin="4,0,4,0" />
-            <TextBlock  VerticalAlignment="Center" x:Name="txtStatusTest">status</TextBlock>
+            <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" x:Name="txtOptionPermanent"> <Hyperlink Foreground="#6495ED"  Click="Options_Click">Options</Hyperlink></TextBlock>          
+            <TextBlock  VerticalAlignment="Center" Margin="15,0,0,0" x:Name="txtStatusTest">status</TextBlock>
         </StackPanel>
         
     </Grid>
