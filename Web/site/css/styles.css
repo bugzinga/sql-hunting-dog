@@ -53,6 +53,15 @@ a {
 	font-size: inherit;
 }
 
+.download {
+	display:block;
+	text-align:center;
+	color: #6395ee;
+	text-decoration: underline;
+	font-size: inherit;
+}
+
+
 a img {
 	border-width: 0px;
 }

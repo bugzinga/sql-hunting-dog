@@ -10,7 +10,7 @@
 						</a>
 						<center class="menu">
 <?php
-
+    $downloadLink = "https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.2.2.msi";
 	$menu = array(
 		array(
 			"name" => "main",
@@ -26,11 +26,11 @@
 			"name" => "how",
 			"link" => "/how",
 			"title" => "How"
-		),
+		),		
 		array(
-			"name" => "blog",
-			"link" => "http://blog.sql-hunting-dog.com",
-			"title" => "Blog"
+			"name" => "download",
+			"link" => $downloadLink,
+			"title" => "Download"
 		)
 	);
 
@@ -49,7 +49,7 @@
 						</center>
 					</td>
 					<td style="padding-left: 11px">
-						<a href="https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.1.1.msi">
+						<a href="<?php echo $downloadLink ?>">
 							<img src="/img/download.png" width="50" height="50" /><br/>
 						</a>
 					</td>

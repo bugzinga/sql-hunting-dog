@@ -111,7 +111,7 @@
 					and you are using SSMS in you everyday work.
 				</p>
 			</div>
-			<div class="signature">20135(c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+			<div class="signature">2015(c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 	</body>
 </html>

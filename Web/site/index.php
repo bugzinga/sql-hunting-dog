@@ -34,8 +34,9 @@
 			
 			<div style="width: 500px; text-align: left">
 				<p>
-				SQL Hunting Dog is a free SQL Server tool. It works as an Addin and gives you quick search and smooth navigation. Do not use it very often , otherwise you will become addictive.
+				SQL Hunting Dog is a free SQL Server tool. It works as an Addin and gives you quick search and smooth navigation. Do not use it very often, otherwise you will become addictive.
 				</p>
+				<a class="download" href="<?php echo $downloadLink ?>">Download latest version</a>
 			</div>
 			<div class="signature">2015 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
