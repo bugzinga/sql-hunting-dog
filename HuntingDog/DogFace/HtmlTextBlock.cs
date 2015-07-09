@@ -91,6 +91,9 @@ namespace HuntingDog.DogFace
             Inlines.Clear();
             runs.Clear();
 
+            if (string.IsNullOrEmpty(name))
+                return;
+
             if ((keywords == null) || keywords.IsEmpty())
             {
                 // TODO: get rid of code duplication (lines 89, 106, 116)

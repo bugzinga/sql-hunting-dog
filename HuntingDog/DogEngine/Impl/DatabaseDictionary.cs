@@ -76,7 +76,7 @@ namespace HuntingDog.DogEngine.Impl
         {
             if (entry.IsTable)
             {
-                var tbl = (entry.Result as Table);
+                var tbl = (Table)entry.Result;
                 foreach (Column clm in tbl.Columns)
                 {
                     if (MatchAnd(critsAnd, clm.Name.ToLower()))
@@ -86,7 +86,7 @@ namespace HuntingDog.DogEngine.Impl
             }
             else if (entry.IsStoredProc)
             {
-                var prc = (entry.Result as StoredProcedure);
+                var prc = (StoredProcedure)entry.Result;
                 foreach (StoredProcedureParameter prcParam in prc.Parameters)
                 {
                     if (MatchAnd(critsAnd, prcParam.Name.ToLower()))

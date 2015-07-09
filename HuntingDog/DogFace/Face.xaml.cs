@@ -498,7 +498,7 @@ namespace HuntingDog.DogFace
                 else
                 {
                     ClearSearchResult();
-                }
+                }   
             }
             catch (Exception ex)
             {

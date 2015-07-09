@@ -6,7 +6,7 @@ namespace HuntingDog.Core
 {
     public class PerformanceAnalyzer
     {
-        private readonly Boolean disabled = true;
+        private readonly Boolean disabled = false;
 
         private readonly Log log = LogFactory.GetLog();
 
@@ -20,7 +20,7 @@ namespace HuntingDog.Core
             {
                 return;
             }
-
+                
             Start();
         }
 
@@ -38,6 +38,11 @@ namespace HuntingDog.Core
                     watcher.Stop();
                 }
             }
+        }
+
+        public void Reset()
+        {
+            watcher.Reset();
         }
 
         public void Start()

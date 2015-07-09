@@ -203,6 +203,9 @@
     <Compile Include="..\HuntingDog\DogFace\BitmapConverter.cs">
       <Link>DogFace\BitmapConverter.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\DogFace\DatabaseItem.cs">
+      <Link>DogFace\DatabaseItem.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\DogFace\DialogWindow.xaml.cs">
       <Link>DogFace\DialogWindow.xaml.cs</Link>
       <DependentUpon>DialogWindow.xaml</DependentUpon>
@@ -219,6 +222,9 @@
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ItemFactory.cs">
       <Link>DogFace\ItemFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ServerItem.cs">
+      <Link>DogFace\ServerItem.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogFace\ucHost.cs">
       <Link>DogFace\ucHost.cs</Link>

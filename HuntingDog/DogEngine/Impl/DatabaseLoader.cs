@@ -79,18 +79,28 @@ namespace HuntingDog.DogEngine.Impl
             // TODO: Performance - init fields should be "IsSystemObject", "Name". Need to test performance.
 
             // these give you a HUGE perf win with SMO - it pre-fetches these, rather than having to make another call to SQL Server to get this value
-            server.SetDefaultInitFields(typeof(StoredProcedure), "IsSystemObject");
+            server.SetDefaultInitFields(typeof(StoredProcedure), "IsSystemObject", "Text");
+
             //server.SetDefaultInitFields(typeof(StoredProcedure), "Name");
             server.SetDefaultInitFields(typeof(View), "IsSystemObject");
             //server.SetDefaultInitFields(typeof(View), "Name");
+
+            var def = server.GetDefaultInitFields(typeof(Table));
+
             server.SetDefaultInitFields(typeof(Table), "IsSystemObject");
+
+            
             //server.SetDefaultInitFields(typeof(Table), "Name");
             server.SetDefaultInitFields(typeof(UserDefinedFunction), "IsSystemObject");
             //server.SetDefaultInitFields(typeof(UserDefinedFunction), "Name");
             server.SetDefaultInitFields(typeof(Database), "IsSystemObject");
             server.SetDefaultInitFields(typeof(Database), "IsAccessible");
-            //_server.SetDefaultInitFields(typeof(Column), true);
-            //_server.SetDefaultInitFields(typeof(StoredProcedureParameter), true);
+
+            // try these        
+            //server.SetDefaultInitFields(typeof(Column), "Name");
+
+           // server.SetDefaultInitFields(typeof(StoredProcedure), "Parameters");
+           // server.SetDefaultInitFields(typeof(StoredProcedureParameter), "Name");
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000")]
@@ -154,12 +164,15 @@ namespace HuntingDog.DogEngine.Impl
                     LoadTables(d, databaseDictionary);
                     log.Performance("Loading tables " + d.Name, analyzer.Result);
 
+                    analyzer.Reset();
                     LoadStoredProcs(d, databaseDictionary);
                     log.Performance("Loading procedures " + d.Name, analyzer.Result);
 
+                    analyzer.Reset();
                     LoadViews(d, databaseDictionary);
                     log.Performance("Loading views " + d.Name, analyzer.Result);
 
+                    analyzer.Reset();
                     LoadFunctions(d, databaseDictionary);
                     log.Performance("Loading functions " + d.Name, analyzer.Result);
 
