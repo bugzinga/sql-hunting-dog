@@ -140,6 +140,7 @@
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\PerformanceAnalyzer.cs" />
     <Compile Include="Core\Range.cs" />
+    <Compile Include="Core\UpdateChecker.cs" />
     <Compile Include="DogConfig\Config.cs" />
     <Compile Include="DogConfig\ConfigPersistor.cs" />
     <Compile Include="DogEngine\Entity.cs" />
