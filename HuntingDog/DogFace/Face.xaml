@@ -31,6 +31,9 @@
             <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA"/>
             <SolidColorBrush x:Key="SolidBorderBrush" Color="#888"/>
             <SolidColorBrush x:Key="DownArrowBrush" Color="#FF6495ED"/>
+            <SolidColorBrush x:Key="popupWindowBrush" Color="#9FEFECA7"/>
+            <SolidColorBrush x:Key="popupWindowBorderBrush" Color="#60999999"/>
+            <SolidColorBrush x:Key="popupWindowTextBrush" Color="#999999"/>
 
             <!-- Gradient Brushes for Image Combo Boxes -->
             <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
@@ -357,7 +360,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid x:Name="gridServerAndDatabase" >
             
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -463,6 +466,35 @@
                              TextChanged="txtSearch_TextChanged" />
                 </DockPanel>
             </Border>
+
+            <Popup x:Name="popupUpdate" Placement="Center" AllowsTransparency="True" Focusable="False"  PopupAnimation="Slide"  PlacementTarget="{Binding ElementName=gridServerAndDatabase}">
+                <Border CornerRadius="10" Background="{StaticResource popupWindowBrush}"  BorderThickness="5" BorderBrush="{StaticResource popupWindowBorderBrush}">
+                    <StackPanel Orientation="Horizontal" Margin="10" >
+                        <TextBlock Margin="0,0,10,0" FontSize="16" x:Name="popupUpdateText" Background="Transparent"    VerticalAlignment="Center" Foreground="{StaticResource popupWindowTextBrush}" >
+                        Update is available
+                        </TextBlock>
+
+                        <Button Grid.Column="2"
+                  
+                        Visibility="Visible"
+                        x:Name="btnCloseUpdatePopup"
+                        Click="CloseUpdatePopup_Click"
+  
+                        VerticalAlignment="Center"
+                        Focusable="False" 
+                        BorderBrush="Transparent"
+                        ToolTip="Close and ignore that update"
+                        BorderThickness="1"
+                        Background="Transparent"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Image Source="{Binding Source={x:Static properties:Resources.close}, Converter={StaticResource bitmapConverter}}"
+                        Height="18"
+                         Width="18" />
+                        </Button>
+
+                    </StackPanel>
+                </Border>
+            </Popup>
 
         </Grid>
 

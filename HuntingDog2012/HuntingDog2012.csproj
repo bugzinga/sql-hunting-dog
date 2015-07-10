@@ -332,6 +332,9 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R

@@ -47,6 +47,11 @@ namespace HuntingDog.Core
             timer.Dispose();
         }
 
+        public void IgnoreNewVersion()
+        {
+
+        }
+
         public void Download()
         {
             try

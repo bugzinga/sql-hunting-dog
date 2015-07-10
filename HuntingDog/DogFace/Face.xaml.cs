@@ -222,9 +222,25 @@ namespace HuntingDog.DogFace
         void UpdateDetector_NewVersionFound(DogVersion detected)
         {
             InvokeInUI(() =>
-            {              
+            {
+                popupUpdate.IsOpen = true;
+                popupUpdateText.Text = "New version is available. Click to Download";
                 updateInfo.Visibility = System.Windows.Visibility.Visible;
             });
+        }
+
+        private void CloseUpdatePopup_Click(Object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                popupUpdate.IsOpen = false;
+                UpdateDetector.IgnoreNewVersion();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Ignore new version failed", ex);
+            }
+
         }
 
         private void Download_Click(Object sender, RoutedEventArgs e)

@@ -323,6 +323,9 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
