@@ -101,6 +101,7 @@ namespace HuntingDog.DogFace
 
         private Boolean _isDragDropStartedFromText = false;
 
+        private UpdateDetector UpdateDetector = new UpdateDetector();
 
         // small hint - to use anonymous delegates in InvokeUI method
         public delegate void AnyInvoker();
@@ -180,6 +181,8 @@ namespace HuntingDog.DogFace
                 _userPref = UserPreferencesStorage.Load();
                 _cfg =_persistor.Restore<Config.DogConfig>(_userPref);
 
+                StartUpdateDetection();
+
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
                 StudioController.SetConfiguration(_cfg);
@@ -200,6 +203,39 @@ namespace HuntingDog.DogFace
             catch (Exception ex)
             {
                 log.Error("Fatal error loading main control:" + ex.Message, ex);
+            }
+        }
+
+        void StartUpdateDetection()
+        {
+            try
+            {
+                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;
+                UpdateDetector.StartDetection();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed starting update detector", ex);
+            }
+        }
+
+        void UpdateDetector_NewVersionFound(DogVersion detected)
+        {
+            InvokeInUI(() =>
+            {              
+                updateInfo.Visibility = System.Windows.Visibility.Visible;
+            });
+        }
+
+        private void Download_Click(Object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateDetector.Download();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error opening download" + ex.Message, ex);
             }
         }
 

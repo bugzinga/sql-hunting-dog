@@ -137,6 +137,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\HuntingDog\Core\DogVersion.cs">
+      <Link>Core\DogVersion.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Core\Extensions.cs">
       <Link>Core\Extensions.cs</Link>
     </Compile>
@@ -151,6 +154,12 @@
     </Compile>
     <Compile Include="..\HuntingDog\Core\Range.cs">
       <Link>Core\Range.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\UpdateDetector.cs">
+      <Link>Core\UpdateDetector.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\VersionRetriever.cs">
+      <Link>Core\VersionRetriever.cs</Link>
     </Compile>
     <Compile Include="..\HuntingDog\DogConfig\Config.cs">
       <Link>DogConfig\Config.cs</Link>

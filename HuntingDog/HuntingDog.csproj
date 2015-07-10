@@ -137,10 +137,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\DogVersion.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\PerformanceAnalyzer.cs" />
     <Compile Include="Core\Range.cs" />
-    <Compile Include="Core\UpdateChecker.cs" />
+    <Compile Include="Core\UpdateDetector.cs" />
+    <Compile Include="Core\VersionRetriever.cs" />
     <Compile Include="DogConfig\Config.cs" />
     <Compile Include="DogConfig\ConfigPersistor.cs" />
     <Compile Include="DogEngine\Entity.cs" />
