@@ -223,17 +223,19 @@ namespace HuntingDog.DogFace
         {
             InvokeInUI(() =>
             {
-                popupUpdate.IsOpen = true;
-                popupUpdateText.Text = "New version is available. Click to Download";
+                //popupUpdate.IsOpen = true;
+                popupBorder.Visibility = System.Windows.Visibility.Visible;
+                //popupUpdateText.Text = "New version is available. Click to Download";
                 updateInfo.Visibility = System.Windows.Visibility.Visible;
             });
         }
 
-        private void CloseUpdatePopup_Click(Object sender, RoutedEventArgs e)
+        private void CloseUpdate_Click(Object sender, RoutedEventArgs e)
         {
             try
             {
-                popupUpdate.IsOpen = false;
+                //popupUpdate.IsOpen = false;
+                popupBorder.Visibility = System.Windows.Visibility.Collapsed;
                 UpdateDetector.IgnoreNewVersion();
             }
             catch (Exception ex)
@@ -243,7 +245,7 @@ namespace HuntingDog.DogFace
 
         }
 
-        private void Download_Click(Object sender, RoutedEventArgs e)
+        private void DownloadUpdate_Click(Object sender, RoutedEventArgs e)
         {
             try
             {
