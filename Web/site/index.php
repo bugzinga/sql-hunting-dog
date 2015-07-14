@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <?php include "header.php" ?>
 	<body>
 		<center>
@@ -7,12 +8,16 @@
 <?php
 	$active = "main";
 	include "menu.php";
-	include "donate.php";
-	include "code.php";
+	include "donate.php";	
 ?>
 			</table>
 			<div id="content">
 				<h2>Quick Search Tool (AddIn) for Microsoft SQL Management Studio 2008/2012/2014</h2>
+				
+				<!--div>
+					<a class="baseButton downloadButton" href="<?php echo $downloadLink ?>">Download</a>
+				</div-->
+				
 				<div>
 					<div class="theme-default slider-wrapper">
 						<div id="slider" class="nivoSlider">
@@ -22,6 +27,8 @@
 						</div>
 					</div>
 				</div>
+				
+				
 				<div style="width: 500px; text-align: left">
 					<ul>
 						<li>Quickly find tables, stored procedure, functions and views</li>
@@ -36,8 +43,19 @@
 				<p>
 				SQL Hunting Dog is a free SQL Server tool. It works as an Addin and gives you quick search and smooth navigation. Do not use it very often, otherwise you will become addictive.
 				</p>
-				<a class="download" href="<?php echo $downloadLink ?>">Download latest version</a>
+				<!--a class="download" href="<?php echo $downloadLink ?>">Download latest version</a-->
+					<div id="leaveEmail">
+					<form action="subscribe/subscribe.php" method="post">
+					
+						<input type="text" name="email" placeholder="My e-mail address">
+						<input class="baseButton subscribeButton"  value="Subscribe" type="submit">
+					</form>
+
+				</div>
 			</div>
+			
+			
+			
 			<div class="signature">2015 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 		<script type="text/javascript">

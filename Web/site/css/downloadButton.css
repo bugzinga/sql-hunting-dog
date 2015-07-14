@@ -1,0 +1,42 @@
+.subscribeButton{
+    padding: 8px 10px;
+	font: normal normal normal 14px verdana;
+}
+
+.downloadButton{
+  padding: 12px 24px;
+  font: normal normal normal 20px verdana;
+}
+
+
+.baseButton {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+   
+    border: 1px solid #4f78be;
+    border-radius: 8px;
+    background: #81c3ff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#81c3ff), to(#4f78be));
+    background: -moz-linear-gradient(top, #81c3ff, #4f78be);
+    background: linear-gradient(to bottom, #81c3ff, #4f78be);
+   
+    color: #383738;
+    text-decoration: none;
+}
+.baseButton:hover,
+.baseButton:focus {
+    border: 1px solid #6396ee;
+    background: #9beaff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#9beaff), to(#5f90e4));
+    background: -moz-linear-gradient(top, #9beaff, #5f90e4);
+    background: linear-gradient(to bottom, #9beaff, #5f90e4);
+    color: #383738;
+    text-decoration: none;
+}
+.baseButton:active {
+    background: #4f78be;
+    background: -webkit-gradient(linear, left top, left bottom, from(#4f78be), to(#4f78be));
+    background: -moz-linear-gradient(top, #4f78be, #4f78be);
+    background: linear-gradient(to bottom, #4f78be, #4f78be);
+}

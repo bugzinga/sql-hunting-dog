@@ -11,4 +11,9 @@ namespace HuntingDog.DogEngine
         String GetByName(String key);
         void StoreByName(String key, String value);
     }
+
+    public interface ISavableStorage : IStorage
+    {
+        void Save();
+    }
 }

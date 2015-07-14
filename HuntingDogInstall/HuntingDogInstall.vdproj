@@ -22,13 +22,13 @@
         "Entry"
         {
         "MsmKey" = "8:_03A4AFFB2F9DC08E12B09637C8E3BBBF"
-        "OwnerKey" = "8:_7197FC25F2831B64A21D4489AE89D3C1"
+        "OwnerKey" = "8:_9073B05F6B4B91BA221EBB8B64938ACD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_03A4AFFB2F9DC08E12B09637C8E3BBBF"
-        "OwnerKey" = "8:_9073B05F6B4B91BA221EBB8B64938ACD"
+        "OwnerKey" = "8:_7197FC25F2831B64A21D4489AE89D3C1"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2157,6 +2157,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DAD5B3179E59DAF07D3DE2239170FED8"
+        "OwnerKey" = "8:_9F57B27D3F064459A564B17946F706FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DAD5B3179E59DAF07D3DE2239170FED8"
+        "OwnerKey" = "8:_7197FC25F2831B64A21D4489AE89D3C1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DB6DDD9EE959E0325B17BCE7305426D5"
         "OwnerKey" = "8:_9A3A2A0594C311E977F611973B831B6E"
         "MsmSig" = "8:_UNDEFINED"
@@ -2387,6 +2399,18 @@
         {
         "MsmKey" = "8:_EE853097B8054E359EFFFB692CDDCE67"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EF60F9AD1D90BAC02E1216AC73EB8F56"
+        "OwnerKey" = "8:_2DFF874CA5C6DD20D9239CB740C0AC8E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EF60F9AD1D90BAC02E1216AC73EB8F56"
+        "OwnerKey" = "8:_9F57B27D3F064459A564B17946F706FA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2716,18 +2740,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_68AD50B150874AB6AF01420243BDBCBF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4693C269AC644B558C837CD6BFE13EDE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_FFC3D680E0C200F9D1FA12C70E64A69E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2992,6 +3004,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_68AD50B150874AB6AF01420243BDBCBF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6818FA7420295F231D87EBE4402B0596"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3053,6 +3071,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_46A831F53AAC33B70A0216A45C1D84E2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4693C269AC644B558C837CD6BFE13EDE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3166,6 +3190,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EF60F9AD1D90BAC02E1216AC73EB8F56"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_AC1262DA8D9C68731CB114AF12B2CAC3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3221,6 +3251,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_9BCC21C75EF6373DC016FB5FFD49ACA6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DAD5B3179E59DAF07D3DE2239170FED8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -6517,6 +6553,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DAD5B3179E59DAF07D3DE2239170FED8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.AnalysisServices.AdomdClient, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_DAD5B3179E59DAF07D3DE2239170FED8"
+                    {
+                    "Name" = "8:Microsoft.AnalysisServices.AdomdClient.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.AnalysisServices.AdomdClient.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4797C771B1E44939A2E1D068A45CD2C5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DB6DDD9EE959E0325B17BCE7305426D5"
             {
             "AssemblyRegister" = "3:1"
@@ -6907,6 +6974,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EF60F9AD1D90BAC02E1216AC73EB8F56"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:TRUE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.SqlServer.Instapi, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_EF60F9AD1D90BAC02E1216AC73EB8F56"
+                    {
+                    "Name" = "8:Microsoft.SqlServer.Instapi.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.SqlServer.Instapi.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4797C771B1E44939A2E1D068A45CD2C5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EFED21D2FAE8B233F89479B5B97E726D"
@@ -7363,15 +7461,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Hunting Dog"
-        "ProductCode" = "8:{653BF168-5680-4ED8-A619-7D0452940C18}"
-        "PackageCode" = "8:{1B7E6BAD-2D72-4440-9910-E1CC7FEA472E}"
+        "ProductCode" = "8:{C15925EA-562C-44B8-BC4E-6D0C1124E110}"
+        "PackageCode" = "8:{F6E546C0-1E01-46F9-B5D5-13C9F3567EDC}"
         "UpgradeCode" = "8:{8E47131F-D47C-4235-90F0-4656F0D77C55}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:3.2.2"
+        "ProductVersion" = "8:3.3"
         "Manufacturer" = "8:Alex & Max"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

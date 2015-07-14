@@ -30,7 +30,6 @@ namespace HuntingDog.Core
                 return mergedList;
             }
 
-            log.Info(String.Format("Merging keyword ranges: {0} range(s)", ranges.Count()));
             var analyzer = new PerformanceAnalyzer();
 
             // TODO: This will fail if some element from the list is null.
@@ -60,7 +59,6 @@ namespace HuntingDog.Core
 
             mergedList.Add(new Range<T> { Start = start, End = end });
 
-            log.Performance("Keyword ranges merged", analyzer.Result);
             analyzer.Stop();
 
             return mergedList;

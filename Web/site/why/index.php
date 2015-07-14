@@ -8,7 +8,6 @@
 	$active = "why";
 	include "../menu.php";
 	include "../donate.php";
-	include "../code.php";
 ?>
 			</table>
 			<div id="content" class="article">
@@ -106,12 +105,12 @@
 					</ul>
 				</p>
 				<p>
-					From my personal experience and from experience of my other senior
+					From my personal experience and from experience of other senior
 					developers this plug-in is a must have if you a professional SQL Server developer
 					and you are using SSMS in you everyday work.
 				</p>
 			</div>
-			<div class="signature">2015(c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
+			<div class="signature">2015 (c) <a href="mailto:sqlhuntingdog@gmail.com">SQL Hunting Dog</a></div>
 		</center>
 	</body>
 </html>

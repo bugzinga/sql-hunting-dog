@@ -12,6 +12,7 @@ using System.Windows.Media;
 using HuntingDog.Core;
 using HuntingDog.DogEngine;
 using HuntingDog.DogFace.Background;
+using System.Windows.Media.Effects;
 
 namespace HuntingDog.DogFace
 {
@@ -69,6 +70,8 @@ namespace HuntingDog.DogFace
         // these keys are used to save/load user preferences
         public const String UserPref_LastSearchText = "Last Search Text";
 
+      
+
         public const String UserPref_ServerDatabase = "[database]:";
 
         public const String UserPref_LastSelectedServer = "Last Selected Server";
@@ -101,6 +104,7 @@ namespace HuntingDog.DogFace
 
         private Boolean _isDragDropStartedFromText = false;
 
+        private UpdateDetector UpdateDetector;
 
         // small hint - to use anonymous delegates in InvokeUI method
         public delegate void AnyInvoker();
@@ -180,6 +184,9 @@ namespace HuntingDog.DogFace
                 _userPref = UserPreferencesStorage.Load();
                 _cfg =_persistor.Restore<Config.DogConfig>(_userPref);
 
+                UpdateDetector = new UpdateDetector(_userPref);
+                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;    
+
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
                 StudioController.SetConfiguration(_cfg);
@@ -200,6 +207,44 @@ namespace HuntingDog.DogFace
             catch (Exception ex)
             {
                 log.Error("Fatal error loading main control:" + ex.Message, ex);
+            }
+        }
+
+    
+
+        void UpdateDetector_NewVersionFound(DogVersion detected)
+        {
+            InvokeInUI(() =>
+            {
+                popupBorder.Visibility = System.Windows.Visibility.Visible;
+                popupUpdateText.Text = string.Format("New version is available ({0})",detected.Version.ToString());
+            });
+        }
+
+        private void CloseUpdate_Click(Object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                popupBorder.Visibility = System.Windows.Visibility.Collapsed;
+                UpdateDetector.IgnoreVersion();
+                _userPref.Save();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Ignore new version failed", ex);
+            }
+
+        }
+
+        private void DownloadUpdate_Click(Object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateDetector.Download();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error opening download" + ex.Message, ex);
             }
         }
 
@@ -1100,10 +1145,16 @@ namespace HuntingDog.DogFace
      
         private void Options_Click(Object sender, RoutedEventArgs e)
         {  
+
             var cfgWindow = new DialogWindow();           
 
             cfgWindow.ShowConfiguration(_cfg);
+
+            this.BlurApply(10, new TimeSpan(0, 0, 0, 500), TimeSpan.Zero);     
+
             var result = cfgWindow.ShowDialog();
+
+
             if (result != null && result == true)
             {
                 _cfg = cfgWindow.DogConfig;
@@ -1117,23 +1168,7 @@ namespace HuntingDog.DogFace
                 }
             }
 
-
-            //var userCtrol = new ConfigDialog();
-            //userCtrol.OnNewConfig += new Action<Config.DogConfig>(userCtrol_OnNewConfig);
-            //Window window = new Window
-            //{
-            //    Title = "Hunting Dog Configuration",
-            //    Content = userCtrol
-            //};
-
-            //ImageSourceConverter c = new ImageSourceConverter();
-
-            ////window.Icon = System.Windows.Media.Imaging.BitmapFrame.Create( HuntingDog.Properties.Resources.hdicon);
-            //window.Height = 500;
-            //window.Width = 400;
-            //window.ResizeMode = ResizeMode.NoResize;
-            //userCtrol.Init(_cfg);
-            //window.ShowDialog();
+            this.BlurDisable(new TimeSpan(0, 0, 0,500), TimeSpan.Zero);
         }
 
         void userCtrol_OnNewConfig(Config.DogConfig obj)
