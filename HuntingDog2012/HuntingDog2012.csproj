@@ -335,9 +335,12 @@
   <ItemGroup>
     <None Include="Resources\close.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\download.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R
+    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R
 rem xcopy "$(TargetDir)Xceed.Wpf.Toolkit.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />

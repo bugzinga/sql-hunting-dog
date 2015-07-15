@@ -15,8 +15,17 @@ namespace HuntingDog.Core
             NotStarted,
             FailedToDetect,
             DetectedNewVersion,
+            DetectedNewVersionButWillBeIgnored,
             DetectedSameVersion
         }
+
+        const int MsInSecond = 1000;
+        const int MsInHour = (3600*1000);
+
+        const int TimerPeriodIfFailed = 10 * MsInSecond;
+        const int TimerInitialPeriod = 5 * MsInSecond;
+        const int TimerPeriodIfSameVersionDetected = 30 * MsInSecond ;             // 30 minutes
+        const int TimerPeriodNewVersinWasDetected = 30 * MsInSecond;        //6 hours
 
         UpdateState CurrentState = UpdateState.NotStarted;
 
@@ -26,11 +35,18 @@ namespace HuntingDog.Core
         Timer timer;
         private DogVersion _newDogVersion;
 
-        const int TimerPeriodIfFailed = 10* 1000;
+        Version _versionToIgnore;
 
-        const int TimerInitialPeriod = 2*1000;
+        public Version NewVersion
+        {
+            get
+            {
+                if(_newDogVersion!=null)                
+                    return _newDogVersion.Version;
 
-        const int TimerPeriodIfSameVersionDetected =  30 * 1000;
+                return null;
+            }
+        }
 
         const string UrlWithUpdates = "http://localhost:82/some.txt";
 
@@ -38,18 +54,29 @@ namespace HuntingDog.Core
 
         public void StartDetection()
         {
-            timer = new Timer(timeForACheck, null, TimerInitialPeriod, Timeout.Infinite);
-            
+            if(timer==null)
+                timer = new Timer(timeForACheck, null, TimerInitialPeriod, Timeout.Infinite);
+            else
+                timer.Change(TimerInitialPeriod, Timeout.Infinite);
         }
 
         public void StopDetection()
         {
             timer.Dispose();
-        }
+            timer = null;
+        }        
 
-        public void IgnoreNewVersion()
+        public void IgnoreVersion(Version version)
         {
+            try
+            {
+                _versionToIgnore = version;
+                StartDetection();
+            }
+            catch (Exception ex)
+            {
 
+            }
         }
 
         public void Download()
@@ -77,15 +104,23 @@ namespace HuntingDog.Core
             else
             {
                 _newDogVersion = newVersionresult.RetrievedVersion;
-                if (_newDogVersion.IsGreaterThanCurrent())
-                {
-                    CurrentState = UpdateState.DetectedNewVersion;
-                    log.Info("New Version was detected :" + newVersionresult.RetrievedVersion);
-                    NotifyNewVersionFound(_newDogVersion);
-                }
-                else
+                if (_newDogVersion.Version == DogVersion.Current)
                 {
                     CurrentState = UpdateState.DetectedSameVersion;
+                }
+                else if (_newDogVersion.Version > DogVersion.Current)
+                {
+                    if (_versionToIgnore != null &&_newDogVersion.Version <= _versionToIgnore)
+                    {
+                        CurrentState = UpdateState.DetectedNewVersionButWillBeIgnored;
+                        log.Info("New Version was detected but will be ignored (user choice) :" + newVersionresult.RetrievedVersion);
+                    }
+                    else
+                    {
+                        CurrentState = UpdateState.DetectedNewVersion;
+                        NotifyNewVersionFound(_newDogVersion);
+                        log.Info("New Version was detected :" + newVersionresult.RetrievedVersion);
+                    }
                 }
             }
         }
@@ -121,6 +156,10 @@ namespace HuntingDog.Core
                     case UpdateState.DetectedNewVersion:
                         StopDetection();
                         break;
+                    case UpdateState.DetectedNewVersionButWillBeIgnored:
+                        timer.Change(TimerPeriodNewVersinWasDetected, Timeout.Infinite);
+                        break;
+
                 }
             }
             catch (Exception ex)

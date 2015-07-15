@@ -15,7 +15,14 @@ namespace HuntingDog.Core
         }
 
         Version _version;
-        static Version _currentVersion;
+
+        public Version Version
+        {
+            get
+            {
+                return _version;
+            }
+        }
 
         public override string ToString()
         {
@@ -24,24 +31,21 @@ namespace HuntingDog.Core
 
         public string UrlToDownload { get;set;}
 
-
-        public Version Current
+        static Version _currentVersion;
+        public static Version Current
         {
             get
             {
                 if (_currentVersion == null)
                 {
-                    _currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                    var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                    _currentVersion = new Version(currentVersion.Major, currentVersion.Minor);
                 }
 
                 return _currentVersion;
             }
         }
 
-
-        public bool IsGreaterThanCurrent()
-        {
-            return _version.Minor > Current.Minor || _version.Major > Current.Major;
-        }
+     
     }
 }

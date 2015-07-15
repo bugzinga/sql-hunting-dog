@@ -12,6 +12,7 @@ using System.Windows.Media;
 using HuntingDog.Core;
 using HuntingDog.DogEngine;
 using HuntingDog.DogFace.Background;
+using System.Windows.Media.Effects;
 
 namespace HuntingDog.DogFace
 {
@@ -68,6 +69,8 @@ namespace HuntingDog.DogFace
 
         // these keys are used to save/load user preferences
         public const String UserPref_LastSearchText = "Last Search Text";
+
+        public const String UserPref_IgnoredVersion = "Ignored Update";
 
         public const String UserPref_ServerDatabase = "[database]:";
 
@@ -206,11 +209,34 @@ namespace HuntingDog.DogFace
             }
         }
 
+        Version RetreiveIgnoredVersion()
+        {
+            try
+            {
+                var ignoredVersion = _userPref.GetByName(UserPref_IgnoredVersion);
+                if (!string.IsNullOrEmpty(ignoredVersion))
+                {
+                    return new Version(ignoredVersion);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
+        }
+
         void StartUpdateDetection()
         {
             try
             {
                 UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;
+                var ignoredVersion = RetreiveIgnoredVersion();
+                if (ignoredVersion!=null)
+                {
+                    UpdateDetector.IgnoreVersion(ignoredVersion);
+                }
                 UpdateDetector.StartDetection();
             }
             catch (Exception ex)
@@ -223,9 +249,8 @@ namespace HuntingDog.DogFace
         {
             InvokeInUI(() =>
             {
-                //popupUpdate.IsOpen = true;
+
                 popupBorder.Visibility = System.Windows.Visibility.Visible;
-                //popupUpdateText.Text = "New version is available. Click to Download";
                 updateInfo.Visibility = System.Windows.Visibility.Visible;
             });
         }
@@ -234,9 +259,16 @@ namespace HuntingDog.DogFace
         {
             try
             {
-                //popupUpdate.IsOpen = false;
                 popupBorder.Visibility = System.Windows.Visibility.Collapsed;
-                UpdateDetector.IgnoreNewVersion();
+
+                var detectedVersion = UpdateDetector.NewVersion;
+                if (detectedVersion != null)
+                {
+                    _userPref.StoreByName(UserPref_IgnoredVersion, detectedVersion.ToString());
+                    _userPref.Save();
+
+                    UpdateDetector.IgnoreVersion(detectedVersion);
+                }             
             }
             catch (Exception ex)
             {
@@ -1154,10 +1186,18 @@ namespace HuntingDog.DogFace
      
         private void Options_Click(Object sender, RoutedEventArgs e)
         {  
+
             var cfgWindow = new DialogWindow();           
 
             cfgWindow.ShowConfiguration(_cfg);
+
+
+            this.BlurApply(10, new TimeSpan(0, 0, 1), TimeSpan.Zero);
+       
+
             var result = cfgWindow.ShowDialog();
+
+
             if (result != null && result == true)
             {
                 _cfg = cfgWindow.DogConfig;
@@ -1171,23 +1211,7 @@ namespace HuntingDog.DogFace
                 }
             }
 
-
-            //var userCtrol = new ConfigDialog();
-            //userCtrol.OnNewConfig += new Action<Config.DogConfig>(userCtrol_OnNewConfig);
-            //Window window = new Window
-            //{
-            //    Title = "Hunting Dog Configuration",
-            //    Content = userCtrol
-            //};
-
-            //ImageSourceConverter c = new ImageSourceConverter();
-
-            ////window.Icon = System.Windows.Media.Imaging.BitmapFrame.Create( HuntingDog.Properties.Resources.hdicon);
-            //window.Height = 500;
-            //window.Width = 400;
-            //window.ResizeMode = ResizeMode.NoResize;
-            //userCtrol.Init(_cfg);
-            //window.ShowDialog();
+            this.BlurDisable(new TimeSpan(0, 0, 1), TimeSpan.Zero);
         }
 
         void userCtrol_OnNewConfig(Config.DogConfig obj)

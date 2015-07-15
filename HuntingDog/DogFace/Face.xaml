@@ -14,7 +14,7 @@
              Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
-        
+       
         <ResourceDictionary>
 
             <my:BitmapConverter x:Key="bitmapConverter" />
@@ -31,7 +31,7 @@
             <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA"/>
             <SolidColorBrush x:Key="SolidBorderBrush" Color="#888"/>
             <SolidColorBrush x:Key="DownArrowBrush" Color="#FF6495ED"/>
-            <SolidColorBrush x:Key="popupWindowBrush" Color="#9FEFECA7"/>
+            <SolidColorBrush x:Key="popupWindowBackground"   Color="#ffffd5"/>
             <SolidColorBrush x:Key="popupWindowBorderBrush" Color="#30999999"/>
             <SolidColorBrush x:Key="popupWindowTextBrush" Color="#999999"/>
             <SolidColorBrush x:Key="popupButtonForeground" Color="#9FF6F877"/>
@@ -476,54 +476,21 @@
 
             <!--Popup x:Name="popupUpdate" Placement="Center" AllowsTransparency="True" Focusable="False"  PopupAnimation="Slide"  PlacementTarget="{Binding ElementName=gridServerAndDatabase}"-->
                 <Border Grid.Row="0" Grid.ColumnSpan="3" Visibility="Collapsed"
-                    CornerRadius="10"
-                    Background="{StaticResource popupWindowBrush}"  BorderThickness="3" BorderBrush="{StaticResource popupWindowBorderBrush}"
+                   Height="36"
+                   Background="{StaticResource popupWindowBackground}"
+
                     VerticalAlignment="Stretch"
+                     BorderThickness="0 0 0 2"
+                     BorderBrush="{StaticResource popupWindowBorderBrush}"
                     x:Name="popupBorder">
-                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
+                <DockPanel 
+                           LastChildFill="True"
                            Margin="10,0,10,0">
 
-                    <TextBlock
-                        HorizontalAlignment="Stretch"
-                        DockPanel.Dock="Left"
-                        Margin="0,0,10,0" FontSize="16"
-                        x:Name="popupUpdateText" Background="Transparent"    VerticalAlignment="Center" Foreground="{StaticResource popupWindowTextBrush}" >
-                        New Version is available
-                    </TextBlock>
-             
-                    <Button  
-                        Margin="5,0,0,0"
-                        DockPanel.Dock="Left"
-                        Visibility="Visible"
-                        x:Name="btnGetUpdate"
-                        Click="DownloadUpdate_Click"
-  
-                        VerticalAlignment="Center"
-                        Focusable="False" 
-                        BorderBrush="Transparent"
-                        ToolTip="Download this update"
-                        BorderThickness="1"
-                        Background="Transparent"                        
-                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                        <Border    CornerRadius="5"  Background="{StaticResource popupButtonForeground}" BorderThickness="2" BorderBrush="{StaticResource popupWindowBorderBrush}"  >
-                            
-                            <StackPanel Orientation="Horizontal">                            
-                                <Image  Source="{Binding Source={x:Static properties:Resources.download}, 
-                                        Converter={StaticResource bitmapConverter}}"
-                                        VerticalAlignment="Center"  
-                                        Margin="5,0,5,0"
-                                        Height="18"
-                                        Width="18" />
-                                <TextBlock Margin="5,0,5,0" VerticalAlignment="Center"  FontSize="16"  Foreground="{StaticResource popupWindowTextBrush}">Download</TextBlock>
-
-                            </StackPanel>
-
-                        </Border>
-                    </Button>
 
                     <Button  
                         Margin="5,0,0,0"
-                        DockPanel.Dock="Left"
+                        DockPanel.Dock="Right"
                         Visibility="Visible"
                         x:Name="btnCloseUpdatePopup"
                         Click="CloseUpdate_Click"
@@ -535,25 +502,54 @@
                         BorderThickness="1"
                         Background="Transparent"                        
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                        <Border   CornerRadius="5"    Background="{StaticResource popupButtonForeground}"  BorderThickness="2" BorderBrush="{StaticResource popupWindowBorderBrush}"  >
-                            <StackPanel Orientation="Horizontal">
-                                <Image  Source="{Binding Source={x:Static properties:Resources.close}, 
+
+                        <Image  Source="{Binding Source={x:Static properties:Resources.close}, 
                                         Converter={StaticResource bitmapConverter}}"
-                                        VerticalAlignment="Center"  
-                                        Margin="5,0,5,0"
+                                        VerticalAlignment="Center"                                    
                                         Height="18"
                                         Width="18" />
-                                <TextBlock Margin="5,0,5,0"
-                                           VerticalAlignment="Center"   FontSize="16" Foreground="{StaticResource popupWindowTextBrush}">Ignore</TextBlock>
-                       
 
-                            </StackPanel>
+                    </Button>
+                    
+                    <Button  
+                        Margin="5,0,0,0"
+                        DockPanel.Dock="Right"
+                        Visibility="Visible"
+                        x:Name="btnGetUpdate"
+                        Click="DownloadUpdate_Click"
+  
+                        VerticalAlignment="Center"
+                        Focusable="False" 
+                        BorderBrush="Transparent"
+                        ToolTip="Download this update"
+                        BorderThickness="1"
+                        Background="Transparent"                        
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
 
-                        </Border>
+                        <Image  Source="{Binding Source={x:Static properties:Resources.download}, 
+                                        Converter={StaticResource bitmapConverter}}"
+                                        VerticalAlignment="Center"                                     
+                                        Height="18"
+                                        Width="18" />
+
+
                     </Button>
 
+                
 
-                </StackPanel>
+
+                    <TextBlock
+                     
+                        TextTrimming="CharacterEllipsis"
+                        HorizontalAlignment="Stretch"
+                        DockPanel.Dock="Left"
+                        Margin="0,0,10,0" FontSize="16"
+                        x:Name="popupUpdateText" Background="Transparent"    VerticalAlignment="Center" Foreground="{StaticResource popupWindowTextBrush}" >
+                        New version is available
+                    </TextBlock>
+
+
+                </DockPanel>
             </Border>
             <!--/Popup-->
 

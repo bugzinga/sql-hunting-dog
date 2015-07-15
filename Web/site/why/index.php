@@ -8,7 +8,6 @@
 	$active = "why";
 	include "../menu.php";
 	include "../donate.php";
-	include "../code.php";
 ?>
 			</table>
 			<div id="content" class="article">
