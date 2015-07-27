@@ -23,10 +23,10 @@
         </Grid.RowDefinitions>
 
 
-        <xctk:PropertyGrid Grid.Row="0" DockPanel.Dock="Top" Background="#606495ED"
+        <!--xctk:PropertyGrid Grid.Row="0" DockPanel.Dock="Top" Background="#606495ED"
                                x:Name="_propertyGrid"
                             HorizontalAlignment="Stretch" ShowSortOptions="False" ShowSearchBox="False" ShowSummary="True" Padding="5" NameColumnWidth="250">
-        </xctk:PropertyGrid>
+        </xctk:PropertyGrid-->
         <DockPanel  Grid.Row="1">
 
 

@@ -21,7 +21,7 @@ namespace HuntingDog.DogFace
 
     [Serializable]
     [ComVisible(false)]
-    public class UserPreferencesStorage : List<Entry>, HuntingDog.DogEngine.IStorage
+    public class UserPreferencesStorage : List<Entry>, HuntingDog.DogEngine.ISavableStorage
     {
         private static readonly Log log = LogFactory.GetLog();
 

@@ -19,6 +19,9 @@ namespace HuntingDog.Core
         public DogVersion RetrievedVersion { get; private set; }
     }
 
+    /// <summary>
+    /// Retreives update version and path from web site
+    /// </summary>
     public class VersionRetriever
     {
         private static readonly Log log = LogFactory.GetLog();   
@@ -53,15 +56,12 @@ namespace HuntingDog.Core
         {
             try
             {
-                var lines  = content.Split(new string[]{ "\r\n" }, StringSplitOptions.None);
+                var lines  = content.Split(new string[]{ "\n" }, StringSplitOptions.None);
                 if (lines.Length >= 2)
                 {
-                    var digits = lines[0].Split('.');
-                    int major = int.Parse(digits[0]);
-                    int minor = int.Parse(digits[1]);
-
+                    var version = lines[0];
                     var url = lines[1];
-                    return new DogVersion(new Version(major,minor) ,url);
+                    return new DogVersion(new Version(version), url);
                 }              
             }
             catch (Exception ex)

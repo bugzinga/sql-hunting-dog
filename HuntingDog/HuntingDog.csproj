@@ -142,6 +142,7 @@
     <Compile Include="Core\PerformanceAnalyzer.cs" />
     <Compile Include="Core\Range.cs" />
     <Compile Include="Core\UpdateDetector.cs" />
+    <Compile Include="Core\UpdateNotificator.cs" />
     <Compile Include="Core\VersionRetriever.cs" />
     <Compile Include="DogConfig\Config.cs" />
     <Compile Include="DogConfig\ConfigPersistor.cs" />
@@ -248,8 +249,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\" /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />
 <Target Name="GenSerializationAssembly"

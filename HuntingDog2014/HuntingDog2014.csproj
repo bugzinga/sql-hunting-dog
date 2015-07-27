@@ -149,6 +149,9 @@
     <Compile Include="..\HuntingDog\Core\UpdateDetector.cs">
       <Link>Core\UpdateDetector.cs</Link>
     </Compile>
+    <Compile Include="..\HuntingDog\Core\UpdateNotificator.cs">
+      <Link>Core\UpdateNotificator.cs</Link>
+    </Compile>
     <Compile Include="..\HuntingDog\Core\VersionRetriever.cs">
       <Link>Core\VersionRetriever.cs</Link>
     </Compile>
@@ -322,6 +325,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\download.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\close.png" />

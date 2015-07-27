@@ -70,7 +70,7 @@ namespace HuntingDog.DogFace
         // these keys are used to save/load user preferences
         public const String UserPref_LastSearchText = "Last Search Text";
 
-        public const String UserPref_IgnoredVersion = "Ignored Update";
+      
 
         public const String UserPref_ServerDatabase = "[database]:";
 
@@ -104,7 +104,7 @@ namespace HuntingDog.DogFace
 
         private Boolean _isDragDropStartedFromText = false;
 
-        private UpdateDetector UpdateDetector = new UpdateDetector();
+        private UpdateDetector UpdateDetector;
 
         // small hint - to use anonymous delegates in InvokeUI method
         public delegate void AnyInvoker();
@@ -184,7 +184,8 @@ namespace HuntingDog.DogFace
                 _userPref = UserPreferencesStorage.Load();
                 _cfg =_persistor.Restore<Config.DogConfig>(_userPref);
 
-                StartUpdateDetection();
+                UpdateDetector = new UpdateDetector(_userPref);
+                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;    
 
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
@@ -209,47 +210,12 @@ namespace HuntingDog.DogFace
             }
         }
 
-        Version RetreiveIgnoredVersion()
-        {
-            try
-            {
-                var ignoredVersion = _userPref.GetByName(UserPref_IgnoredVersion);
-                if (!string.IsNullOrEmpty(ignoredVersion))
-                {
-                    return new Version(ignoredVersion);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return null;
-        }
-
-        void StartUpdateDetection()
-        {
-            try
-            {
-                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;
-                var ignoredVersion = RetreiveIgnoredVersion();
-                if (ignoredVersion!=null)
-                {
-                    UpdateDetector.IgnoreVersion(ignoredVersion);
-                }
-                UpdateDetector.StartDetection();
-            }
-            catch (Exception ex)
-            {
-                log.Error("Failed starting update detector", ex);
-            }
-        }
+    
 
         void UpdateDetector_NewVersionFound(DogVersion detected)
         {
             InvokeInUI(() =>
             {
-
                 popupBorder.Visibility = System.Windows.Visibility.Visible;
                 updateInfo.Visibility = System.Windows.Visibility.Visible;
             });
@@ -260,15 +226,8 @@ namespace HuntingDog.DogFace
             try
             {
                 popupBorder.Visibility = System.Windows.Visibility.Collapsed;
-
-                var detectedVersion = UpdateDetector.NewVersion;
-                if (detectedVersion != null)
-                {
-                    _userPref.StoreByName(UserPref_IgnoredVersion, detectedVersion.ToString());
-                    _userPref.Save();
-
-                    UpdateDetector.IgnoreVersion(detectedVersion);
-                }             
+                UpdateDetector.IgnoreVersion();
+                _userPref.Save();
             }
             catch (Exception ex)
             {
