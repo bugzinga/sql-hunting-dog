@@ -30,10 +30,10 @@ namespace HuntingDog.DogFace
         public void ShowConfiguration(DogConfig cfg)
         {
             DogConfig = cfg.CloneMe();
-            //_propertyGrid.SelectedObject = DogConfig;
-            //_propertyGrid.ShowSearchBox = false;
-            //_propertyGrid.ShowSortOptions = false;
-            //_propertyGrid.ShowTitle = false;
+            _propertyGrid.SelectedObject = DogConfig;
+            _propertyGrid.ShowSearchBox = false;
+            _propertyGrid.ShowSortOptions = false;
+            _propertyGrid.ShowTitle = false;
         }
 
         public DogConfig DogConfig 

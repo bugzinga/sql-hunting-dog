@@ -217,7 +217,7 @@ namespace HuntingDog.DogFace
             InvokeInUI(() =>
             {
                 popupBorder.Visibility = System.Windows.Visibility.Visible;
-                updateInfo.Visibility = System.Windows.Visibility.Visible;
+                popupUpdateText.Text = string.Format("New version is available ({0})",detected.Version.ToString());
             });
         }
 
@@ -1150,9 +1150,7 @@ namespace HuntingDog.DogFace
 
             cfgWindow.ShowConfiguration(_cfg);
 
-
-            this.BlurApply(10, new TimeSpan(0, 0, 1), TimeSpan.Zero);
-       
+            this.BlurApply(10, new TimeSpan(0, 0, 0, 500), TimeSpan.Zero);     
 
             var result = cfgWindow.ShowDialog();
 
@@ -1170,7 +1168,7 @@ namespace HuntingDog.DogFace
                 }
             }
 
-            this.BlurDisable(new TimeSpan(0, 0, 1), TimeSpan.Zero);
+            this.BlurDisable(new TimeSpan(0, 0, 0,500), TimeSpan.Zero);
         }
 
         void userCtrol_OnNewConfig(Config.DogConfig obj)

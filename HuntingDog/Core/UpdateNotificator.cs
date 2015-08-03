@@ -56,6 +56,7 @@ namespace HuntingDog.Core
                
                     if (result.IsRetrieved)
                     {
+                        log.Info("Retrieved a new version " + result.RetrievedVersion);
                         _onDetection(result.RetrievedVersion);
                     }
                 }

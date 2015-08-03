@@ -572,11 +572,6 @@
                         <TextBlock VerticalAlignment="Center" FontSize="16">No results found</TextBlock>
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">Try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
-
-                    <!--TextBlock VerticalAlignment="Center" Margin="5,5,0,0" FontSize="16"  x:Name="txtOption"> <Hyperlink FontSize="16"  Click="Options_Click">Options</Hyperlink> </TextBlock-->
-
-                    <TextBlock VerticalAlignment="Center"  x:Name="updateInfo"  Visibility="Hidden" Margin="5,5,0,0" FontSize="16" >New Version is available <Hyperlink FontSize="16" Click="DownloadUpdate_Click" >Download</Hyperlink></TextBlock>
-
                 </StackPanel>
             </Grid>
 

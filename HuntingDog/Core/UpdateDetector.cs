@@ -13,9 +13,9 @@ namespace HuntingDog.Core
         public const String Url_ToCheckUpdates = "http://www.sql-hunting-dog.com/update.txt";
 
         const int SecInHour = 3600;
-        const int TimerInitialPeriod = 5;
-        const int TimerPeriodIfSameVersionDetected = 30 * SecInHour;             // 30 minutes
-        const int TimerPeriodNewVersinWasDetected = 30 * SecInHour;        //6 hours
+        const int TimerInitialPeriod = 20;
+        const int TimerPeriodIfSameVersionDetected = 24 * SecInHour;             // 24 hours
+        const int TimerPeriodNewVersinWasDetected = 24 * SecInHour;        //6 hours
 
         private static readonly Log log = LogFactory.GetLog();
         private object _door = new object();
@@ -30,7 +30,8 @@ namespace HuntingDog.Core
         public UpdateDetector(HuntingDog.DogEngine.ISavableStorage storage)
         {
             Storage = storage;
-            _versionToIgnore = RetreiveIgnoredVersion();
+            _versionToIgnore = DetermineVersionToIgnore();
+            log.Info("Version to Ignore: " + _versionToIgnore.ToString());
             UpdateNotificator.Start(Url_ToCheckUpdates, TimerInitialPeriod, OnNewVersion);
         }
 
@@ -45,11 +46,13 @@ namespace HuntingDog.Core
 
                 if (_versionToIgnore == null || v.Version > _versionToIgnore)
                 {
+                    log.Info("New version found: " + v.Version);
                     UpdateNotificator.ChangePeriod(TimerPeriodNewVersinWasDetected);
                     NotifyNewVersionFound(v);    
                 }              
                 else
                 {
+                    log.Info("Same version found: " + v.Version);
                     UpdateNotificator.ChangePeriod(TimerPeriodIfSameVersionDetected);
                 }
 
@@ -58,6 +61,19 @@ namespace HuntingDog.Core
             {
                 log.Error("On new version failed",ex);
             }
+        }
+
+        Version DetermineVersionToIgnore()
+        {
+            var currentVersion = DogVersion.Current;
+            var ignoredByUser = RetreiveIgnoredVersion();
+            if (ignoredByUser == null)
+                return currentVersion;
+
+            if (currentVersion < ignoredByUser)
+                return ignoredByUser;
+            else
+                return currentVersion;
         }
 
         Version RetreiveIgnoredVersion()
@@ -82,6 +98,7 @@ namespace HuntingDog.Core
         {
             try
             {
+             
                 Storage.StoreByName(UserPref_IgnoredVersion, _versionToIgnore.ToString());
                 Storage.Save();
             }
@@ -103,8 +120,9 @@ namespace HuntingDog.Core
                 lock (_door)
                 {
                     if (_newDogVersion != null)
-                    {
+                    {                    
                         _versionToIgnore = _newDogVersion.Version;
+                        log.Info("Ignoring version: " + _versionToIgnore);
                     }
 
                 }
@@ -122,10 +140,14 @@ namespace HuntingDog.Core
         {
             try
             {
+             
                 lock (_door)
                 {
                     if (_newDogVersion != null)
+                    {
                         Process.Start(_newDogVersion.UrlToDownload);
+                        log.Info("Downloading a new version: " + _newDogVersion);
+                    }
                     else
                         log.Error("Download was invoked but new version is not known");
                 }
