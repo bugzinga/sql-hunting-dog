@@ -11,6 +11,8 @@
 		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
 		<link href="http://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css">
 		<link href="/css/styles.css" rel="stylesheet" type="text/css" />
+		<link href="/css/downloadButton.css" rel="stylesheet" type="text/css" />
+		<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
 		<script type="text/javascript">
 			var _gaq = _gaq || [];
 			_gaq.push(['_setAccount', 'UA-40663592-1']);

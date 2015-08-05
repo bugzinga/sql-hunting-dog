@@ -21,7 +21,7 @@ namespace HuntingDog.DogFace
 
     [Serializable]
     [ComVisible(false)]
-    public class UserPreferencesStorage : List<Entry>, HuntingDog.DogEngine.IStorage
+    public class UserPreferencesStorage : List<Entry>, HuntingDog.DogEngine.ISavableStorage
     {
         private static readonly Log log = LogFactory.GetLog();
 
@@ -47,18 +47,8 @@ namespace HuntingDog.DogFace
 
                     writer.Close();
                 }
-
-                oStream.Flush();
+               
                 oStream.Close();
-
-                //var dirName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HuntingDog");
-
-                //if (!Directory.Exists(dirName))
-                //    Directory.CreateDirectory(dirName);
-
-                //var fullName = Path.Combine(dirName, _settingFileName);
-
-                //Serializator.Save(fullName, this);
             }
             catch (Exception ex)
             {

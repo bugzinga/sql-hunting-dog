@@ -29,5 +29,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// the * is important - it will generate new DLL version. That will force INstallation package to overwrite DLLs during installation
-[assembly: AssemblyVersion("3.0.*")]
+[assembly: AssemblyVersion("3.3.0.0")]

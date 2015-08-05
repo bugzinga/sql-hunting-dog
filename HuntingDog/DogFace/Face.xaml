@@ -14,7 +14,7 @@
              Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
-        
+       
         <ResourceDictionary>
 
             <my:BitmapConverter x:Key="bitmapConverter" />
@@ -31,6 +31,10 @@
             <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA"/>
             <SolidColorBrush x:Key="SolidBorderBrush" Color="#888"/>
             <SolidColorBrush x:Key="DownArrowBrush" Color="#FF6495ED"/>
+            <SolidColorBrush x:Key="popupWindowBackground"   Color="#ffffd5"/>
+            <SolidColorBrush x:Key="popupWindowBorderBrush" Color="#30999999"/>
+            <SolidColorBrush x:Key="popupWindowTextBrush" Color="#999999"/>
+            <SolidColorBrush x:Key="popupButtonForeground" Color="#9FF6F877"/>
 
             <!-- Gradient Brushes for Image Combo Boxes -->
             <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
@@ -352,16 +356,18 @@
         </Grid.Resources>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"></RowDefinition>
+            <!--RowDefinition Height="80"></RowDefinition-->
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition />
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid x:Name="gridServerAndDatabase" >
             
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             
             <Grid.ColumnDefinitions>
@@ -370,7 +376,9 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ComboBox ToolTip="MS SQL Servers"
+            <ComboBox 
+                      Grid.Row="1"
+                      ToolTip="Server for hunting"
                       FontSize="14"
                       GotFocus="cbServer_GotFocus"
                       LostFocus="cbServer_LostFocus"
@@ -378,6 +386,7 @@
                       Margin="2,5"
                       x:Name="cbServer"
                       VerticalContentAlignment="Center"
+                      VerticalAlignment="Stretch"
                       SelectionChanged="cbServer_SelectionChanged"
                       Style="{StaticResource ImageComboBox}" >
                 <ComboBox.ItemTemplate>
@@ -389,8 +398,10 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <ComboBox Grid.ColumnSpan="2"
-                      ToolTip="Databases"
+            <ComboBox 
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      ToolTip="Database to sniff"
                       Grid.Column="1"
                       FontSize="14"
                       Style="{StaticResource ImageComboBox}"
@@ -400,6 +411,8 @@
                       Margin="2,5"
                       x:Name="cbDatabase"
                       VerticalContentAlignment="Center"
+                      VerticalAlignment="Stretch"
+
                       SelectionChanged="cbDatabase_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -410,8 +423,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <Button Grid.Column="2"
-                    Grid.Row="1"
+            <Button Grid.Row="2" Grid.Column="2"                   
                     Visibility="Visible"
                     x:Name="btnRefresh"
                     Click="RefreshDatabaseList_Click"
@@ -428,9 +440,7 @@
                        Width="18" />
             </Button>
             
-            <Border Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Grid.Row="1"
+            <Border  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"                  
                     HorizontalAlignment="Stretch"
                     MouseDown="borderText_MouseDown"
                     Background="White"
@@ -464,15 +474,95 @@
                 </DockPanel>
             </Border>
 
+            <!--Popup x:Name="popupUpdate" Placement="Center" AllowsTransparency="True" Focusable="False"  PopupAnimation="Slide"  PlacementTarget="{Binding ElementName=gridServerAndDatabase}"-->
+                <Border Grid.Row="0" Grid.ColumnSpan="3" Visibility="Collapsed"
+                   Height="36"
+                   Background="{StaticResource popupWindowBackground}"
+
+                    VerticalAlignment="Stretch"
+                     BorderThickness="0 0 0 2"
+                     BorderBrush="{StaticResource popupWindowBorderBrush}"
+                    x:Name="popupBorder">
+                <DockPanel 
+                           LastChildFill="True"
+                           Margin="10,0,10,0">
+
+
+                    <Button  
+                        Margin="5,0,0,0"
+                        DockPanel.Dock="Right"
+                        Visibility="Visible"
+                        x:Name="btnCloseUpdatePopup"
+                        Click="CloseUpdate_Click"
+            
+                        VerticalAlignment="Center"
+                        Focusable="False" 
+                        BorderBrush="Transparent"
+                        ToolTip="Ignore that update"
+                        BorderThickness="1"
+                        Background="Transparent"                        
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+
+                        <Image  Source="{Binding Source={x:Static properties:Resources.close}, 
+                                        Converter={StaticResource bitmapConverter}}"
+                                        VerticalAlignment="Center"                                    
+                                        Height="18"
+                                        Width="18" />
+
+                    </Button>
+                    
+                    <Button  
+                        Margin="5,0,0,0"
+                        DockPanel.Dock="Right"
+                        Visibility="Visible"
+                        x:Name="btnGetUpdate"
+                        Click="DownloadUpdate_Click"
+  
+                        VerticalAlignment="Center"
+                        Focusable="False" 
+                        BorderBrush="Transparent"
+                        ToolTip="Download this update"
+                        BorderThickness="1"
+                        Background="Transparent"                        
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+
+                        <Image  Source="{Binding Source={x:Static properties:Resources.download}, 
+                                        Converter={StaticResource bitmapConverter}}"
+                                        VerticalAlignment="Center"                                     
+                                        Height="18"
+                                        Width="18" />
+
+
+                    </Button>
+
+                
+
+
+                    <TextBlock
+                     
+                        TextTrimming="CharacterEllipsis"
+                        HorizontalAlignment="Stretch"
+                        DockPanel.Dock="Left"
+                        Margin="0,0,10,0" FontSize="16"
+                        x:Name="popupUpdateText" Background="Transparent"    VerticalAlignment="Center" Foreground="{StaticResource popupWindowTextBrush}" >
+                        New version is available
+                    </TextBlock>
+
+
+                </DockPanel>
+            </Border>
+            <!--/Popup-->
+
         </Grid>
 
         <Grid Grid.Row="1" x:Name="splitterGrid">
             
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="55*" />
+                <RowDefinition Height="152*" />
             </Grid.RowDefinitions>
 
-            <Grid x:Name="gridEmptyResult" Visibility="Collapsed">
+            <Grid x:Name="gridEmptyResult" Visibility="Collapsed" Grid.RowSpan="2">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <Image Width="24"
@@ -482,10 +572,6 @@
                         <TextBlock VerticalAlignment="Center" FontSize="16">No results found</TextBlock>
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="5,2,0,0" FontSize="16"  x:Name="txtEmptyLine1">Try to <Hyperlink FontSize="16"  Click="Refresh_Click">Refresh</Hyperlink> database</TextBlock>
-
-                    <TextBlock VerticalAlignment="Center" Margin="5,5,0,0" FontSize="16"  x:Name="txtOption"> <Hyperlink FontSize="16"  Click="Options_Click">Options</Hyperlink> </TextBlock>
-
-
                 </StackPanel>
             </Grid>
 
@@ -494,7 +580,7 @@
                       x:Name="itemsControl"
                       BorderThickness="0"
                       ItemContainerStyle="{StaticResource SimpleListViewItem}"
-                      SelectionChanged="ItemsControlSelectionChanged1">
+                      SelectionChanged="ItemsControlSelectionChanged1" Grid.RowSpan="2">
                 <ListView.Resources />
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>

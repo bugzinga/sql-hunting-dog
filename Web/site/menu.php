@@ -10,7 +10,7 @@
 						</a>
 						<center class="menu">
 <?php
-    $downloadLink = "https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.2.2.msi";
+    $downloadLink = "https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.3.0.msi";
 	$menu = array(
 		array(
 			"name" => "main",
@@ -26,12 +26,17 @@
 			"name" => "how",
 			"link" => "/how",
 			"title" => "How"
-		),		
+		),
 		array(
-			"name" => "download",
-			"link" => $downloadLink,
-			"title" => "Download"
-		)
+			"name" => "source",
+			"link" => "http://bitbucket.org/bugzinga/sql-hunting-dog/",
+			"title" => "Source"
+		),
+		array(
+			"name" => "who",
+			"link" => "/who",
+			"title" => "Who"
+		)				
 	);
 
 	foreach ($menu as $item) {
@@ -48,9 +53,7 @@
 ?>
 						</center>
 					</td>
-					<td style="padding-left: 11px">
-						<a href="<?php echo $downloadLink ?>">
-							<img src="/img/download.png" width="50" height="50" /><br/>
-						</a>
-					</td>
+					
+					
+					
 				</tr>

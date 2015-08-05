@@ -80,7 +80,6 @@ namespace HuntingDog.DogFace
 
         private void DisplayResultItem(Item resultItem)
         {
-            log.Info("Updating item UI ranges");
             var analyzer = new PerformanceAnalyzer();
 
             Inlines.Clear();
@@ -121,37 +120,35 @@ namespace HuntingDog.DogFace
                 }
             }
 
-            log.Performance("Item UI ranges updated", analyzer.Result);
-            analyzer.Stop();
         }
 
         private List<Range<Int32>> FindMatchingKeyworkRanges(Item resultItem)
         {
             var ranges = new List<Range<Int32>>();
 
-            log.Info(String.Format("Looking for keyword ranges: item = {0}, keywords = [ {1} ]", resultItem.Name, String.Join(", ", resultItem.Keywords.ToArray())));
             var analyzer = new PerformanceAnalyzer();
 
             foreach (var keyword in resultItem.Keywords)
             {
-                var startIndex = 0;
-
-                while ((startIndex = resultItem.UpperCaseNames.IndexOf(keyword, startIndex)) != -1)
+                if (!string.IsNullOrEmpty(keyword))
                 {
-                    int endIndex = (startIndex + keyword.Length);
+                    var startIndex = 0;
 
-                    // TODO: How is it possible?
-                    if (endIndex > resultItem.UpperCaseNames.Length)
+                    while ((startIndex = resultItem.UpperCaseNames.IndexOf(keyword, startIndex)) != -1)
                     {
-                        endIndex = resultItem.UpperCaseNames.Length;
-                    }
+                        int endIndex = (startIndex + keyword.Length);
 
-                    ranges.Add(new Range<Int32>() { Start = startIndex++, End = endIndex });
+                        // TODO: How is it possible?
+                        if (endIndex > resultItem.UpperCaseNames.Length)
+                        {
+                            endIndex = resultItem.UpperCaseNames.Length;
+                        }
+
+                        ranges.Add(new Range<Int32>() { Start = startIndex++, End = endIndex });
+                    }
                 }
             }
 
-            log.Performance("Search time", analyzer.Result);
-            analyzer.Stop();
 
             return ranges;
         }
