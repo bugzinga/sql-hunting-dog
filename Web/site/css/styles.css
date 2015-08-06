@@ -41,6 +41,10 @@ h2 {
 	margin-top: 11px;
 }
 
+.mainTitle {
+	text-align: center;
+}
+
 .article h3 {
 	text-align: center;
 	color: rgb(180, 64, 64);
@@ -86,6 +90,11 @@ a img {
 
 .signature a {
 	text-decoration: underline;
+}
+
+.leaveEmail  {
+	width: 300px;
+	margin: auto 
 }
 
 #content {

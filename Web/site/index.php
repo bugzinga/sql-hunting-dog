@@ -44,7 +44,7 @@
 				SQL Hunting Dog is a free SQL Server tool. It works as an Addin and gives you quick search and smooth navigation. Do not use it very often, otherwise you will become addictive.
 				</p>
 				<!--a class="download" href="<?php echo $downloadLink ?>">Download latest version</a-->
-					<div id="leaveEmail">
+					<div id="leaveEmail" class="leaveEmail">
 					<form action="subscribe/subscribe.php" method="post">
 					
 						<input type="text" name="email" placeholder="My e-mail address">

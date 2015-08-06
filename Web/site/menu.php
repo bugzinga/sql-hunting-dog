@@ -6,7 +6,7 @@
 					</td>
 					<td>
 						<a href="/">
-							<h1>SQL HUNTING DOG</h1>
+							<h1 class="mainTitle">SQL HUNTING DOG</h1>
 						</a>
 						<center class="menu">
 <?php
