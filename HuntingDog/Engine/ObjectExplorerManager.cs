@@ -413,7 +413,7 @@ namespace DatabaseObjectSearcher
                 }
 
                 HierarchyTreeNode databasesNode = GetUserDatabasesNode(hierarchy.Root);
-                var resultNode = GetNode(databasesNode, objectToSelect);
+                var resultNode = FindNodeForSmoObject(databasesNode, objectToSelect);
 
                 //MSSQLController.Current.SearchWindow.Activate();
 
@@ -444,7 +444,7 @@ namespace DatabaseObjectSearcher
             }
 
             HierarchyTreeNode databasesNode = GetUserDatabasesNode(hierarchy.Root);
-            var resultNode = SelectSMOObject(databasesNode, objectToSelect);
+            var resultNode = FindNodeForSmoObject(databasesNode, objectToSelect);
 
             if (resultNode != null)
             {
@@ -471,145 +471,94 @@ namespace DatabaseObjectSearcher
             return null;
         }
 
-        private String BuildMatchingPathExpressionForDepth(NamedSmoObject objectToSelect, String parentNodePath, Int32 level, out Boolean atFinalLevel)
+        private string GetNodeNameFor(NamedSmoObject smoObject)
         {
-            atFinalLevel = false;
-            String expression = String.Empty;
+            return smoObject.ToString().Replace("[", "").Replace("]", "");
+        }
 
-            // Databases node is at level 1
-            switch (level)
+        private HierarchyTreeNode FindTableNode(HierarchyTreeNode nodeDatabases, NamedSmoObject tableSmoObject)
+        {
+            var tableToSelect = (Table)tableSmoObject;
+            return FindRecursively(nodeDatabases, tableToSelect.Parent, "Tables", GetNodeNameFor(tableSmoObject));
+        }
+
+        private HierarchyTreeNode FindNodeForSmoObject(HierarchyTreeNode nodeDatabases, NamedSmoObject objectToSelect)
+        {
+            if (objectToSelect is Table)
             {
-                case 2: // database level
-                    Regex re = new Regex(".*Database\\[@Name='(.*?)']?");
-                    Match m = re.Match(objectToSelect.Urn);
-                    expression = parentNodePath + @"\" + m.Groups[1].Captures[0];
-                    atFinalLevel = (objectToSelect is Database);
-                    break;
-                case 3:
-                    if (objectToSelect is StoredProcedure || objectToSelect is UserDefinedFunction)
-                    {
-                        expression = parentNodePath + @"\Programmability";
-                    }
-                    else if (objectToSelect is Table)
-                    {
-                        expression = parentNodePath + @"\Tables";
-                    }
-                    else if (objectToSelect is Microsoft.SqlServer.Management.Smo.View)
-                    {
-                        expression = parentNodePath + @"\Views";
-                    }
-                    break;
-
-                case 4:
-                    if (objectToSelect is StoredProcedure)
-                    {
-                        expression = parentNodePath + @"\Stored Procedures";
-                    }
-                    else if (objectToSelect is UserDefinedFunction)
-                    {
-                        expression = parentNodePath + @"\Functions";
-                    }
-                    else
-                    {
-                        expression = parentNodePath + @"\" + GetSchemaQualifiedNameForSmoObject(objectToSelect);
-                        atFinalLevel = true;
-                    }
-                    break;
-                case 5:
-                    if (objectToSelect is UserDefinedFunction)
-                    {
-                        switch (((UserDefinedFunction) objectToSelect).FunctionType)
-                        {
-                            case UserDefinedFunctionType.Scalar:
-                                expression = parentNodePath + @"\Scalar-valued Functions";
-                                break;
-                            case UserDefinedFunctionType.Table:
-                                expression = parentNodePath + @"\Table-valued Functions";
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        expression = parentNodePath + @"\" + GetSchemaQualifiedNameForSmoObject(objectToSelect);
-                        atFinalLevel = true;
-                    }
-                    break;
-                case 6:
-                    expression = parentNodePath + @"\" + GetSchemaQualifiedNameForSmoObject(objectToSelect);
-                    atFinalLevel = true;
-                    break;
+                return FindTableNode(nodeDatabases, objectToSelect);
             }
-
-            return expression;
-        }
-
-        private String GetSchemaQualifiedNameForSmoObject(NamedSmoObject namedObject)
-        {
-            Regex re = new Regex(".*\\[@Name='(.*?)' and @Schema='(.*?)']");
-            Match m = re.Match(namedObject.Urn);
-            String schemaQualifiedName = m.Groups[2].Captures[0] + "." + m.Groups[1].Captures[0];
-            return schemaQualifiedName; // Named SMO object has a FullQualifiedName property but it is internal
-        }
-
-        private HierarchyTreeNode GetNode(HierarchyTreeNode node, NamedSmoObject objectToSelect)
-        {
-            if (node != null)
+            else if(objectToSelect is View)
             {
-                //EnumerateChildrenSynchronously(node);
-
-                Boolean atFinalLevel;
-                String pattern = BuildMatchingPathExpressionForDepth(objectToSelect, node.FullPath, (node.Level + 1), out atFinalLevel);
-
-                foreach (HierarchyTreeNode child in node.Nodes)
-                {
-                    if (String.Compare(child.FullPath, pattern, true) == 0)
-                    {
-                        if (atFinalLevel)
-                        {
-                            return child; // SelectNode(child);
-                        }
-                        else
-                        {
-                            return GetNode(child, objectToSelect);
-                        }
-                    }
-                }
+                var viewToSelect = (View)objectToSelect;
+                return FindRecursively(nodeDatabases, viewToSelect.Parent, "Views", GetNodeNameFor(objectToSelect));
             }
-            return null;
-        }
-
-        private HierarchyTreeNode SelectSMOObject(HierarchyTreeNode node, NamedSmoObject objectToSelect)
-        {
-            if (node != null)
+            else if (objectToSelect is StoredProcedure)
             {
-                if (node.Expandable)
-                {
-                    EnumerateChildrenSynchronously(node);
-                    node.Expand();
-
-                    Boolean atFinalLevel;
-                    String pattern = BuildMatchingPathExpressionForDepth(objectToSelect, node.FullPath, (node.Level + 1), out atFinalLevel);
-
-                    foreach (HierarchyTreeNode child in node.Nodes)
-                    {
-                        if (String.Compare(child.FullPath, pattern, true) == 0)
-                        {
-                            if (atFinalLevel)
-                            {
-                                return child; // SelectNode(child);
-                            }
-                            else
-                            {
-                                return SelectSMOObject(child, objectToSelect);
-                            }
-                        }
-                    }
-                }
+                var procedure = (StoredProcedure)objectToSelect;
+                return FindRecursively(nodeDatabases, procedure.Parent, "Programmability", "Stored Procedures", GetNodeNameFor(objectToSelect));
+            }
+            else if (objectToSelect is UserDefinedFunction)
+            {
+                var func = (UserDefinedFunction)objectToSelect;
+                string functionNodeName = func.FunctionType==UserDefinedFunctionType.Scalar?"Scalar-valued Functions":"Table-valued Functions";
+                return FindRecursively(nodeDatabases, func.Parent, "Programmability", "Functions", functionNodeName, GetNodeNameFor(objectToSelect));
             }
 
             return null;
+
         }
 
+        HierarchyTreeNode FindRecursively(HierarchyTreeNode parent,Database database, params string[] nodes)
+        {
+            var databaseNode = FindDatabaseNodeByName(parent, database);
+            if (databaseNode == null)
+                return null;
+
+            HierarchyTreeNode currentLevel = databaseNode;
+            foreach(var nodeName in nodes)
+            {
+                 currentLevel = FindChildNodeByName(currentLevel, nodeName);
+
+                 if (currentLevel == null)
+                 {
+                     return null;
+                 }
+
+            }
+
+            return currentLevel;
+        }
+
+        HierarchyTreeNode FindDatabaseNodeByName(HierarchyTreeNode parentNode, Database database)
+        {
+            var databaseNode =  FindChildNodeByName(parentNode, database.Name);
+            if (databaseNode != null)
+                return databaseNode;
+
+            // trying to find node with (Read-Only) text at the end as read only database node will change its text
+            var readonlyDatabaseName = FindChildNodeByName(parentNode, database.Name + " (Read-Only)");
+            return readonlyDatabaseName;
+        }
+
+        HierarchyTreeNode FindChildNodeByName(HierarchyTreeNode parentNode, string name)
+        {
+             if (!parentNode.Expandable)
+                 return null;
+                           
+            EnumerateChildrenSynchronously(parentNode);
+            parentNode.Expand();
+
+            foreach (HierarchyTreeNode child in parentNode.Nodes)
+            {
+                if (child.Text.ToLower() == name.ToLower())
+                    return child;
+            }
+
+            return null;             
+        } 
+
+    
         private void OpenTable(HierarchyTreeNode node, SqlConnectionInfo connection)
         {
             var t = Type.GetType("Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer.OpenTableHelperClass,ObjectExplorer", true, true);

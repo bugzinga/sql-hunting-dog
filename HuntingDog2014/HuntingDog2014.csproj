@@ -334,7 +334,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files\Alex\Hunting Dog" /Y /R</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2014" /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />
 <Target Name="GenSerializationAssembly"

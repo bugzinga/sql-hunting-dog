@@ -23,4 +23,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("a763b34f-589c-405d-aabc-77609682bb41")]
 
 // Important - do not use x.y.* - - plugin won't work in SSMS 2008R2
-[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyVersion("3.4.0.0")]

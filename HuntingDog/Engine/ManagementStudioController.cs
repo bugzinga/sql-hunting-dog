@@ -681,16 +681,6 @@ namespace DatabaseObjectSearcher
         }
     
 
-        public static void SelectServerInObjectExplorer()
-        {
-        }
-
-        public static void LocateInObjectExplorer(NamedSmoObject objectToSelect, SqlConnectionInfo connection)
-        {
-            var _manager = new ObjectExplorerManager();
-            _manager.SelectSMOObjectInObjectExplorer(objectToSelect, connection);
-        }
-
 
     }
 }
