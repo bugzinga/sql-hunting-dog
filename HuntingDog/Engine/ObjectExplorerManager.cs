@@ -471,6 +471,122 @@ namespace DatabaseObjectSearcher
             return null;
         }
 
+        private string GetNodeNameFor(NamedSmoObject smoObject)
+        {
+            return smoObject.ToString().Replace("[", "").Replace("]", "");
+        }
+
+        private HierarchyTreeNode SelectSMOObject(HierarchyTreeNode node, NamedSmoObject objectToSelect)
+        {
+            if (objectToSelect is Table)
+            {
+                var tableToSelect = (Table)objectToSelect;
+                return FindRecursively(node, tableToSelect.Parent, "Tables", GetNodeNameFor(objectToSelect));
+            }
+            else if(objectToSelect is View)
+            {
+                var viewToSelect = (View)objectToSelect;
+                return FindRecursively(node, viewToSelect.Parent, "Views", GetNodeNameFor(objectToSelect));
+            }
+            else if (objectToSelect is StoredProcedure)
+            {
+                var procedure = (StoredProcedure)objectToSelect;
+                return FindRecursively(node, procedure.Parent, "Programmability", "Stored Procedures", GetNodeNameFor(objectToSelect));
+            }
+            else if (objectToSelect is UserDefinedFunction)
+            {
+                var func = (UserDefinedFunction)objectToSelect;
+                string functionNodeName = func.FunctionType==UserDefinedFunctionType.Scalar?"Scalar-valued Functions":"Table-valued Functions";
+                return FindRecursively(node, func.Parent, "Programmability", "Functions", functionNodeName, GetNodeNameFor(objectToSelect));
+            }
+
+            return null;
+
+        }
+
+        HierarchyTreeNode FindRecursively(HierarchyTreeNode parent,Database database, params string[] nodes)
+        {
+            var databaseNode = FindDatabaseNodeByName(parent, database);
+            if (databaseNode == null)
+                return null;
+
+            HierarchyTreeNode currentLevel = databaseNode;
+            foreach(var nodeName in nodes)
+            {
+                 currentLevel = FindChildNodeByName(currentLevel, nodeName);
+
+                 if (currentLevel == null)
+                 {
+                     return null;
+                 }
+
+            }
+
+            return currentLevel;
+        }
+
+        HierarchyTreeNode FindDatabaseNodeByName(HierarchyTreeNode parentNode, Database database)
+        {
+            var databaseNode =  FindChildNodeByName(parentNode, database.Name);
+            if (databaseNode != null)
+                return databaseNode;
+
+            // trying to find node with (Read-Only) text at the end as read only database node will change its text
+            var readonlyDatabaseName = FindChildNodeByName(parentNode, database.Name + " (Read-Only)");
+            return readonlyDatabaseName;
+        }
+
+        HierarchyTreeNode FindChildNodeByName(HierarchyTreeNode parentNode, string name)
+        {
+             if (!parentNode.Expandable)
+                 return null;
+
+             
+                
+            EnumerateChildrenSynchronously(parentNode);
+            parentNode.Expand();
+
+            foreach (HierarchyTreeNode child in parentNode.Nodes)
+            {
+                if (child.Text.ToLower() == name.ToLower())
+                    return child;
+            }
+
+            return null;             
+        } 
+
+        private HierarchyTreeNode SelectSMOObject2(HierarchyTreeNode node, NamedSmoObject objectToSelect)
+        {
+            if (node != null)
+            {
+                if (node.Expandable)
+                {
+                    EnumerateChildrenSynchronously(node);
+                    node.Expand();
+
+                    Boolean atFinalLevel;
+                    String pattern = BuildMatchingPathExpressionForDepth(objectToSelect, node.FullPath, (node.Level + 1), out atFinalLevel);
+
+                    foreach (HierarchyTreeNode child in node.Nodes)
+                    {
+                        if (String.Compare(child.FullPath, pattern, true) == 0)
+                        {
+                            if (atFinalLevel)
+                            {
+                                return child; // SelectNode(child);
+                            }
+                            else
+                            {
+                                return SelectSMOObject2(child, objectToSelect);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private String BuildMatchingPathExpressionForDepth(NamedSmoObject objectToSelect, String parentNodePath, Int32 level, out Boolean atFinalLevel)
         {
             atFinalLevel = false;
@@ -578,37 +694,6 @@ namespace DatabaseObjectSearcher
             return null;
         }
 
-        private HierarchyTreeNode SelectSMOObject(HierarchyTreeNode node, NamedSmoObject objectToSelect)
-        {
-            if (node != null)
-            {
-                if (node.Expandable)
-                {
-                    EnumerateChildrenSynchronously(node);
-                    node.Expand();
-
-                    Boolean atFinalLevel;
-                    String pattern = BuildMatchingPathExpressionForDepth(objectToSelect, node.FullPath, (node.Level + 1), out atFinalLevel);
-
-                    foreach (HierarchyTreeNode child in node.Nodes)
-                    {
-                        if (String.Compare(child.FullPath, pattern, true) == 0)
-                        {
-                            if (atFinalLevel)
-                            {
-                                return child; // SelectNode(child);
-                            }
-                            else
-                            {
-                                return SelectSMOObject(child, objectToSelect);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
 
         private void OpenTable(HierarchyTreeNode node, SqlConnectionInfo connection)
         {
