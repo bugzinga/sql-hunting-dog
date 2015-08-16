@@ -538,7 +538,11 @@ namespace DatabaseObjectSearcher
 
             // trying to find node with (Read-Only) text at the end as read only database node will change its text
             var readonlyDatabaseName = FindChildNodeByName(parentNode, database.Name + " (Read-Only)");
-            return readonlyDatabaseName;
+            if (readonlyDatabaseName != null)
+                return readonlyDatabaseName;
+
+            var standbyDatabaseName = FindChildNodeByName(parentNode, database.Name + " (Standby / Read-Only)");
+            return standbyDatabaseName;
         }
 
         HierarchyTreeNode FindChildNodeByName(HierarchyTreeNode parentNode, string name)
