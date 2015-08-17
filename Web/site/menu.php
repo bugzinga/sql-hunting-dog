@@ -10,7 +10,7 @@
 						</a>
 						<center class="menu">
 <?php
-    $downloadLink = "https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.3.0.msi";
+    $downloadLink = "https://bitbucket.org/bugzinga/sql-hunting-dog/downloads/HuntingDog-3.5.0.msi";
 	$menu = array(
 		array(
 			"name" => "main",
