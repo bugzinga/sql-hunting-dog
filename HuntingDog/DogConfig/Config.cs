@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
 
 namespace HuntingDog.Config
 {
@@ -14,10 +14,10 @@ namespace HuntingDog.Config
     {
         None,
         Ascending,
-        Descedning
+        Descending
     }
 
-    public class DogConfig 
+    public class DogConfig
     {
         private int _selectTopXTable;
         private int _limitSearch;
@@ -33,16 +33,16 @@ namespace HuntingDog.Config
             AddNoLock = false;
             IncludeAllColumns = true;
             AddWhereClauseFor = false;
-            OrderBy = EOrderBy.Descedning;
-            
+            OrderBy = EOrderBy.Descending;
+
             AlterOrCreate = EAlterOrCreate.Create;
 
             LimitSearch = 500;
         }
-  
+
         [Category("SELECT")]
         [DisplayName("Add Column Names to SELECT")]
-        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")] 
+        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")]
         public bool IncludeAllColumns { get; set; }
 
         [Category("SCRIPT")]
@@ -83,8 +83,8 @@ namespace HuntingDog.Config
             get { return _selectTopXTable; }
             set
             {
-                if(value<=0)
-                    throw  new InvalidDataException("Must be greater than zero");
+                if (value <= 0)
+                    throw new InvalidDataException("Must be greater than zero");
                 _selectTopXTable = value;
             }
         }
@@ -102,8 +102,9 @@ namespace HuntingDog.Config
                 _limitSearch = value;
             }
         }
-   
+
         private string _launchingHotKey = "D";
+
         [Category("GENERAL")]
         [DisplayName("Hot Key: Ctrl+")]
         [Description("Launch Hunting Dog using Ctrl + this key. Will be effective after SSMS is restarted")]

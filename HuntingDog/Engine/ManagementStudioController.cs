@@ -110,7 +110,7 @@ namespace DatabaseObjectSearcher
                         builder.AppendFormat("\r\n{0}", BuildWhereClause(tbl.Columns));
                     }
 
-                    if (orderBy == EOrderBy.Ascending || orderBy == EOrderBy.Descedning)
+                    if (orderBy == EOrderBy.Ascending || orderBy == EOrderBy.Descending)
                     {
                         builder.AppendFormat("\r\n{0}", BuildOrderByPrimaryKey(tbl, orderBy == EOrderBy.Ascending));
                     }
