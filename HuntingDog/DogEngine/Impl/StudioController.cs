@@ -381,7 +381,7 @@ namespace HuntingDog.DogEngine.Impl
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
-                ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.ScriptIndexies, _cfg.ScriptForeignKeys,_cfg.ScriptTriggers);
+                ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.ScriptIndexes, _cfg.ScriptForeignKeys,_cfg.ScriptTriggers);
             }, "ScriptTable - " + GetSafeEntityObject(entityObject));
         }
 

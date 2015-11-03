@@ -24,7 +24,7 @@ namespace HuntingDog.Config
 
         public DogConfig()
         {
-            ScriptIndexies = true;
+            ScriptIndexes = true;
             ScriptTriggers = true;
             ScriptForeignKeys = false;
 
@@ -48,7 +48,7 @@ namespace HuntingDog.Config
         [Category("SCRIPT")]
         [DisplayName("Script Indexes")]
         [Description("Include Indexes when scripting a Table")]
-        public bool ScriptIndexies { get; set; }
+        public bool ScriptIndexes { get; set; }
 
         [Category("SCRIPT")]
         [DisplayName("Script Triggers")]
@@ -67,7 +67,7 @@ namespace HuntingDog.Config
 
         [Category("SELECT")]
         [DisplayName("Add WITH(NOLOCK) Hint")]
-        [Description("Add NOLOCK hint. Can lead to dirty of inconsistent data to be presented")]
+        [Description("Add NOLOCK hint. Can lead to dirty or inconsistent data to be presented")]
         public bool AddNoLock { get; set; }
 
         [Category("SELECT")]
@@ -91,7 +91,7 @@ namespace HuntingDog.Config
 
         [Category("GENERAL")]
         [DisplayName("Search Limit")]
-        [Description("Retreieve only first X objects")]
+        [Description("Retrieve only first X objects")]
         public int LimitSearch
         {
             get { return _limitSearch; }
