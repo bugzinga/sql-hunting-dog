@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
 
 namespace HuntingDog.Config
 {
@@ -14,17 +14,17 @@ namespace HuntingDog.Config
     {
         None,
         Ascending,
-        Descedning
+        Descending
     }
 
-    public class DogConfig 
+    public class DogConfig
     {
         private int _selectTopXTable;
         private int _limitSearch;
 
         public DogConfig()
         {
-            ScriptIndexies = true;
+            ScriptIndexes = true;
             ScriptTriggers = true;
             ScriptForeignKeys = false;
 
@@ -33,22 +33,22 @@ namespace HuntingDog.Config
             AddNoLock = false;
             IncludeAllColumns = true;
             AddWhereClauseFor = false;
-            OrderBy = EOrderBy.Descedning;
-            
+            OrderBy = EOrderBy.Descending;
+
             AlterOrCreate = EAlterOrCreate.Create;
 
             LimitSearch = 500;
         }
-  
+
         [Category("SELECT")]
         [DisplayName("Add Column Names to SELECT")]
-        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")] 
+        [Description("Use 'SELECT *' or 'SELECT column1, column2..' syntax'")]
         public bool IncludeAllColumns { get; set; }
 
         [Category("SCRIPT")]
         [DisplayName("Script Indexes")]
         [Description("Include Indexes when scripting a Table")]
-        public bool ScriptIndexies { get; set; }
+        public bool ScriptIndexes { get; set; }
 
         [Category("SCRIPT")]
         [DisplayName("Script Triggers")]
@@ -67,7 +67,7 @@ namespace HuntingDog.Config
 
         [Category("SELECT")]
         [DisplayName("Add WITH(NOLOCK) Hint")]
-        [Description("Add NOLOCK hint. Can lead to dirty of inconsistent data to be presented")]
+        [Description("Add NOLOCK hint. Can lead to dirty or inconsistent data to be presented")]
         public bool AddNoLock { get; set; }
 
         [Category("SELECT")]
@@ -83,15 +83,15 @@ namespace HuntingDog.Config
             get { return _selectTopXTable; }
             set
             {
-                if(value<=0)
-                    throw  new InvalidDataException("Must be greater than zero");
+                if (value <= 0)
+                    throw new InvalidDataException("Must be greater than zero");
                 _selectTopXTable = value;
             }
         }
 
         [Category("GENERAL")]
         [DisplayName("Search Limit")]
-        [Description("Retreieve only first X objects")]
+        [Description("Retrieve only first X objects")]
         public int LimitSearch
         {
             get { return _limitSearch; }
@@ -102,8 +102,9 @@ namespace HuntingDog.Config
                 _limitSearch = value;
             }
         }
-   
+
         private string _launchingHotKey = "D";
+
         [Category("GENERAL")]
         [DisplayName("Hot Key: Ctrl+")]
         [Description("Launch Hunting Dog using Ctrl + this key. Will be effective after SSMS is restarted")]
