@@ -1,6 +1,6 @@
 # README #
 
-This is a source code for SQL Hunting Dog ([www.sql-hunting-dog.com])
+This is a source code for [SQL Hunting Dog](www.sql-hunting-dog.com)
 
 ### What is this repository for? ###
 
