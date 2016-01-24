@@ -4,8 +4,8 @@ This is a source code for SQL Hunting Dog ([www.sql-hunting-dog.com])
 
 ### What is this repository for? ###
 
-* For curious mind who wants to explore how SQL Hunting Dog works
-* For those who wants to contribute
+* For curious minds who want to explore how SQL Hunting Dog works
+* For those who want to contribute
 
 ### How do I get set up? ###
 
@@ -16,4 +16,4 @@ This is a source code for SQL Hunting Dog ([www.sql-hunting-dog.com])
 
 ### Contribution guidelines ###
 
-* Create a separate branch and them generate a merge request
+* Create a separate branch and then generate a merge request
