@@ -50,9 +50,8 @@ namespace DatabaseObjectSearcher
 
         public static String UseDataBaseGo(Database db)
         {
-            return Environment.NewLine + "USE [" + db.Name + "] "
-                + Environment.NewLine + "GO "
-                + Environment.NewLine;
+            return Environment.NewLine + "USE [" + db.Name + "]"
+                + Environment.NewLine + "GO";
         }
 
         public static void SelectFromView(View view, SqlConnectionInfo connInfo, int selectTopX, bool includeAllCoulumnNamesForViews,bool includeWhereClause,bool addNoLockHint)
