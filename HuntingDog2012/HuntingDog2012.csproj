@@ -344,9 +344,6 @@
     <None Include="Resources\download.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)HuntingDog.dll" "C:\Program Files (x86)\Hunting Dog\SSMS2012" /Y /R</PostBuildEvent>
-  </PropertyGroup>
   <!--Target Name="AfterBuild" DependsOnTargets="GenSerializationAssembly" />
 <Target Name="GenSerializationAssembly"
         DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource"
