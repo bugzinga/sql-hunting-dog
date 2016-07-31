@@ -1,7 +1,7 @@
 # README #
 
 This is a source code for [SQL Hunting Dog](http://www.sql-hunting-dog.com)
-[![Build status](https://ci.appveyor.com/api/projects/status/5mhukf2kf0lqcnri/branch/master?svg=true)](https://ci.appveyor.com/project/maslukov/sql-hunting-dog/branch/master)
+https://ci.appveyor.com/api/projects/status/5mhukf2kf0lqcnri/branch/master
 
 ### What is this repository for? ###
 
