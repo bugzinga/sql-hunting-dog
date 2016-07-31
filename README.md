@@ -2,6 +2,8 @@
 
 This is a source code for [SQL Hunting Dog](http://www.sql-hunting-dog.com)
 
+https://ci.appveyor.com/api/projects/status/bitbucket/bugzinga/sql-hunting-dog
+
 ### What is this repository for? ###
 
 * For curious minds who want to explore how SQL Hunting Dog works
