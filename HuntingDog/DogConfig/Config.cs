@@ -21,9 +21,12 @@ namespace HuntingDog.Config
     {
         private int _selectTopXTable;
         private int _limitSearch;
+        private int _fontSize;
 
         public DogConfig()
         {
+            FontSize = 14;
+
             ScriptIndexes = true;
             ScriptTriggers = true;
             ScriptForeignKeys = false;
@@ -103,11 +106,27 @@ namespace HuntingDog.Config
             }
         }
 
+        [Category("GENERAL")]
+        [DisplayName("Font Size")]
+        [Description("Requires SSMS restart. Font size used for search results.")]
+        public int FontSize
+        {
+            get { return _fontSize; }
+            set
+            {
+                _fontSize = value;
+                if (_fontSize < 8)
+                    _fontSize = 8;
+                else if (_fontSize > 16)
+                    _fontSize = 16;
+            }
+        }
+
         private string _launchingHotKey = "D";
 
         [Category("GENERAL")]
         [DisplayName("Hot Key: Ctrl+")]
-        [Description("Launch Hunting Dog using Ctrl + this key. Will be effective after SSMS is restarted")]
+        [Description("Requires SSMS restart.Launch Hunting Dog using Ctrl + this key.")]
         public string LaunchingHotKey
         {
             get { return _launchingHotKey; }

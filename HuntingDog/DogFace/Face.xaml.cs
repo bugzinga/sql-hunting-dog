@@ -109,6 +109,8 @@ namespace HuntingDog.DogFace
         // small hint - to use anonymous delegates in InvokeUI method
         public delegate void AnyInvoker();
 
+        public int ResultsFontSize { get; set; }
+        
         public IStudioController StudioController
         {
             get
@@ -171,6 +173,7 @@ namespace HuntingDog.DogFace
         {
             log.Info("XAML Face Constructed.");
             InitializeComponent();
+            this.DataContext = this;
         }
 
         private void UserControl_Loaded(Object sender, RoutedEventArgs e)
@@ -194,6 +197,8 @@ namespace HuntingDog.DogFace
                 StudioController.OnServersRemoved += StudioController_OnServersRemoved;
                 StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
                 ReloadServers();
+                
+                ResultsFontSize = _cfg.FontSize;
 
                 var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
                 RestoreLastSearchTextFromUserProfile();
@@ -1178,7 +1183,10 @@ namespace HuntingDog.DogFace
 
             _cfg = obj;
             if (_studio != null)
+            {
                 _studio.SetConfiguration(_cfg);
+                ResultsFontSize = _cfg.FontSize;
+            }
 
             if(_userPref!=null)
             {
