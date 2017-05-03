@@ -19,6 +19,8 @@ namespace HuntingDog.DogEngine.Impl
     {
         public event Action ShowYourself;
 
+        public event Action HideYourself;
+
         public event Action<List<IServer>> OnServersAdded;
 
         public event Action<List<IServer>> OnServersRemoved;
@@ -122,6 +124,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var srv = this.Servers[server];
                 manager.SelectSMOObjectInObjectExplorer(entityObject.InternalObject as ScriptSchemaObjectBase, srv.Connection);
+                ForceHideYourselfIfNeeded();
             }
             catch (Exception ex)
             {
@@ -316,12 +319,22 @@ namespace HuntingDog.DogEngine.Impl
             }
         }
 
+        public void ForceHideYourselfIfNeeded()
+        {
+            if (HideYourself != null)
+            {
+                if (_cfg.HideAfterAction)
+                    HideYourself();
+            }
+        }
+
          public void ModifyFunction(IServer server, Entity entityObject)
         {
             this.SafeRun(() =>
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.OpenFunctionForModification(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection,_cfg.AlterOrCreate);
+                ForceHideYourselfIfNeeded();
             }, "ModifyFunction failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -331,6 +344,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.ModifyView(entityObject.InternalObject as View, serverInfo.Connection,_cfg.AlterOrCreate);
+                ForceHideYourselfIfNeeded();
             }, "ModifyView failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -340,6 +354,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.OpenStoredProcedureForModification(entityObject.InternalObject as StoredProcedure, serverInfo.Connection,_cfg.AlterOrCreate);
+                ForceHideYourselfIfNeeded();
             }, "ModifyProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -350,6 +365,7 @@ namespace HuntingDog.DogEngine.Impl
                 var serverInfo = GetServer(server);
                 ManagementStudioController.SelectFromView(entityObject.InternalObject as View, serverInfo.Connection, _cfg.SelectTopX,_cfg.IncludeAllColumns,_cfg.AddWhereClauseFor,_cfg.AddNoLock);
 
+                ForceHideYourselfIfNeeded();
             }, "SelectFromView failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -359,6 +375,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.ExecuteStoredProc(entityObject.InternalObject as StoredProcedure, serverInfo.Connection);
+                ForceHideYourselfIfNeeded();
             }, "ExecuteProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -368,6 +385,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.ExecuteFunction(entityObject.InternalObject as UserDefinedFunction, serverInfo.Connection);
+                ForceHideYourselfIfNeeded();
             }, "ExecuteProcedure failed - " + GetSafeEntityObject(entityObject));
         }
 
@@ -382,6 +400,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.ScriptTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.ScriptIndexes, _cfg.ScriptForeignKeys,_cfg.ScriptTriggers);
+                ForceHideYourselfIfNeeded();
             }, "ScriptTable - " + GetSafeEntityObject(entityObject));
         }
 
@@ -391,6 +410,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.SelectFromTable(entityObject.InternalObject as Table, serverInfo.Connection, _cfg.SelectTopX,_cfg.IncludeAllColumns,_cfg.AddWhereClauseFor,  _cfg.AddNoLock, _cfg.OrderBy);
+                ForceHideYourselfIfNeeded();
             }, "SelectFromTable - " + GetSafeEntityObject(entityObject));
         }
 
@@ -400,6 +420,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 manager.OpenTable2(entityObject.InternalObject as Table, serverInfo.Connection, serverInfo.Server);
+                ForceHideYourselfIfNeeded();
             }, "EditTableData - " + GetSafeEntityObject(entityObject));
         }
 
@@ -409,6 +430,7 @@ namespace HuntingDog.DogEngine.Impl
             {
                 var serverInfo = GetServer(server);
                 ManagementStudioController.DesignTable(entityObject.InternalObject as Table, serverInfo.Connection);
+                ForceHideYourselfIfNeeded();
             }, "DesignTable - " + GetSafeEntityObject(entityObject));
         }
 

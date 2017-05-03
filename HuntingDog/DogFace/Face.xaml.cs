@@ -196,6 +196,7 @@ namespace HuntingDog.DogFace
                 StudioController.OnServersAdded += StudioController_OnServersAdded;
                 StudioController.OnServersRemoved += StudioController_OnServersRemoved;
                 StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
+                StudioController.HideYourself +=  new System.Action(StudioController_HideYourself);
                 ReloadServers();
                 
                 ResultsFontSize = _cfg.FontSize;
@@ -278,6 +279,11 @@ namespace HuntingDog.DogFace
         void StudioController_ShowYourself()
         {
             txtSearch.Focus();
+        }
+
+        void StudioController_HideYourself()
+        {
+            Connect._addInCreater.SearchWindow.Visible = false;
         }
 
         void StudioController_OnServersAdded(List<IServer> listAdded)

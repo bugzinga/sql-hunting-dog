@@ -69,7 +69,7 @@ namespace HuntingDog
         }
 
 
-        static HuntingDog.DogEngine.AddinCreater _addInCreater = new HuntingDog.DogEngine.AddinCreater();
+        internal static HuntingDog.DogEngine.AddinCreater _addInCreater = new HuntingDog.DogEngine.AddinCreater();
 
         /// <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
         /// <param term='application'>Root object of the host application.</param>

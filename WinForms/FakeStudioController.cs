@@ -348,6 +348,8 @@ namespace WinForms
 
         public event Action ShowYourself;
 
+        public event Action HideYourself;
+
         public void ConnectNewServer()
         {
             if (OnAction != null)
