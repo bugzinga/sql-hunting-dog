@@ -144,7 +144,7 @@ namespace HuntingDog.Config
 
         [Category("GENERAL")]
         [DisplayName("Hide window after action")]
-        [Description("Hide Huntiong Dog window after action invoce.")]
+        [Description("Hide Hunting Dog window after action is completed.")]
         public bool HideAfterAction
         {
           get { return _hideAfterAction; }
