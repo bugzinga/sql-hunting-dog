@@ -41,6 +41,8 @@ namespace HuntingDog.Config
             AlterOrCreate = EAlterOrCreate.Create;
 
             LimitSearch = 500;
+
+            HideAfterAction = false;
         }
 
         [Category("SELECT")]
@@ -138,6 +140,20 @@ namespace HuntingDog.Config
             }
         }
 
+        private bool _hideAfterAction = false;
+
+        [Category("GENERAL")]
+        [DisplayName("Hide window after action")]
+        [Description("Hide Hunting Dog window after action is completed.")]
+        public bool HideAfterAction
+        {
+          get { return _hideAfterAction; }
+          set
+          {
+            _hideAfterAction = value;
+          }
+        }
+  
         [Category("MODIFY")]
         [DisplayName("Inspect Body using")]
         [Description("When inspecting Procedure, View or Function body use ALTER or CREATE script")]

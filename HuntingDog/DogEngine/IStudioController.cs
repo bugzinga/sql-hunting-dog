@@ -7,6 +7,7 @@ namespace HuntingDog.DogEngine
     public interface IStudioController
     {
         event Action ShowYourself;
+        event Action HideYourself;
 
         // fire when new server is connected/disconnected
         event Action<List<IServer>> OnServersAdded;
