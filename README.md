@@ -2,7 +2,9 @@
 
 This is a source code for [SQL Hunting Dog](http://www.sql-hunting-dog.com)
 
-![Build status](https://ci.appveyor.com/api/projects/status/c8w93mp64i9ntntd/branch/master?svg=true)](https://ci.appveyor.com/project/maslukov/sql-hunting-dog-qfxu7/branch/master)
+![Build status](https://ci.appveyor.com/api/projects/status/c8w93mp64i9ntntd/branch/master?svg=true) 
+
+https://ci.appveyor.com/project/maslukov/sql-hunting-dog-qfxu7/branch/master
 
 ### What is this repository for? ###
 
