@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -35,8 +36,10 @@ namespace HuntingDog
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
+    /// 
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("Hunting Dog 2016", "hunt all you can", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(HuntingDog2016Package.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
@@ -66,16 +69,34 @@ namespace HuntingDog
         /// </summary>
         protected override void Initialize()
         {
-            HuntingDog.HuntingDogCommand.Initialize(this);
             base.Initialize();
+            HuntingDogCommand.Initialize(this);
+
+            // total hack https://ssmsschemafolders.codeplex.com/SourceControl/latest#README.md
+            DelayAddSkipLoadingReg();
         }
 
         #endregion
 
-        protected override int QueryClose(out bool canClose)
+        private void AddSkipLoadingReg()
         {
-            UserRegistryRoot.CreateSubKey(@"Packages\{" + PackageGuidString + "}").SetValue("SkipLoading", 1);
-            return base.QueryClose(out canClose);
+            var myPackage = UserRegistryRoot.CreateSubKey(@"Packages\{" + PackageGuidString + "}");
+            if (myPackage != null)
+            {
+                myPackage.SetValue("SkipLoading", 1);
+            }
+        }
+
+        private void DelayAddSkipLoadingReg()
+        {
+            var delay = new Timer();
+            delay.Tick += delegate (object o, EventArgs e)
+            {
+                delay.Stop();
+                AddSkipLoadingReg();
+            };
+            delay.Interval = 1000;
+            delay.Start();
         }
     }
 }

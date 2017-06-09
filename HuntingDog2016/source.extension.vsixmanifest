@@ -3,10 +3,10 @@
   <Metadata>
     <Identity Id="HuntingDog2016.Company.691c3d7c-3e51-47d6-94ec-69209c4eddb8" Version="1.0" Language="en-US" Publisher="Company" />
     <DisplayName>HuntingDog2016</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Description xml:space="preserve">quick search for sql entities in SSMS 2016searcS</Description>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.IntegratedShell" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
