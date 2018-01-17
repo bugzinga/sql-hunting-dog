@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>618</NoWarn>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConnectionDlg">
