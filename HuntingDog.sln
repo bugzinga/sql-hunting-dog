@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2016", "HuntingDo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuntingDog2017", "HuntingDog2017\HuntingDog2017.csproj", "{B6817CDC-17DA-4AF2-98EB-6EFCCDD196F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{B1FE9DA2-02EB-4805-B47F-6F86E004FA0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -75,7 +75,7 @@ namespace HuntingDog
 
         private void AddSkipLoadingReg()
         {
-            var myPackage = UserRegistryRoot.CreateSubKey($@"Packages\{PackageGuids.HuntingDogPackageIDString}");
+            var myPackage = UserRegistryRoot.CreateSubKey($@"Packages\{{{PackageGuids.HuntingDogPackageIDString}}}");
             if (myPackage != null)
             {
                 myPackage.SetValue("SkipLoading", 1);
