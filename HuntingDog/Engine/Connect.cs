@@ -18,7 +18,7 @@ namespace HuntingDog
 {
     /// <summary>The object for implementing an Add-in.</summary>
     /// <seealso class='IDTExtensibility2' />]
-    /// 
+    ///
     // f  {C454B5C8-3004-4893-B72A-A583E1789AD9}
     [Guid("B00DF00D-1234-1234-AAAA-BAADC0DE9991")]
     public partial class Connect : IDTExtensibility2, IDTCommandTarget
@@ -80,7 +80,7 @@ namespace HuntingDog
         {
             try
             {
-                //return;          
+                //return;
                 //_applicationObject = (DTE2)application;
                 addInInstance = (AddIn) addInInst;
 
@@ -103,7 +103,7 @@ namespace HuntingDog
             }
         }
 
-  
+
         public string LaunchingHotKey = "D";
         private string _caption;
 
@@ -113,10 +113,10 @@ namespace HuntingDog
             {
                 var userPreference = UserPreferencesStorage.Load();
                 Config.ConfigPersistor pers = new Config.ConfigPersistor();
-                var cfg = pers.Restore<Config.DogConfig>(userPreference);            
-               
+                var cfg = pers.Restore<Config.DogConfig>(userPreference);
+
                 if (cfg.LaunchingHotKey.Length == 1)
-                    LaunchingHotKey = cfg.LaunchingHotKey;                
+                    LaunchingHotKey = cfg.LaunchingHotKey;
             }
             catch (Exception ex)
             {
@@ -137,7 +137,7 @@ namespace HuntingDog
 
             try
             {
-                //If you would like to move the command to a different menu, change the word "Tools" to the 
+                //If you would like to move the command to a different menu, change the word "Tools" to the
                 //  English version of the menu. This code will take the culture, append on the name of the menu
                 //  then add the command to that menu. You can find a list of all the top-level menus in the file
                 //  CommandBar.resx.
@@ -234,7 +234,7 @@ namespace HuntingDog
             {
                 if (commandName.ToLower() == "HuntingDog.Connect.HuntingDog".ToLower()) //DIY: if you're changing the name of your add-in you will need to change this
                 {
-                    // we need to iterate through existing windows and 
+                    // we need to iterate through existing windows and
 
                     if ((addinWindow != null) && addinWindow.Visible)
                     {
@@ -246,7 +246,7 @@ namespace HuntingDog
                     {
                         //BuildCommandInToolsMenu();
                         log.Info("Create Addin Window");
-                 
+
 
                         addinWindow = _addInCreater.CreateAddinWindow(addInInstance, Caption);
                         //MSSQLController.Current.CreateAddinWindow(_addInInstance);
@@ -291,7 +291,7 @@ namespace HuntingDog
 
         /// <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface. Receives notification when the collection of Add-ins has changed.</summary>
         /// <param term='custom'>Array of parameters that are host application specific.</param>
-        /// <seealso class='IDTExtensibility2' />		
+        /// <seealso class='IDTExtensibility2' />
         public void OnAddInsUpdate(ref Array custom)
         {
         }

@@ -36,24 +36,19 @@ namespace HuntingDog
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    /// 
+    ///
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
-    [Guid(HuntingDog2016Package.PackageGuidString)]
+    [Guid(PackageGuids.HuntingDogPackageIDString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    public sealed class HuntingDog2016Package : Package
+    public sealed class HuntingDogPackage : Package
     {
         /// <summary>
-        /// HuntingDog2016 GUID string.
+        /// Initializes a new instance of the <see cref="HuntingDogPackage"/> class.
         /// </summary>
-        public const string PackageGuidString = "5b3a5944-ba3e-449d-8b79-4d194244b643";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HuntingDog2016Package"/> class.
-        /// </summary>
-        public HuntingDog2016Package()
+        public HuntingDogPackage()
         {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
@@ -80,7 +75,7 @@ namespace HuntingDog
 
         private void AddSkipLoadingReg()
         {
-            var myPackage = UserRegistryRoot.CreateSubKey(@"Packages\{" + PackageGuidString + "}");
+            var myPackage = UserRegistryRoot.CreateSubKey($@"Packages\{PackageGuids.HuntingDogPackageIDString}");
             if (myPackage != null)
             {
                 myPackage.SetValue("SkipLoading", 1);
