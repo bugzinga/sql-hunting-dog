@@ -57,10 +57,17 @@ namespace HuntingDog
                 _windowFrame = CreateToolWindow(Caption, TOOLWINDOW_GUID, _uglyUsefuleDogFace);
 
                 // additional init could be done after this line for the user control
+                HuntingDog.DogEngine.Impl.DiConstruct.Instance.HideYourself += Instance_HideYourself;
             }
+
             _windowFrame.Show();
+            HuntingDog.DogEngine.Impl.DiConstruct.Instance.ForceShowYourself();
         }
 
+        private void Instance_HideYourself()
+        {
+            _windowFrame.Hide();
+        }
 
         private IVsWindowFrame CreateToolWindow(string caption, string guid, System.Windows.Forms.UserControl userControl)
         {

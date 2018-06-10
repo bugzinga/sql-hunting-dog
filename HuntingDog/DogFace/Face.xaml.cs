@@ -70,7 +70,7 @@ namespace HuntingDog.DogFace
         // these keys are used to save/load user preferences
         public const String UserPref_LastSearchText = "Last Search Text";
 
-      
+
 
         public const String UserPref_ServerDatabase = "[database]:";
 
@@ -110,7 +110,7 @@ namespace HuntingDog.DogFace
         public delegate void AnyInvoker();
 
         public int ResultsFontSize { get; set; }
-        
+
         public IStudioController StudioController
         {
             get
@@ -127,7 +127,7 @@ namespace HuntingDog.DogFace
             {
                 _studio = value;
             }
-        }  
+        }
 
         private IServer SelectedServer
         {
@@ -185,10 +185,10 @@ namespace HuntingDog.DogFace
                 var scroll = itemsControl.FindChild<ScrollContentPresenter>();
 
                 _userPref = UserPreferencesStorage.Load();
-                _cfg =_persistor.Restore<Config.DogConfig>(_userPref);
+                _cfg = _persistor.Restore<Config.DogConfig>(_userPref);
 
                 UpdateDetector = new UpdateDetector(_userPref);
-                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;    
+                UpdateDetector.NewVersionFound += UpdateDetector_NewVersionFound;
 
                 _processor.RequestFailed += new Action<Request, Exception>(_processor_RequestFailed);
                 StudioController.Initialise();
@@ -196,9 +196,8 @@ namespace HuntingDog.DogFace
                 StudioController.OnServersAdded += StudioController_OnServersAdded;
                 StudioController.OnServersRemoved += StudioController_OnServersRemoved;
                 StudioController.ShowYourself += new System.Action(StudioController_ShowYourself);
-                StudioController.HideYourself +=  new System.Action(StudioController_HideYourself);
                 ReloadServers();
-                
+
                 ResultsFontSize = _cfg.FontSize;
 
                 var lastSrvName = _userPref.GetByName(UserPref_LastSelectedServer);
@@ -216,14 +215,14 @@ namespace HuntingDog.DogFace
             }
         }
 
-    
+
 
         void UpdateDetector_NewVersionFound(DogVersion detected)
         {
             InvokeInUI(() =>
             {
                 popupBorder.Visibility = System.Windows.Visibility.Visible;
-                popupUpdateText.Text = string.Format("New version is available ({0})",detected.Version.ToString());
+                popupUpdateText.Text = string.Format("New version is available ({0})", detected.Version.ToString());
             });
         }
 
@@ -278,12 +277,8 @@ namespace HuntingDog.DogFace
 
         void StudioController_ShowYourself()
         {
+            log.Info("StudioController_ShowYourself");
             txtSearch.Focus();
-        }
-
-        void StudioController_HideYourself()
-        {
-            Connect._addInCreater.SearchWindow.Visible = false;
         }
 
         void StudioController_OnServersAdded(List<IServer> listAdded)
@@ -414,7 +409,7 @@ namespace HuntingDog.DogFace
         // Reload objects in database
         private void Async_ReloadObjectsFromDatabase(Object arg)
         {
-            var cmd = (ServerDatabaseCommand)arg;   
+            var cmd = (ServerDatabaseCommand)arg;
 
             SetStatus("Reloading " + cmd.DatabaseName + "...", true);
 
@@ -435,7 +430,7 @@ namespace HuntingDog.DogFace
             {
                 var sel = SelectedServer;
 
-                if(keepSameDatabase)
+                if (keepSameDatabase)
                     databaseName = SelectedDatabase;
 
                 if (sel != null)
@@ -445,7 +440,7 @@ namespace HuntingDog.DogFace
                     _databaseChangedByUser = false;
 
                     // changed server - try to restore database user worked with last time
-                    if(string.IsNullOrEmpty( databaseName))
+                    if (string.IsNullOrEmpty(databaseName))
                         databaseName = _userPref.GetByName(UserPref_ServerDatabase + sel.ServerName);
                     var previousDatabaseWasFound = false;
 
@@ -606,7 +601,7 @@ namespace HuntingDog.DogFace
                 return;
             }
 
-            var par = (SearchAsyncParam) arg;
+            var par = (SearchAsyncParam)arg;
 
             // new request was added - this one is outdated
             if (par.SequenceNumber < _requestSequenceNumber)
@@ -673,11 +668,11 @@ namespace HuntingDog.DogFace
         }
 
 
-        
+
 
         private void InvokeInUI(AnyInvoker invoker)
         {
-            Dispatcher.Invoke((Delegate) invoker);
+            Dispatcher.Invoke((Delegate)invoker);
         }
 
         // TODO: Remove (empty method)
@@ -793,25 +788,25 @@ namespace HuntingDog.DogFace
 
         private void btnNavigationClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item) ((FrameworkElement) sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeNavigationOnItem(item);
         }
 
         private void btnActionClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item) ((FrameworkElement) sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeActionOnItem(item);
         }
 
         private void btnAdditonalActionClick(Object sender, RoutedEventArgs e)
         {
-            var item = (Item) ((FrameworkElement) sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeAdditionalActionOnItem(item);
         }
 
         private void DefaultAction_Click(Object sender, RoutedEventArgs e)
         {
-            var item = (Item) ((FrameworkElement) sender).Tag;
+            var item = (Item)((FrameworkElement)sender).Tag;
             InvokeDefaultOnItem(item);
         }
 
@@ -1001,7 +996,7 @@ namespace HuntingDog.DogFace
             _isDragDropStartedFromText = false;
         }
 
-   
+
 
         private void TextBlock_MouseDown(Object sender, MouseButtonEventArgs e)
         {
@@ -1054,7 +1049,7 @@ namespace HuntingDog.DogFace
                     ListViewItem listViewItem = item.FindAncestor<ListViewItem>();
 
                     // Find the data behind the ListViewItem
-                    Item contact = (Item) itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                    Item contact = (Item)itemsControl.ItemContainerGenerator.ItemFromContainer(listViewItem);
 
                     if ((contact != null) && (contact.Entity != null))
                     {
@@ -1132,7 +1127,7 @@ namespace HuntingDog.DogFace
             txtSearch.Focus();
         }
 
-      
+
 
         private void ReloadObjectsFromDatabase()
         {
@@ -1140,7 +1135,7 @@ namespace HuntingDog.DogFace
             {
                 if (SelectedDatabase != null)
                 {
-                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new ServerDatabaseCommand(){Server =  SelectedServer,DatabaseName = SelectedDatabase}, (RequestType)(Int32)ERquestType.RefreshSearch, true);
+                    _processor.AddRequest(Async_ReloadObjectsFromDatabase, new ServerDatabaseCommand() { Server = SelectedServer, DatabaseName = SelectedDatabase }, (RequestType)(Int32)ERquestType.RefreshSearch, true);
                 }
             }
         }
@@ -1153,15 +1148,15 @@ namespace HuntingDog.DogFace
 
         Config.DogConfig _cfg = new Config.DogConfig();
         Config.ConfigPersistor _persistor = new Config.ConfigPersistor();
-     
-        private void Options_Click(Object sender, RoutedEventArgs e)
-        {  
 
-            var cfgWindow = new DialogWindow();           
+        private void Options_Click(Object sender, RoutedEventArgs e)
+        {
+
+            var cfgWindow = new DialogWindow();
 
             cfgWindow.ShowConfiguration(_cfg);
 
-            this.BlurApply(10, new TimeSpan(0, 0, 0, 500), TimeSpan.Zero);     
+            this.BlurApply(10, new TimeSpan(0, 0, 0, 500), TimeSpan.Zero);
 
             var result = cfgWindow.ShowDialog();
 
@@ -1179,12 +1174,12 @@ namespace HuntingDog.DogFace
                 }
             }
 
-            this.BlurDisable(new TimeSpan(0, 0, 0,500), TimeSpan.Zero);
+            this.BlurDisable(new TimeSpan(0, 0, 0, 500), TimeSpan.Zero);
         }
 
         void userCtrol_OnNewConfig(Config.DogConfig obj)
         {
-            if(obj==null)
+            if (obj == null)
                 return;
 
             _cfg = obj;
@@ -1194,7 +1189,7 @@ namespace HuntingDog.DogFace
                 ResultsFontSize = _cfg.FontSize;
             }
 
-            if(_userPref!=null)
+            if (_userPref != null)
             {
                 _persistor.Persist(_cfg, _userPref);
                 _userPref.Save();
@@ -1208,7 +1203,7 @@ namespace HuntingDog.DogFace
 
             if (SelectedServer != null)
             {
-                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer, (Int32) ERquestType.Server, true);
+                _processor.AddRequest(Async_ReloadDatabaseList, SelectedServer, (Int32)ERquestType.Server, true);
             }
         }
 
@@ -1347,6 +1342,5 @@ namespace HuntingDog.DogFace
             SubscribeToAction(sender as ContextMenu);
         }
 
-      
     }
 }

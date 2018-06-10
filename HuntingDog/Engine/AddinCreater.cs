@@ -22,10 +22,10 @@ namespace HuntingDog.DogEngine
 
         private readonly Log log = LogFactory.GetLog();
 
-        public EnvDTE.Window SearchWindow
+        private EnvDTE.Window SearchWindow
         {
             get;
-            private set;
+            set;
         }
 
         public EnvDTE.Window CreateAddinWindow(AddIn addIn, string caption)
@@ -46,6 +46,7 @@ namespace HuntingDog.DogEngine
                     {
                         SearchWindow = windows.CreateToolWindow2(addIn, assemblyLocation, className, caption, windowId, ref userControl);
                         SearchWindow.SetTabPicture(HuntingDog.Properties.Resources.footprint.GetHbitmap());
+                        HuntingDog.DogEngine.Impl.DiConstruct.Instance.HideYourself += Instance_HideYourself; ;
                     }
 
                     SearchWindow.Visible = true;
@@ -59,5 +60,12 @@ namespace HuntingDog.DogEngine
                 throw;
             }
         }
+
+        private void Instance_HideYourself()
+        {
+            if (SearchWindow != null)
+                SearchWindow.Visible = false;
+        }
+
     }
 }

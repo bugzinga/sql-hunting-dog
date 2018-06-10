@@ -301,11 +301,11 @@ namespace HuntingDog
         /// <seealso class='IDTExtensibility2' />
         public void OnBeginShutdown(ref Array custom)
         {
-            if (_addInCreater.SearchWindow != null)
-            {
-                log.Info("OnBeginShutdown - hiding window");
-                _addInCreater.SearchWindow.Visible = false;
-            }
+            //if (_addInCreater.SearchWindow != null)
+            //{
+            //    log.Info("OnBeginShutdown - hiding window");
+            //    _addInCreater.SearchWindow.Visible = false;
+            //}
         }
 
         /// <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
