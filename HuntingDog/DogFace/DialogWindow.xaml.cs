@@ -24,7 +24,7 @@ namespace HuntingDog.DogFace
         public DialogWindow()
         {
             InitializeComponent();
-           
+
         }
 
         public void ShowConfiguration(DogConfig cfg)
@@ -36,10 +36,10 @@ namespace HuntingDog.DogFace
             _propertyGrid.ShowTitle = false;
         }
 
-        public DogConfig DogConfig 
-        { 
-            get; 
-            private set; 
+        public DogConfig DogConfig
+        {
+            get;
+            private set;
         }
 
 

@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props')" />
+  <Import Project="packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <UseCodebase>true</UseCodebase>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{AA575755-0E5F-4053-A0A1-73B7EB2E03AB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HuntingDog</RootNamespace>
+    <AssemblyName>HuntingDog</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CreateVsixContainer>False</CreateVsixContainer>
+    <DeployExtension>False</DeployExtension>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CreateVsixContainer>False</CreateVsixContainer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\HuntingDog\Core\DogVersion.cs">
+      <Link>Core\DogVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\Extensions.cs">
+      <Link>Core\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\Log.cs">
+      <Link>Core\Log.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\LogFactory.cs">
+      <Link>Core\LogFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\PerformanceAnalyzer.cs">
+      <Link>Core\PerformanceAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\Range.cs">
+      <Link>Core\Range.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\UpdateDetector.cs">
+      <Link>Core\UpdateDetector.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\UpdateNotificator.cs">
+      <Link>Core\UpdateNotificator.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Core\VersionRetriever.cs">
+      <Link>Core\VersionRetriever.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogConfig\Config.cs">
+      <Link>DogConfig\Config.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogConfig\ConfigPersistor.cs">
+      <Link>DogConfig\ConfigPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Entity.cs">
+      <Link>DogEngine\Entity.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\FunctionParameter.cs">
+      <Link>DogEngine\FunctionParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IDatabaseDictionary.cs">
+      <Link>DogEngine\IDatabaseDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IDatabaseLoader.cs">
+      <Link>DogEngine\IDatabaseLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\Constructor.cs">
+      <Link>DogEngine\Impl\Constructor.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseDictionary.cs">
+      <Link>DogEngine\Impl\DatabaseDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\DatabaseLoader.cs">
+      <Link>DogEngine\Impl\DatabaseLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\ServerWatcher.cs">
+      <Link>DogEngine\Impl\ServerWatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\Impl\StudioController.cs">
+      <Link>DogEngine\Impl\StudioController.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IServer.cs">
+      <Link>DogEngine\IServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IStorage.cs">
+      <Link>DogEngine\IStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\IStudioController.cs">
+      <Link>DogEngine\IStudioController.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\ProcedureParameter.cs">
+      <Link>DogEngine\ProcedureParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\SearchCriteria.cs">
+      <Link>DogEngine\SearchCriteria.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogEngine\TableColumn.cs">
+      <Link>DogEngine\TableColumn.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Action.cs">
+      <Link>DogFace\Action.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\BackgroundProcessor.cs">
+      <Link>DogFace\Background\BackgroundProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\Request.cs">
+      <Link>DogFace\Background\Request.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Background\RequestType.cs">
+      <Link>DogFace\Background\RequestType.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\BitmapConverter.cs">
+      <Link>DogFace\BitmapConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\DialogWindow.xaml.cs">
+      <Link>DogFace\DialogWindow.xaml.cs</Link>
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Face.xaml.cs">
+      <Link>DogFace\Face.xaml.cs</Link>
+      <DependentUpon>Face.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\HtmlTextBlock.cs">
+      <Link>DogFace\HtmlTextBlock.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\Item.cs">
+      <Link>DogFace\Item.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ItemFactory.cs">
+      <Link>DogFace\ItemFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ucHost.cs">
+      <Link>DogFace\ucHost.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\ucHost.Designer.cs">
+      <Link>DogFace\ucHost.Designer.cs</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\UserPreferences.cs">
+      <Link>DogFace\UserPreferences.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\DogFace\WidthConverter.cs">
+      <Link>DogFace\WidthConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\AddinCreater.cs">
+      <Link>Engine\AddinCreater.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\Connect.cs">
+      <Link>Engine\Connect.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\DatabaseSearchResult.cs">
+      <Link>Engine\DatabaseSearchResult.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\EventWatcher.cs">
+      <Link>Engine\EventWatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\ManagedConnection.cs">
+      <Link>Engine\ManagedConnection.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\ManagementStudioController.cs">
+      <Link>Engine\ManagementStudioController.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Engine\ObjectExplorerManager.cs">
+      <Link>Engine\ObjectExplorerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\HuntingDog\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="HuntingDog.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HuntingDog.vsct</DependentUpon>
+    </Compile>
+    <Compile Include="HuntingDogPackage.cs" />
+    <Compile Include="HuntingDogCommand.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\HuntingDog\DogFace\DialogWindow.xaml">
+      <Link>DogFace\DialogWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\HuntingDog\DogFace\Face.xaml">
+      <Link>DogFace\Face.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.extension.vsixmanifest" />
+    <VSCTCompile Include="HuntingDog.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>HuntingDog.cs</LastGenOutput>
+    </VSCTCompile>
+    <Content Include="HuntingDog.pkgdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\HuntingDog2016.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ConnectionDlg">
+      <HintPath>..\Dependencies\2016\ConnectionDlg.dll</HintPath>
+    </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\extensibility.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfoExtended, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.ConnectionInfoExtended.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.SDK.SqlStudio">
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.Management.SDK.SqlStudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.RegSvrEnum, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.RegSvrEnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Smo, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.Smo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.SmoExtended, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.SmoExtended.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\2016\Microsoft.SqlServer.SqlEnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic.Compatibility" />
+    <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.OLE.Interop.7.10.6070\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.14.0.14.3.25407\lib\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Immutable.10.0.10.0.30319\lib\net40\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Immutable.11.0.11.0.50727\lib\net45\Microsoft.VisualStudio.Shell.Immutable.11.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Immutable.12.0.12.0.21003\lib\net45\Microsoft.VisualStudio.Shell.Immutable.12.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Immutable.14.0.14.3.25407\lib\net45\Microsoft.VisualStudio.Shell.Immutable.14.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.7.10.6071\lib\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.10.0.10.0.30319\lib\Microsoft.VisualStudio.Shell.Interop.10.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.11.0.11.0.61030\lib\Microsoft.VisualStudio.Shell.Interop.11.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.12.0.12.0.30110\lib\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.8.0.8.0.50727\lib\Microsoft.VisualStudio.Shell.Interop.8.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6070\lib\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>packages\Microsoft.VisualStudio.TextManager.Interop.8.0.8.0.50727\lib\Microsoft.VisualStudio.TextManager.Interop.8.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Threading.14.1.111\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Utilities, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Utilities.14.3.25407\lib\net45\Microsoft.VisualStudio.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\Dependencies\2016\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Royale" />
+    <Reference Include="SqlPackageBase">
+      <HintPath>..\Dependencies\2016\SqlPackageBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlWorkbench.Interfaces">
+      <HintPath>..\Dependencies\2016\SqlWorkbench.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\Dependencies\2016\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\HuntingDog\DogFace\ucHost.resx">
+      <Link>DogFace\ucHost.resx</Link>
+      <DependentUpon>ucHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\HuntingDog\Engine\CommandBar.resx">
+      <Link>Engine\CommandBar.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\HuntingDog\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
