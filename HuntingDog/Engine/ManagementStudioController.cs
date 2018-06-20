@@ -68,7 +68,7 @@ namespace DatabaseObjectSearcher
                     builder.AppendLine(UseDataBaseGo(view.Parent));
                     var noLockHint = addNoLockHint ? " WITH(NOLOCK) " : "";
                     var selectColumns = BuildColumnNames(view.Columns, includeAllCoulumnNamesForViews);
-                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM {2}.{3} {4}", selectTopX, selectColumns, view.Schema, view.Name, noLockHint);
+                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM [{2}].[{3}] {4}", selectTopX, selectColumns, view.Schema, view.Name, noLockHint);
 
                     if (includeWhereClause)
                     {
@@ -102,7 +102,7 @@ namespace DatabaseObjectSearcher
 
                     var selectColumns = BuildColumnNames(tbl.Columns, includeAllCoulumnNamesForTables);
                     var noLockHint = addNoLockHint ? " WITH(NOLOCK) " : "";            
-                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM {2}.{3} {4}", selectTopXTable, selectColumns, tbl.Schema, tbl.Name, noLockHint);
+                    builder.AppendFormat("\tSELECT TOP {0} {1}\r\n\tFROM [{2}].[{3}] {4}", selectTopXTable, selectColumns, tbl.Schema, tbl.Name, noLockHint);
 
                     if (includeWhereClause)
                     {
